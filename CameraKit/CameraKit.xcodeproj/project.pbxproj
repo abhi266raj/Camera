@@ -14,6 +14,9 @@
 		6BE804EB2AB738EB00DAF8B4 /* CameraKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804EA2AB738EB00DAF8B4 /* CameraKitTests.swift */; };
 		6BE804F52AB738EB00DAF8B4 /* CameraKitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804F42AB738EB00DAF8B4 /* CameraKitUITests.swift */; };
 		6BE804F72AB738EB00DAF8B4 /* CameraKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804F62AB738EB00DAF8B4 /* CameraKitUITestsLaunchTests.swift */; };
+		6BE805042AB7394200DAF8B4 /* CameraFacade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE805032AB7394200DAF8B4 /* CameraFacade.swift */; };
+		6BE8051B2AB754C800DAF8B4 /* PermissionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE8051A2AB754C800DAF8B4 /* PermissionHandler.swift */; };
+		6BE8051D2AB7575E00DAF8B4 /* CameraInputManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +47,10 @@
 		6BE804F02AB738EB00DAF8B4 /* CameraKitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CameraKitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BE804F42AB738EB00DAF8B4 /* CameraKitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraKitUITests.swift; sourceTree = "<group>"; };
 		6BE804F62AB738EB00DAF8B4 /* CameraKitUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraKitUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		6BE805032AB7394200DAF8B4 /* CameraFacade.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraFacade.swift; sourceTree = "<group>"; };
+		6BE805192AB752F500DAF8B4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6BE8051A2AB754C800DAF8B4 /* PermissionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionHandler.swift; sourceTree = "<group>"; };
+		6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInputManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,8 +101,12 @@
 		6BE804D82AB738E800DAF8B4 /* CameraKit */ = {
 			isa = PBXGroup;
 			children = (
+				6BE805192AB752F500DAF8B4 /* Info.plist */,
 				6BE804D92AB738E800DAF8B4 /* CameraKitApp.swift */,
 				6BE804DB2AB738E800DAF8B4 /* ContentView.swift */,
+				6BE805032AB7394200DAF8B4 /* CameraFacade.swift */,
+				6BE8051A2AB754C800DAF8B4 /* PermissionHandler.swift */,
+				6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */,
 				6BE804DD2AB738EB00DAF8B4 /* Assets.xcassets */,
 				6BE804DF2AB738EB00DAF8B4 /* Preview Content */,
 			);
@@ -258,6 +269,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6BE804DC2AB738E800DAF8B4 /* ContentView.swift in Sources */,
+				6BE8051D2AB7575E00DAF8B4 /* CameraInputManager.swift in Sources */,
+				6BE8051B2AB754C800DAF8B4 /* PermissionHandler.swift in Sources */,
+				6BE805042AB7394200DAF8B4 /* CameraFacade.swift in Sources */,
 				6BE804DA2AB738E800DAF8B4 /* CameraKitApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -422,8 +436,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"CameraKit/Preview Content\"";
+				DEVELOPMENT_TEAM = 9FQKR88J39;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CameraKit/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -452,6 +468,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"CameraKit/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CameraKit/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
