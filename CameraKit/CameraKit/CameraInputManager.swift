@@ -9,6 +9,7 @@ import Foundation
 import AVFoundation
 import AssetsLibrary
 import UIKit
+import Photos
 
 
 protocol CameraInputProtocol {
@@ -75,11 +76,14 @@ protocol CameraPipelineProtocol {
     
     func setup()
     
+    func start(_ record: Bool)
+    
 }
 
 protocol CameraOutputProtocol {
     
     var previewView: UIView {get}
+    func updateFrame()
     
 }
 
@@ -87,16 +91,25 @@ class CameraOutput: CameraOutputProtocol {
     
     private var session:AVCaptureSession
     var previewView: UIView
-    var previewLayer: AVCaptureVideoPreviewLayer
+    private var previewLayer: AVCaptureVideoPreviewLayer
+    var fileOutput: AVCaptureMovieFileOutput
     
     init(session: AVCaptureSession) {
         self.session = session
         previewLayer = AVCaptureVideoPreviewLayer(session: session)
         previewLayer.videoGravity = .resizeAspectFill
-        previewView = UIView(frame: CGRectMake(0, 0, 200, 200))
+        previewView = UIView(frame: CGRectMake(100, 100, 100, 100))
         previewView.backgroundColor = .green
         previewLayer.frame = previewView.bounds
         previewView.layer.addSublayer(previewLayer)
+        fileOutput = AVCaptureMovieFileOutput()
+    }
+    
+    func updateFrame () {
+        if previewView.bounds != CGRectZero {
+            previewLayer.frame = previewView.frame
+        }
+        
     }
     
 }
@@ -108,38 +121,108 @@ protocol CameraProccessorProtocol {
 
 
 
-class CameraPipeline: CameraPipelineProtocol {
-   
+class CameraPipeline: NSObject, CameraPipelineProtocol, AVCaptureFileOutputRecordingDelegate {
     
     typealias InputType = CameraInput
     typealias ProcessorType = CameraPipeline
     typealias OutputType = CameraOutput
  
-    private let captureSession: AVCaptureSession = AVCaptureSession()
-    lazy var output = CameraOutput(session: captureSession)
-    var input: InputType = CameraInput()
+    private let captureSession: AVCaptureSession
+    let output: CameraOutput
+    let input: InputType
+    
+    override init() {
+        let session = AVCaptureSession()
+        self.captureSession = session
+        self.output = CameraOutput(session: session)
+        self.input = CameraInput()
+    }
 
     func setup() {
-        let _  = setupInput()
-         Task { @CameraInputSession in
-                 input.session = captureSession
-                 input.startRunning()
-        }
+        let _  = setupInputAndOutput()
+            Task{ @CameraInputSession in
+                input.session = captureSession
+                input.startRunning()
+            }
     }
     
-    private func setupInput() -> Bool {
-        guard let device =  input.videoDevice else {return false}
+    private func setupInputAndOutput() -> Bool {
+        guard let videoDevice =  input.videoDevice else {return false}
+        guard let audioDevice =  input.audioDevice else {return false}
         captureSession.beginConfiguration()
         defer {
             captureSession.commitConfiguration()
         }
-        if captureSession.canAddInput(device) {
-            captureSession.addInput(device)
+        if captureSession.canAddInput(videoDevice) {
+            captureSession.addInput(videoDevice)
         }else{
+            return false
+        }
+        
+        if captureSession.canAddInput(audioDevice) {
+            captureSession.addInput(audioDevice)
+        }else{
+            return false
+        }
+        
+        if captureSession.canAddOutput(output.fileOutput) {
+            captureSession.addOutput(output.fileOutput)
+        }else {
             return false
         }
        
         return true
+    }
+    
+    var isRecording: Bool = false
+    func start(_ record: Bool) {
+        if record == true {
+            guard isRecording == false else {return}
+            isRecording = true
+            let outputFilePath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("A \(UUID().uuidString).mov")!
+            output.fileOutput.startRecording(to: outputFilePath, recordingDelegate: self)
+        }else {
+            isRecording = false
+            output.fileOutput.stopRecording()
+        }
+    }
+    
+    
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        if let error = error {
+            // Handle the error, e.g., display an error message.
+            print("Error recording video: \(error.localizedDescription)")
+            return
+        }
+        
+        // Request permission to access the photo library.
+        PHPhotoLibrary.requestAuthorization { status in
+            if status == .authorized {
+                // If permission is granted, save the video to the gallery.
+                PHPhotoLibrary.shared().performChanges {
+                    let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputFileURL)
+                    request?.creationDate = Date()
+                } completionHandler: { success, error in
+                    if success {
+                        // Video saved successfully.
+                        print("Video saved to the gallery.")
+                    } else if let error = error {
+                        // Handle the error, e.g., display an error message.
+                        print("Error saving video to the gallery: \(error.localizedDescription)")
+                    }
+                    
+                    // Optionally, you can delete the temporary file.
+                    do {
+                        try FileManager.default.removeItem(at: outputFileURL)
+                    } catch {
+                        print("Error deleting temporary file: \(error.localizedDescription)")
+                    }
+                }
+            } else {
+                // Handle the case where permission is denied.
+                print("Permission to access the photo library denied.")
+            }
+        }
     }
 
     

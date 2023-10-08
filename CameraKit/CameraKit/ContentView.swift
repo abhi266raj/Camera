@@ -15,16 +15,30 @@ struct ContentView: View {
             switch viewModel.state {
             case .unknown:
                 Text("Loading")
+               // CameraPreview(cameraOutput: viewModel.cameraInputManger.output)
             case .permissionDenied:
                 Text("Permission Denied")
             case .active:
-                CameraPreview(cameraOutput: viewModel.cameraInputManger.output)
+                VStack {
+                    CameraPreview(cameraOutput: viewModel.cameraInputManger.output)
+                    Button("Adjust") {
+                        viewModel.cameraInputManger.output.updateFrame()
+                    }.frame(height: 60)
+                    
+                    Button("Start") {
+                        viewModel.cameraInputManger.start(true)
+                    }.frame(height: 60)
+                    Button("Stop") {
+                        viewModel.cameraInputManger.start(false)
+                    }.frame(height: 60)
+                }
+                
             case .paused:
                 Text("Paused")
                 
             }
         }.onAppear(perform: {
-            Task {
+            Task.detached(priority: .userInitiated)  {
                 await viewModel.setup()
             }
         })
@@ -41,10 +55,14 @@ struct CameraPreview: UIViewRepresentable {
     let cameraOutput: any CameraOutputProtocol
 
     func makeUIView(context: Context) -> UIView {
-        return  cameraOutput.previewView
+        let view =  cameraOutput.previewView
+        view.backgroundColor = .gray
+        return view
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
+        cameraOutput.updateFrame()
+        
         // Update the view if needed
     }
 }

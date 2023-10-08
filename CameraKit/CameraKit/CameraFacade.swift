@@ -28,14 +28,14 @@ enum CameraState {
     var state: CameraState = .unknown
     @ObservationIgnored var cameraInputManger: any CameraPipelineProtocol = CameraPipeline()
     
-    public func setup() async {
+    @MainActor public func setup() async {
         if state == .unknown {
             let permission = await  cameraPermission.requestForPermission()
             if permission == false {
-                state = .permissionDenied
+                self.state = .permissionDenied
             }else {
                 cameraInputManger.setup()
-                state = .active
+                self.state = .active
             }
         }
         

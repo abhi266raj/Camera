@@ -6,5 +6,8 @@
 	<string>To allow you to make video</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>To allow you to make video</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>We need access to your photo library to save videos recorded with the app.</string>
+
 </dict>
 </plist>
