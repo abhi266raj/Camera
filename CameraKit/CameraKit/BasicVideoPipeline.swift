@@ -1,8 +1,8 @@
 //
-//  CameraInputManager.swift
+//  BasicCameraPipeline.swift
 //  CameraKit
 //
-//  Created by Abhiraj on 17/09/23.
+//  Created by Abhiraj on 08/10/23.
 //
 
 import Foundation
@@ -12,114 +12,8 @@ import UIKit
 import Photos
 
 
-protocol CameraInputProtocol {
-    func startRunning() async
-    func stopRunning() async
-    
-    var audioDevice: AVCaptureDeviceInput? {get}
-    var videoDevice: AVCaptureDeviceInput? {get}
-    
-}
-
-@globalActor
-actor CameraInputSession {
-    static var shared =  CameraInputSession()
-}
-
-@CameraInputSession
-class CameraInput: CameraInputProtocol {
-    var session: AVCaptureSession?
-    
-    nonisolated init() {
-        
-    }
-    
-    func startRunning() {
-        session?.startRunning()
-    }
-    
-    func stopRunning() {
-        session?.stopRunning()
-    }
-    
-    nonisolated var audioDevice: AVCaptureDeviceInput? {
-        let device =  AVCaptureDevice.default(for: .audio)
-        guard let device else {return nil}
-        do {
-            let input = try AVCaptureDeviceInput(device: device)
-            return input
-        }catch {
-            return nil
-        }
-    }
-    
-    nonisolated var videoDevice: AVCaptureDeviceInput? {
-        let device =  AVCaptureDevice.default(for: .video)
-        guard let device else {return nil}
-        do {
-            let input = try AVCaptureDeviceInput(device: device)
-            return input
-        }catch {
-            return nil
-        }
-    }
-    
-}
-
-protocol CameraPipelineProtocol {
-    associatedtype InputType: CameraInputProtocol
-    associatedtype OutputType: CameraOutputProtocol
-    associatedtype ProcessorType
-    
-    var input: InputType {get}
-    var output: OutputType {get}
-    
-    func setup()
-    
-    func start(_ record: Bool)
-    
-}
-
-protocol CameraOutputProtocol {
-    
-    var previewView: UIView {get}
-    func updateFrame()
-    
-}
-
-class CameraOutput: CameraOutputProtocol {
-    
-    private var session:AVCaptureSession
-    var previewView: UIView
-    private var previewLayer: AVCaptureVideoPreviewLayer
-    
-    init(session: AVCaptureSession) {
-        self.session = session
-        previewLayer = AVCaptureVideoPreviewLayer(session: session)
-        previewLayer.videoGravity = .resizeAspectFill
-        previewView = UIView(frame: CGRectMake(100, 100, 100, 100))
-        previewView.backgroundColor = .green
-        previewLayer.frame = previewView.bounds
-        previewView.layer.addSublayer(previewLayer)
-    }
-    
-    func updateFrame () {
-        if previewView.bounds != CGRectZero {
-            previewLayer.frame = previewView.frame
-        }
-        
-    }
-    
-}
-
-protocol CameraProccessorProtocol {
-    
-}
-
-
-
-
-class CameraPipeline: NSObject, CameraPipelineProtocol, AVCaptureFileOutputRecordingDelegate {
+/// Basic Camera Pipeline Use UIView and record on camera
+class BasicVideoPipeline:  CameraPipelineProtocol {
     
     typealias InputType = CameraInput
     typealias ProcessorType = CameraPipeline
@@ -130,7 +24,7 @@ class CameraPipeline: NSObject, CameraPipelineProtocol, AVCaptureFileOutputRecor
     let input: InputType
     let fileOutput = AVCaptureMovieFileOutput()
     
-    override init() {
+    init() {
         let session = AVCaptureSession()
         self.captureSession = session
         self.output = CameraOutput(session: session)
@@ -138,8 +32,8 @@ class CameraPipeline: NSObject, CameraPipelineProtocol, AVCaptureFileOutputRecor
     }
 
     func setup() {
-        let _  = setupInputAndOutput()
             Task{ @CameraInputSession in
+                let _  = setupInputAndOutput()
                 input.session = captureSession
                 input.startRunning()
             }
@@ -173,21 +67,52 @@ class CameraPipeline: NSObject, CameraPipelineProtocol, AVCaptureFileOutputRecor
         return true
     }
     
-    var isRecording: Bool = false
+    var basicFileRecorder: BasicFileRecorder?
     func start(_ record: Bool) {
-        if record == true {
-            guard isRecording == false else {return}
-            isRecording = true
-            let outputFilePath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("A \(UUID().uuidString).mov")!
-            fileOutput.startRecording(to: outputFilePath, recordingDelegate: self)
+        if basicFileRecorder == nil {
+                basicFileRecorder = BasicFileRecorder(fileOutput: fileOutput)
+        }
+        Task {
+            await basicFileRecorder?.start(record)
+        }
+        
+    }
+    
+}
+
+
+actor BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
+    
+    var fileOutput: AVCaptureMovieFileOutput
+    var isRecording = false
+    
+    init(fileOutput: AVCaptureMovieFileOutput) {
+        self.fileOutput = fileOutput
+        super.init()
+       
+        
+    }
+    
+    func start(_ record: Bool) {
+        if record {
+            if !isRecording {
+                isRecording = true
+                let outputFilePath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("A \(UUID().uuidString).mov")!
+                fileOutput.startRecording(to: outputFilePath, recordingDelegate: self)
+            }
         }else {
-            isRecording = false
             fileOutput.stopRecording()
+            isRecording = false
         }
     }
     
     
-    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+    
+    deinit {
+        fileOutput.stopRecording()
+    }
+    
+    nonisolated func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         if let error = error {
             // Handle the error, e.g., display an error message.
             print("Error recording video: \(error.localizedDescription)")
@@ -223,7 +148,7 @@ class CameraPipeline: NSObject, CameraPipelineProtocol, AVCaptureFileOutputRecor
             }
         }
     }
-
     
 }
+
 
