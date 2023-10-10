@@ -17,10 +17,10 @@ class BasicMetalPipeline: NSObject, CameraPipelineProtocol {
     
     typealias InputType = CameraInput
     typealias ProcessorType = CameraPipeline
-    typealias OutputType = CameraOutput
+    typealias OutputType = MetalOutput
     
     private let captureSession: AVCaptureSession
-    let output: CameraOutput
+    let output: MetalOutput
     let input: InputType
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
@@ -32,11 +32,12 @@ class BasicMetalPipeline: NSObject, CameraPipelineProtocol {
     override init() {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraOutput(session: session)
+        self.output = MetalOutput(session: session)
         self.input = CameraInput()
         super.init() 
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
+        
        
     }
     
@@ -119,8 +120,10 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // Pass the sample buffer to the VideoRecorder for processing if recording
-        
-        
+        if let videoPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+            self.output.metalView.pixelBuffer = videoPixelBuffer
+        }
+       
         videoRecorder?.appendSampleBuffer(sampleBuffer)
     }
     

@@ -237,6 +237,18 @@ class PreviewMetalView: MTKView {
         colorPixelFormat = .bgra8Unorm
     }
     
+    required init (frame: CGRect = .zero) {
+        let gpu = MTLCreateSystemDefaultDevice()
+        super.init(frame: frame, device: gpu)
+        //device = MTLCreateSystemDefaultDevice()
+        configureMetal()
+        
+        createTextureCache()
+        
+        colorPixelFormat = .bgra8Unorm
+    }
+    
+    
     func configureMetal() {
         let defaultLibrary = device!.makeDefaultLibrary()!
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
