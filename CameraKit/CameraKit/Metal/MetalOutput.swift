@@ -20,11 +20,11 @@ class MetalOutput: CameraOutputProtocol {
     
     init(session: AVCaptureSession) {
         self.session = session
-        metalView = PreviewMetalView(frame: CGRectMake(100, 100, 100, 100))
-        metalView.backgroundColor = .red
-        previewView = UIView(frame: CGRectMake(100, 100, 100, 100))
+        metalView = PreviewMetalView(frame: CGRectMake(0, 0, 1080/4, 1920/4))
+        //metalView.backgroundColor = .red
+        previewView = UIView(frame: CGRectMake(0, 0, 1080/4, 1920/4))
         previewView.addSubview(metalView)
-        previewView.backgroundColor = .green
+        //previewView.backgroundColor = .green
         metalView.backgroundColor = .yellow
     
         

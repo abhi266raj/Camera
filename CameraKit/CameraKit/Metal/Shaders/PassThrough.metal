@@ -33,5 +33,14 @@ fragment half4 fragmentPassThrough(VertexIO         inputFragment [[ stage_in ]]
                                    texture2d<half> inputTexture  [[ texture(0) ]],
                                    sampler         samplr        [[ sampler(0) ]])
 {
+    //return half4(0, 0, 1.0, 1.0);
+    
+//    const half4 colorSample = inputTexture.sample(samplr, inputFragment.textureCoord);
+//        half4 premultiplied = colorSample * colorSample.w;
+//        premultiplied.w = colorSample.w;
+//        return premultiplied;
     return inputTexture.sample(samplr, inputFragment.textureCoord);
+  // return half4(inputTexture.sample(samplr, inputFragment.textureCoord).r,
+    //           inputTexture.sample(samplr, inputFragment.textureCoord).g ,
+     //          inputTexture.sample(samplr, inputFragment.textureCoord).b);
 }

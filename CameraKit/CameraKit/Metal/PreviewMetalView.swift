@@ -29,7 +29,7 @@ class PreviewMetalView: MTKView {
     
     private var internalMirroring: Bool = false
     
-    var rotation: Rotation = .rotate0Degrees {
+    var rotation: Rotation = .rotate90Degrees {
         didSet {
             syncQueue.sync {
                 internalRotation = rotation
@@ -37,7 +37,7 @@ class PreviewMetalView: MTKView {
         }
     }
     
-    private var internalRotation: Rotation = .rotate0Degrees
+    private var internalRotation: Rotation = .rotate90Degrees
     
     var pixelBuffer: CVPixelBuffer? {
         didSet {
@@ -147,13 +147,18 @@ class PreviewMetalView: MTKView {
             scaleX *= -1.0
         }
         
+        scaleX = 1.0
+        scaleY = 1.0
+        
         // Vertex coordinate takes the gravity into account.
-        let vertexData: [Float] = [
-            -scaleX, -scaleY, 0.0, 1.0,
-            scaleX, -scaleY, 0.0, 1.0,
-            -scaleX, scaleY, 0.0, 1.0,
-            scaleX, scaleY, 0.0, 1.0
+        var vertexData: [Float] = [
+            -scaleX, -scaleY, 0, 1.0,
+             scaleX, -scaleY, 0, 1.0,
+             -scaleX, scaleY, 0, 1.0,
+             scaleX, scaleY, 0, 1.0
         ]
+       // vertexData =
+        
         vertexCoordBuffer = device!.makeBuffer(bytes: vertexData, length: vertexData.count * MemoryLayout<Float>.size, options: [])
         
         // Texture coordinate takes the rotation into account.
@@ -191,6 +196,7 @@ class PreviewMetalView: MTKView {
                 1.0, 1.0
             ]
         }
+       
         textCoordBuffer = device?.makeBuffer(bytes: textData, length: textData.count * MemoryLayout<Float>.size, options: [])
         
         // Calculate the transform from texture coordinates to view coordinates
@@ -223,6 +229,7 @@ class PreviewMetalView: MTKView {
         let yShift = (internalBounds.size.height - tranformRect.size.height) / 2
         transform = transform.concatenating(CGAffineTransform(translationX: xShift, y: yShift))
         textureTranform = transform.inverted()
+       // textureTranform = CGAffineTransformIdentity
     }
     
     required init(coder: NSCoder) {
@@ -246,22 +253,35 @@ class PreviewMetalView: MTKView {
         createTextureCache()
         
         colorPixelFormat = .bgra8Unorm
+        framebufferOnly = true
+        clearColor = MTLClearColorMake(1.0, 0.0, 0.0, 1.0);
+        
     }
     
     
     func configureMetal() {
         let defaultLibrary = device!.makeDefaultLibrary()!
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
+        pipelineDescriptor.depthAttachmentPixelFormat = .invalid
+       
         pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        pipelineDescriptor.colorAttachments[0].isBlendingEnabled = false
+        pipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .blendAlpha
+        pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .blendAlpha
         pipelineDescriptor.vertexFunction = defaultLibrary.makeFunction(name: "vertexPassThrough")
         pipelineDescriptor.fragmentFunction = defaultLibrary.makeFunction(name: "fragmentPassThrough")
+        
+        
+       
         
         // To determine how textures are sampled, create a sampler descriptor to query for a sampler state from the device.
         let samplerDescriptor = MTLSamplerDescriptor()
         samplerDescriptor.sAddressMode = .clampToEdge
         samplerDescriptor.tAddressMode = .clampToEdge
+        samplerDescriptor.rAddressMode = .clampToEdge
         samplerDescriptor.minFilter = .linear
         samplerDescriptor.magFilter = .linear
+        samplerDescriptor.normalizedCoordinates = true
         sampler = device!.makeSamplerState(descriptor: samplerDescriptor)
         
         do {
@@ -275,6 +295,7 @@ class PreviewMetalView: MTKView {
     
     func createTextureCache() {
         var newTextureCache: CVMetalTextureCache?
+        
         if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, device!, nil, &newTextureCache) == kCVReturnSuccess {
             textureCache = newTextureCache
         } else {
@@ -286,12 +307,12 @@ class PreviewMetalView: MTKView {
     override func draw(_ rect: CGRect) {
         var pixelBuffer: CVPixelBuffer?
         var mirroring = false
-        var rotation: Rotation = .rotate0Degrees
+        var rotation: Rotation = .rotate90Degrees
         
         syncQueue.sync {
             pixelBuffer = internalPixelBuffer
             mirroring = internalMirroring
-            rotation = internalRotation
+           rotation = internalRotation
         }
         
         guard let drawable = currentDrawable,
@@ -299,6 +320,8 @@ class PreviewMetalView: MTKView {
             let previewPixelBuffer = pixelBuffer else {
                 return
         }
+        drawable.layer.framebufferOnly = true
+       // drawable.layer.pixelFormat = .bgra8Unorm
         
         // Create a Metal texture from the image buffer.
         let width = CVPixelBufferGetWidth(previewPixelBuffer)
@@ -308,15 +331,20 @@ class PreviewMetalView: MTKView {
             createTextureCache()
         }
         var cvTextureOut: CVMetalTexture?
-        CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
+        let result =  CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
                                                   textureCache!,
                                                   previewPixelBuffer,
                                                   nil,
                                                   .bgra8Unorm,
-                                                  width,
-                                                  height,
+                                                  Int(self.bounds.size.width),
+                                                  Int(self.bounds.size.height),
                                                   0,
                                                   &cvTextureOut)
+        if result != kCVReturnSuccess {
+            // Handle the error, print an error message, or take appropriate action.
+            print("Error creating Metal texture: \(result)")
+        }
+       // CVMetalTextureCacheFlush(textureCache!, 0)
         guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else {
             print("Failed to create preview texture")
             
@@ -329,7 +357,7 @@ class PreviewMetalView: MTKView {
             self.bounds != internalBounds ||
             mirroring != textureMirroring ||
             rotation != textureRotation {
-            setupTransform(width: texture.width, height: texture.height, mirroring: mirroring, rotation: rotation)
+             setupTransform(width: texture.width, height: texture.height, mirroring: mirroring, rotation: rotation)
         }
         
         // Set up command buffer and encoder
@@ -345,6 +373,11 @@ class PreviewMetalView: MTKView {
             return
         }
         
+        currentRenderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(1.0, 0.0, 0.0, 0.0)
+        currentRenderPassDescriptor.colorAttachments[0].loadAction = .clear
+        currentRenderPassDescriptor.colorAttachments[1].clearColor = MTLClearColorMake(1.0, 0.0, 0.0, 0.0)
+        currentRenderPassDescriptor.colorAttachments[1].loadAction = .clear
+        
         guard let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) else {
             print("Failed to create Metal command encoder")
             CVMetalTextureCacheFlush(textureCache!, 0)
@@ -358,11 +391,16 @@ class PreviewMetalView: MTKView {
         commandEncoder.setFragmentTexture(texture, index: 0)
         commandEncoder.setFragmentSamplerState(sampler, index: 0)
         commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: 4)
+       // commandEncoder.setColorStoreAction(.store, index: 0)
         commandEncoder.endEncoding()
         
         // Draw to the screen.
+        commandBuffer.addCompletedHandler { command in
+           // print("preinted")
+        }
         commandBuffer.present(drawable)
         commandBuffer.commit()
+        //commandBuffer.waitUntilCompleted()
     }
 }
 

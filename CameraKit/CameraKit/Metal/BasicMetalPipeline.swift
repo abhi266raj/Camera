@@ -27,6 +27,7 @@ class BasicMetalPipeline: NSObject, CameraPipelineProtocol {
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
     var videoRecorder: VideoRecorder?
+    var pipeline = CIFilterRenderer()
     
     
     override init() {
@@ -69,6 +70,8 @@ class BasicMetalPipeline: NSObject, CameraPipelineProtocol {
         }
         
         if captureSession.canAddOutput(bufferOutput) {
+            //session.addOutput(videoDataOutput)
+            bufferOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
             captureSession.addOutput(bufferOutput)
         }else {
             return false
@@ -119,9 +122,20 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        
+        
         // Pass the sample buffer to the VideoRecorder for processing if recording
         if let videoPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            self.output.metalView.pixelBuffer = videoPixelBuffer
+            if pipeline.isPrepared == false {
+                if let format = CMSampleBufferGetFormatDescription(sampleBuffer) {
+                    pipeline.prepare(with: format, outputRetainedBufferCountHint: 3)
+                }else{
+                    return
+                }
+            }
+            var buffer  = videoPixelBuffer
+            buffer =  pipeline.render(pixelBuffer: videoPixelBuffer) ?? buffer
+            self.output.metalView.pixelBuffer = buffer
         }
        
         videoRecorder?.appendSampleBuffer(sampleBuffer)
