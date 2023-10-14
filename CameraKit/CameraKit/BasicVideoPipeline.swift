@@ -16,13 +16,14 @@ import Photos
 class BasicVideoPipeline:  CameraPipelineProtocol {
     
     typealias InputType = CameraInput
-    typealias ProcessorType = CameraPipeline
+    typealias ProcessorType = EmptyCameraProcessor
     typealias OutputType = CameraOutput
  
     private let captureSession: AVCaptureSession
     let output: CameraOutput
     let input: InputType
     let fileOutput = AVCaptureMovieFileOutput()
+    let processor = EmptyCameraProcessor()
     
     init() {
         let session = AVCaptureSession()

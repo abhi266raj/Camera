@@ -69,10 +69,11 @@ class CameraInput: CameraInputProtocol {
 protocol CameraPipelineProtocol {
     associatedtype InputType: CameraInputProtocol
     associatedtype OutputType: CameraOutputProtocol
-    associatedtype ProcessorType
+    associatedtype ProcessorType: CameraProccessorProtocol
     
     var input: InputType {get}
     var output: OutputType {get}
+    var processor: ProcessorType {get}
     
     func setup()
     
@@ -113,16 +114,16 @@ class CameraOutput: CameraOutputProtocol {
 }
 
 protocol CameraProccessorProtocol {
-    
+    func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer
 }
 
 
 
 
-class CameraPipeline: NSObject, CameraPipelineProtocol, AVCaptureFileOutputRecordingDelegate {
+class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate {
     
     typealias InputType = CameraInput
-    typealias ProcessorType = CameraPipeline
+    typealias ProcessorType = EffectCameraProcessor
     typealias OutputType = CameraOutput
  
     private let captureSession: AVCaptureSession

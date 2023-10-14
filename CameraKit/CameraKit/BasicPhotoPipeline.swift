@@ -16,13 +16,14 @@ import Photos
 class BasicPhotoPipeline: NSObject, CameraPipelineProtocol {
     
     typealias InputType = CameraInput
-    typealias ProcessorType = CameraPipeline
+    typealias ProcessorType = EmptyCameraProcessor
     typealias OutputType = CameraOutput
     
     private let captureSession: AVCaptureSession
     let output: CameraOutput
     let input: InputType
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
+    let processor = EmptyCameraProcessor()
     
     override init() {
         let session = AVCaptureSession()

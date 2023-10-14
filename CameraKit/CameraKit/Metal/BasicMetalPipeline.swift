@@ -16,7 +16,7 @@ import CoreMedia
 class BasicMetalPipeline: NSObject, CameraPipelineProtocol {
     
     typealias InputType = CameraInput
-    typealias ProcessorType = CameraPipeline
+    typealias ProcessorType = EffectCameraProcessor
     typealias OutputType = MetalOutput
     
     private let captureSession: AVCaptureSession
@@ -27,7 +27,7 @@ class BasicMetalPipeline: NSObject, CameraPipelineProtocol {
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
     var videoRecorder: VideoRecorder?
-    var pipeline = CIFilterRenderer()
+    var processor = EffectCameraProcessor()
     
     
     override init() {
@@ -123,19 +123,9 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
-        
-        // Pass the sample buffer to the VideoRecorder for processing if recording
+        let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if let videoPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            if pipeline.isPrepared == false {
-                if let format = CMSampleBufferGetFormatDescription(sampleBuffer) {
-                    pipeline.prepare(with: format, outputRetainedBufferCountHint: 3)
-                }else{
-                    return
-                }
-            }
-            var buffer  = videoPixelBuffer
-            buffer =  pipeline.render(pixelBuffer: videoPixelBuffer) ?? buffer
-            self.output.metalView.pixelBuffer = buffer
+            self.output.metalView.sampleBuffer = sampleBuffer
         }
        
         videoRecorder?.appendSampleBuffer(sampleBuffer)
@@ -179,3 +169,5 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
     }
     
 }
+
+

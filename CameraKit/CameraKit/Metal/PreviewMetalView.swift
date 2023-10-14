@@ -47,6 +47,15 @@ class PreviewMetalView: MTKView {
         }
     }
     
+    var sampleBuffer: CMSampleBuffer? {
+        didSet {
+            syncQueue.sync {
+                internalSampleBuffer = sampleBuffer
+            }
+        }
+        
+    }
+    private var internalSampleBuffer: CMSampleBuffer?
     private var internalPixelBuffer: CVPixelBuffer?
     
     private let syncQueue = DispatchQueue(label: "Preview View Sync Queue", qos: .userInitiated, attributes: [], autoreleaseFrequency: .workItem)
@@ -305,19 +314,24 @@ class PreviewMetalView: MTKView {
     
     /// - Tag: DrawMetalTexture
     override func draw(_ rect: CGRect) {
-        var pixelBuffer: CVPixelBuffer?
+        //var pixelBuffer: CVPixelBuffer?
         var mirroring = false
         var rotation: Rotation = .rotate90Degrees
+        var sampleBuffer: CMSampleBuffer?
         
         syncQueue.sync {
-            pixelBuffer = internalPixelBuffer
+           // pixelBuffer = internalPixelBuffer
             mirroring = internalMirroring
            rotation = internalRotation
+            sampleBuffer = internalSampleBuffer
+            
+            
         }
         
         guard let drawable = currentDrawable,
             let currentRenderPassDescriptor = currentRenderPassDescriptor,
-            let previewPixelBuffer = pixelBuffer else {
+              let sampleBuffer,
+            let previewPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
                 return
         }
         drawable.layer.framebufferOnly = true
@@ -403,4 +417,12 @@ class PreviewMetalView: MTKView {
         //commandBuffer.waitUntilCompleted()
     }
 }
+
+
+protocol MetalViewDelegate  {
+    func sampleBufferRendered(_ buffer: CMSampleBuffer)
+}
+
+
+
 
