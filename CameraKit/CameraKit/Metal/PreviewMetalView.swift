@@ -12,6 +12,8 @@ import MetalKit
 
 class PreviewMetalView: MTKView {
     
+    var renderingDelegate:RenderingDelegate?
+    
     enum Rotation: Int {
         case rotate0Degrees
         case rotate90Degrees
@@ -262,7 +264,7 @@ class PreviewMetalView: MTKView {
         createTextureCache()
         
         colorPixelFormat = .bgra8Unorm
-        framebufferOnly = true
+        framebufferOnly = false
         clearColor = MTLClearColorMake(1.0, 0.0, 0.0, 1.0);
         
     }
@@ -334,7 +336,7 @@ class PreviewMetalView: MTKView {
             let previewPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
                 return
         }
-        drawable.layer.framebufferOnly = true
+        drawable.layer.framebufferOnly = false
        // drawable.layer.pixelFormat = .bgra8Unorm
         
         // Create a Metal texture from the image buffer.
@@ -409,19 +411,72 @@ class PreviewMetalView: MTKView {
         commandEncoder.endEncoding()
         
         // Draw to the screen.
-        commandBuffer.addCompletedHandler { command in
-           // print("preinted")
+        commandBuffer.addCompletedHandler { [weak self] commandBuffer in
+            // Ensure the drawable is available
+
+            
+            guard let currentDrawable = self?.currentDrawable else {
+                return
+            }
+            if let newPixelBuffer = convertMetalTextureToPixelBuffer(currentDrawable.texture, samplePixelBuffer: previewPixelBuffer),
+               let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer){
+                var newSampleBuffer: CMSampleBuffer? = nil
+                var timingInfo = CMSampleTimingInfo()
+                CMSampleBufferGetSampleTimingInfo(sampleBuffer, at: 0, timingInfoOut: &timingInfo)
+                _ = CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: newPixelBuffer, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: formatDescription, sampleTiming: &timingInfo, sampleBufferOut: &newSampleBuffer)
+                if let newSampleBuffer {
+                    self?.renderingDelegate?.sampleBufferRendered(newSampleBuffer)
+                }
+            }
+            
+
+            
         }
+
         commandBuffer.present(drawable)
         commandBuffer.commit()
-        //commandBuffer.waitUntilCompleted()
+        commandBuffer.waitUntilCompleted()
+    }
+    
+    
+}
+
+
+protocol RenderingDelegate  {
+    func sampleBufferRendered(_ buffer: CMSampleBuffer)
+}
+
+
+
+
+
+func convertMetalTextureToPixelBuffer(_ metalTexture: MTLTexture, samplePixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+    // Get the width and height from the sample pixel buffer
+    let width = metalTexture.width
+    let height = metalTexture.height
+    // Get the pixel format from the sample pixel buffer
+    let pixelFormat = CVPixelBufferGetPixelFormatType(samplePixelBuffer)
+  
+    // Lock the base address of the pixel buffer for writing
+    CVPixelBufferLockBaseAddress(samplePixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+
+    // Get the base address of the pixel buffer
+    if let baseAddress = CVPixelBufferGetBaseAddress(samplePixelBuffer) {
+        // Copy the contents of the metalTexture into the pixel buffer
+        let region = MTLRegionMake2D(0, 0, width, height)
+        metalTexture.getBytes(baseAddress, bytesPerRow: metalTexture.width * 4, from: region, mipmapLevel: 0)
+        
+        // Unlock the pixel buffer
+        CVPixelBufferUnlockBaseAddress(samplePixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
+        
+        return samplePixelBuffer
+    } else {
+        // Handle the error or return nil if unable to get the base address
+        return nil
     }
 }
 
 
-protocol MetalViewDelegate  {
-    func sampleBufferRendered(_ buffer: CMSampleBuffer)
-}
 
 
 
