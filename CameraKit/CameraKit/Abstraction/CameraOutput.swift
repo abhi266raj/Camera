@@ -14,3 +14,10 @@ public protocol CameraOutput {
     func updateFrame()
     
 }
+
+
+enum CameraOutputAction {
+    case startRecording
+    case stopRecording
+    case clickPhoto
+}

@@ -17,15 +17,10 @@ class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
     func sampleBufferRendered(_ buffer: CMSampleBuffer) {
         videoRecorder?.appendSampleBuffer(buffer)
     }
-    
-    
-    typealias InputType = CameraInputImp
-    typealias ProcessorType = EffectCameraProcessor
-    typealias OutputType = MetalOutput
-    
+        
     private let captureSession: AVCaptureSession
     let output: MetalOutput
-    let input: InputType
+    let input: CameraInputImp
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let videoQueue = DispatchQueue(label: "videoQueue")
