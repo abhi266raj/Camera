@@ -26,7 +26,7 @@ enum CameraState {
     
     @ObservationIgnored var cameraPermission: PermissionHandler = CameraPermissionHandler()
     var state: CameraState = .unknown
-    @ObservationIgnored var cameraInputManger: any CameraPipelineProtocol = BasicMetalPipeline()
+    @ObservationIgnored var cameraInputManger: any CameraPipeline = BasicMetalPipeline()
     
     @MainActor public func setup() async {
         if state == .unknown {

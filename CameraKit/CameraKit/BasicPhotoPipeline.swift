@@ -13,14 +13,14 @@ import Photos
 
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicPhotoPipeline: NSObject, CameraPipelineProtocol {
+class BasicPhotoPipeline: NSObject, CameraPipeline {
     
-    typealias InputType = CameraInput
+    typealias InputType = CameraInputImp
     typealias ProcessorType = EmptyCameraProcessor
-    typealias OutputType = CameraOutput
+    typealias OutputType = CameraOutputImp
     
     private let captureSession: AVCaptureSession
-    let output: CameraOutput
+    let output: CameraOutputImp
     let input: InputType
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
     let processor = EmptyCameraProcessor()
@@ -28,8 +28,8 @@ class BasicPhotoPipeline: NSObject, CameraPipelineProtocol {
     override init() {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraOutput(session: session)
-        self.input = CameraInput()
+        self.output = CameraOutputImp(session: session)
+        self.input = CameraInputImp()
     }
     
     func setup() {

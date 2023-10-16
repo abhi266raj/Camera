@@ -12,7 +12,7 @@ import UIKit
 import Photos
 
 
-class MetalOutput: CameraOutputProtocol {
+class MetalOutput: CameraOutput {
     
     private var session:AVCaptureSession
     var previewView: UIView

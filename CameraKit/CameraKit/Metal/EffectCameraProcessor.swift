@@ -13,7 +13,7 @@ import Photos
 import CoreMedia
 
 
-class EffectCameraProcessor : CameraProccessorProtocol {
+class EffectCameraProcessor : CameraProccessor {
     
     var filterRender1: FilterRenderer = CIFilterRenderer()
     var filterRender2: FilterRenderer = MetalFilterRenderer()

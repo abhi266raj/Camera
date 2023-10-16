@@ -11,23 +11,13 @@ import AssetsLibrary
 import UIKit
 import Photos
 
-
-protocol CameraInputProtocol {
-    func startRunning() async
-    func stopRunning() async
-    
-    var audioDevice: AVCaptureDeviceInput? {get}
-    var videoDevice: AVCaptureDeviceInput? {get}
-    
-}
-
 @globalActor
 actor CameraInputSession {
     static var shared =  CameraInputSession()
 }
 
 @CameraInputSession
-class CameraInput: CameraInputProtocol {
+class CameraInputImp: CameraInput {
     var session: AVCaptureSession?
     
     nonisolated init() {
@@ -66,29 +56,8 @@ class CameraInput: CameraInputProtocol {
     
 }
 
-protocol CameraPipelineProtocol {
-    associatedtype InputType: CameraInputProtocol
-    associatedtype OutputType: CameraOutputProtocol
-    associatedtype ProcessorType: CameraProccessorProtocol
-    
-    var input: InputType {get}
-    var output: OutputType {get}
-    var processor: ProcessorType {get}
-    
-    func setup()
-    
-    func start(_ record: Bool)
-    
-}
 
-protocol CameraOutputProtocol {
-    
-    var previewView: UIView {get}
-    func updateFrame()
-    
-}
-
-class CameraOutput: CameraOutputProtocol {
+class CameraOutputImp: CameraOutput {
     
     private var session:AVCaptureSession
     var previewView: UIView
@@ -113,29 +82,26 @@ class CameraOutput: CameraOutputProtocol {
     
 }
 
-protocol CameraProccessorProtocol {
-    func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer
-}
 
 
 
 
-class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate {
+class CameraPipelineImp: NSObject, AVCaptureFileOutputRecordingDelegate {
     
-    typealias InputType = CameraInput
+    typealias InputType = CameraInputImp
     typealias ProcessorType = EffectCameraProcessor
-    typealias OutputType = CameraOutput
+    typealias OutputType = CameraOutputImp
  
     private let captureSession: AVCaptureSession
-    let output: CameraOutput
+    let output: CameraOutputImp
     let input: InputType
     let fileOutput = AVCaptureMovieFileOutput()
     
     override init() {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraOutput(session: session)
-        self.input = CameraInput()
+        self.output = CameraOutputImp(session: session)
+        self.input = CameraInputImp()
     }
 
     func setup() {

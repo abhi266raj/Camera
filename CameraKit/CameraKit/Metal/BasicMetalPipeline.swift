@@ -13,13 +13,13 @@ import Photos
 import CoreMedia
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraPipelineProtocol, RenderingDelegate {
+class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
     func sampleBufferRendered(_ buffer: CMSampleBuffer) {
         videoRecorder?.appendSampleBuffer(buffer)
     }
     
     
-    typealias InputType = CameraInput
+    typealias InputType = CameraInputImp
     typealias ProcessorType = EffectCameraProcessor
     typealias OutputType = MetalOutput
     
@@ -39,7 +39,7 @@ class BasicMetalPipeline: NSObject, CameraPipelineProtocol, RenderingDelegate {
         self.captureSession = session
         self.output = MetalOutput(session: session)
         
-        self.input = CameraInput()
+        self.input = CameraInputImp()
         super.init() 
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
