@@ -134,10 +134,7 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
         if let videoPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             self.output.metalView.sampleBuffer = sampleBuffer
         }
-        
-        //videoRecorder?.appendSampleBuffer(buffer)
-       
-        
+      
     }
     
      func save(outputFileURL: URL, error: Error?) {

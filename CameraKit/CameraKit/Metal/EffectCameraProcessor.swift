@@ -15,8 +15,17 @@ import CoreMedia
 
 class EffectCameraProcessor : CameraProccessorProtocol {
     
-    var filterRender: FilterRenderer = CIFilterRenderer()
+    var filterRender1: FilterRenderer = CIFilterRenderer()
+    var filterRender2: FilterRenderer = MetalFilterRenderer()
+    
     func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
+        
+        var resultBuffer = process(sampleBuffer: sampleBuffer, filterRender: filterRender1)
+        resultBuffer = process(sampleBuffer: resultBuffer, filterRender: filterRender2)
+        return resultBuffer
+        
+    }
+    func process(sampleBuffer: CMSampleBuffer, filterRender: FilterRenderer) -> CMSampleBuffer {
         
         if let videoPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer),
            let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) {

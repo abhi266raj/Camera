@@ -20,6 +20,7 @@
 		6BACD4F62AD5B13A003C86D2 /* PassThrough.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6BACD4F22AD5B13A003C86D2 /* PassThrough.metal */; };
 		6BD7F5C52ADABF7D004BBC84 /* EffectCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */; };
 		6BD7F5C72ADAC920004BBC84 /* EmptyCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */; };
+		6BD7F5CA2ADDA0A5004BBC84 /* MetalFilterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */; };
 		6BE804DA2AB738E800DAF8B4 /* CameraKitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804D92AB738E800DAF8B4 /* CameraKitApp.swift */; };
 		6BE804DC2AB738E800DAF8B4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804DB2AB738E800DAF8B4 /* ContentView.swift */; };
 		6BE804DE2AB738EB00DAF8B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BE804DD2AB738EB00DAF8B4 /* Assets.xcassets */; };
@@ -63,6 +64,7 @@
 		6BACD4F22AD5B13A003C86D2 /* PassThrough.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PassThrough.metal; sourceTree = "<group>"; };
 		6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectCameraProcessor.swift; sourceTree = "<group>"; };
 		6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCameraProcessor.swift; sourceTree = "<group>"; };
+		6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFilterRenderer.swift; sourceTree = "<group>"; };
 		6BE804D62AB738E800DAF8B4 /* CameraKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BE804D92AB738E800DAF8B4 /* CameraKitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraKitApp.swift; sourceTree = "<group>"; };
 		6BE804DB2AB738E800DAF8B4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				6BACD4E32AD4627A003C86D2 /* BasicMetalPipeline.swift */,
 				6BACD4E92AD5A8E8003C86D2 /* PreviewMetalView.swift */,
 				6BACD4E72AD5A820003C86D2 /* FilterRenderer.swift */,
+				6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */,
 				6BACD4EC2AD5AD5C003C86D2 /* MetalOutput.swift */,
 				6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */,
 				6BACD4EE2AD5B13A003C86D2 /* Shaders */,
@@ -330,6 +333,7 @@
 				6BE8051D2AB7575E00DAF8B4 /* CameraInputManager.swift in Sources */,
 				6BE8051B2AB754C800DAF8B4 /* PermissionHandler.swift in Sources */,
 				6BACD4F32AD5B13A003C86D2 /* RosyEffect.metal in Sources */,
+				6BD7F5CA2ADDA0A5004BBC84 /* MetalFilterRenderer.swift in Sources */,
 				6B79FC9F2AD3192D00215CEA /* BasicVideoPipeline.swift in Sources */,
 				6BACD4ED2AD5AD5C003C86D2 /* MetalOutput.swift in Sources */,
 				6BE805042AB7394200DAF8B4 /* CameraFacade.swift in Sources */,

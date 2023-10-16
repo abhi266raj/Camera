@@ -127,7 +127,7 @@ class CIFilterRenderer: FilterRenderer {
     
     private var ciContext: CIContext?
     
-    private var rosyFilter: CIFilter?
+    private var cifilter: CIFilter?
     
     private var outputColorSpace: CGColorSpace?
     
@@ -150,14 +150,14 @@ class CIFilterRenderer: FilterRenderer {
         }
         inputFormatDescription = formatDescription
         ciContext = CIContext()
-        rosyFilter = CIFilter(name: "CIColorMatrix")
-        rosyFilter!.setValue(CIVector(x: 0, y: 0, z: 0, w: 0), forKey: "inputGVector")
+        cifilter = CIFilter(name: "CIColorInvert")
+        //rosyFilter!.setValue(CIVector(x: 0, y: 0, z: 0, w: 0), forKey: "inputGVector")
         isPrepared = true
     }
     
     func reset() {
         ciContext = nil
-        rosyFilter = nil
+        cifilter = nil
         outputColorSpace = nil
         outputPixelBufferPool = nil
         outputFormatDescription = nil
@@ -166,7 +166,7 @@ class CIFilterRenderer: FilterRenderer {
     }
     
     func render(pixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
-        guard let rosyFilter = rosyFilter,
+        guard let rosyFilter = cifilter,
             let ciContext = ciContext,
             isPrepared else {
                 assertionFailure("Invalid state: Not prepared")
