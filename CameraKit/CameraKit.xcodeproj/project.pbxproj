@@ -148,7 +148,7 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		6BD7F5CC2ADDA302004BBC84 /* Abstraction */ = {
+		6BD7F5CC2ADDA302004BBC84 /* Protocol */ = {
 			isa = PBXGroup;
 			children = (
 				6BD7F5CD2ADDA349004BBC84 /* CameraPipeline.swift */,
@@ -156,7 +156,7 @@
 				6BD7F5D12ADDA525004BBC84 /* CameraOutput.swift */,
 				6BD7F5D32ADDA531004BBC84 /* CameraProcessor.swift */,
 			);
-			path = Abstraction;
+			path = Protocol;
 			sourceTree = "<group>";
 		};
 		6BE804CD2AB738E800DAF8B4 = {
@@ -187,7 +187,7 @@
 				6BE805032AB7394200DAF8B4 /* CameraFacade.swift */,
 				6BE8051A2AB754C800DAF8B4 /* PermissionHandler.swift */,
 				6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */,
-				6BD7F5CC2ADDA302004BBC84 /* Abstraction */,
+				6BD7F5CC2ADDA302004BBC84 /* Protocol */,
 				6B79FC9E2AD3192D00215CEA /* BasicVideoPipeline.swift */,
 				6B79FCA02AD3205600215CEA /* BasicPhotoPipeline.swift */,
 				6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */,
