@@ -320,8 +320,10 @@ class PreviewMetalView: MTKView {
         }
     }
     
+    
     /// - Tag: DrawMetalTexture
     override func draw(_ rect: CGRect) {
+        
         //var pixelBuffer: CVPixelBuffer?
         var mirroring = false
         var rotation: Rotation = .rotate90Degrees
@@ -358,8 +360,8 @@ class PreviewMetalView: MTKView {
                                                   previewPixelBuffer,
                                                   nil,
                                                   .bgra8Unorm,
-                                                  Int(self.bounds.size.width),
-                                                  Int(self.bounds.size.height),
+                                                                width,
+                                                                height,
                                                   0,
                                                   &cvTextureOut)
         if result != kCVReturnSuccess {
@@ -420,18 +422,19 @@ class PreviewMetalView: MTKView {
         commandBuffer.addCompletedHandler { [weak self] commandBuffer in
             // Ensure the drawable is available
 
-            
-            guard let currentDrawable = self?.currentDrawable else {
-                return
-            }
-            if let newPixelBuffer = convertMetalTextureToPixelBuffer(currentDrawable.texture, samplePixelBuffer: previewPixelBuffer),
-               let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer){
-                var newSampleBuffer: CMSampleBuffer? = nil
-                var timingInfo = CMSampleTimingInfo()
-                CMSampleBufferGetSampleTimingInfo(sampleBuffer, at: 0, timingInfoOut: &timingInfo)
-                _ = CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: newPixelBuffer, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: formatDescription, sampleTiming: &timingInfo, sampleBufferOut: &newSampleBuffer)
-                if let newSampleBuffer {
-                    self?.renderingDelegate?.sampleBufferRendered(newSampleBuffer)
+            DispatchQueue.main.async {
+//                guard let currentDrawable = self?.currentDrawable else {
+//                    return
+//                }
+                if let newPixelBuffer = convertMetalTextureToPixelBuffer(drawable.texture, samplePixelBuffer: previewPixelBuffer),
+                   let formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer){
+                    var newSampleBuffer: CMSampleBuffer? = nil
+                    var timingInfo = CMSampleTimingInfo()
+                    CMSampleBufferGetSampleTimingInfo(sampleBuffer, at: 0, timingInfoOut: &timingInfo)
+                    _ = CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: newPixelBuffer, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: formatDescription, sampleTiming: &timingInfo, sampleBufferOut: &newSampleBuffer)
+                    if let newSampleBuffer {
+                        self?.renderingDelegate?.sampleBufferRendered(newSampleBuffer)
+                    }
                 }
             }
             
@@ -441,6 +444,7 @@ class PreviewMetalView: MTKView {
 
         commandBuffer.present(drawable)
         commandBuffer.commit()
+       
         
     }
     
@@ -460,9 +464,7 @@ func convertMetalTextureToPixelBuffer(_ metalTexture: MTLTexture, samplePixelBuf
     // Get the width and height from the sample pixel buffer
     let width = metalTexture.width
     let height = metalTexture.height
-    // Get the pixel format from the sample pixel buffer
-    let pixelFormat = CVPixelBufferGetPixelFormatType(samplePixelBuffer)
-  
+    
     // Lock the base address of the pixel buffer for writing
     CVPixelBufferLockBaseAddress(samplePixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
 
