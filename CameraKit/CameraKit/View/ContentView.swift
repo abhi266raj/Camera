@@ -26,10 +26,12 @@ struct ContentView: View {
                     }.frame(height: 60)
                     
                     Button("Start") {
-                        viewModel.cameraInputManger.start(true)
+                       
+                        try? viewModel.cameraInputManger.output.performAction(action: .startRecord)
                     }.frame(height: 60)
                     Button("Stop") {
-                        viewModel.cameraInputManger.start(false)
+                        
+                       try?  viewModel.cameraInputManger.output.performAction(action: .stopRecord)
                     }.frame(height: 60)
                 }
                 

@@ -14,8 +14,11 @@ import CoreMedia
 
 /// Basic Camera Pipeline Use UIView and record on camera
 class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
+    
+    
     func sampleBufferRendered(_ buffer: CMSampleBuffer) {
-        videoRecorder?.appendSampleBuffer(buffer)
+        output.videoOutput.videoRecorder?.appendSampleBuffer(buffer)
+        
     }
         
     private let captureSession: AVCaptureSession
@@ -25,7 +28,6 @@ class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
-    var videoRecorder: VideoRecorder?
     var processor = EffectCameraProcessor()
     
     
@@ -98,30 +100,7 @@ class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
 extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
 
-    func start(_ record: Bool) {
-        if record {
-            // Start recording
-            if videoRecorder == nil {
-                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-                let videoOutputPath = (documentsPath as NSString).appendingPathComponent("output.mov")
-                let videoOutputURL = URL(fileURLWithPath: videoOutputPath)
-                
-                let recorder = VideoRecorder(outputURL: videoOutputURL)
-                recorder.startRecording()
-                videoRecorder = recorder
-                
-            }
-        } else {
-            // Stop recording
-            let recorder = videoRecorder
-            videoRecorder = nil
-            recorder?.stopRecording { url in
-                self.save(outputFileURL: url, error: nil)
-                // Handle recording completion here
-                //self.videoRecorder = nil
-            }
-        }
-    }
+    
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
@@ -130,43 +109,6 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
             self.output.metalView.sampleBuffer = sampleBuffer
         }
       
-    }
-    
-     func save(outputFileURL: URL, error: Error?) {
-        if let error = error {
-            // Handle the error, e.g., display an error message.
-            print("Error recording video: \(error.localizedDescription)")
-            return
-        }
-        
-        // Request permission to access the photo library.
-        PHPhotoLibrary.requestAuthorization { status in
-            if status == .authorized {
-                // If permission is granted, save the video to the gallery.
-                PHPhotoLibrary.shared().performChanges {
-                    let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputFileURL)
-                    request?.creationDate = Date()
-                } completionHandler: { success, error in
-                    if success {
-                        // Video saved successfully.
-                        print("Video saved to the gallery.")
-                    } else if let error = error {
-                        // Handle the error, e.g., display an error message.
-                        print("Error saving video to the gallery: \(error.localizedDescription)")
-                    }
-                    
-                    // Optionally, you can delete the temporary file.
-                    do {
-                        try FileManager.default.removeItem(at: outputFileURL)
-                    } catch {
-                        print("Error deleting temporary file: \(error.localizedDescription)")
-                    }
-                }
-            } else {
-                // Handle the case where permission is denied.
-                print("Permission to access the photo library denied.")
-            }
-        }
     }
     
 }

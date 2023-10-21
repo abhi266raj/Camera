@@ -58,6 +58,16 @@ class CameraInputImp: CameraInput {
 
 
 class CameraOutputImp: CameraOutput {
+    func performAction(action: CameraOutputAction) throws -> Bool {
+        guard self.supportedOutput.contains(action) else {
+            throw CameraOutputAction.ActionError.invalidInput
+        }
+        throw CameraOutputAction.ActionError.unsupported
+       
+    }
+    
+    var supportedOutput: CameraOutputAction = [.normalView]
+    
     
     private var session:AVCaptureSession
     var previewView: UIView

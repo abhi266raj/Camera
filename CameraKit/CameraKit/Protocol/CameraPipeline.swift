@@ -18,6 +18,4 @@ public protocol CameraPipeline {
     
     func setup()
     
-    func start(_ record: Bool)
-    
 }
