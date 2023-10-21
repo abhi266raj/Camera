@@ -27,7 +27,7 @@ class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
-    var processor = EffectCameraProcessor()
+    var processor = EmptyCameraProcessor()
     
     
     override init() {

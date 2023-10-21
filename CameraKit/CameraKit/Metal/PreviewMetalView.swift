@@ -53,6 +53,10 @@ class PreviewMetalView: MTKView {
         didSet {
             syncQueue.sync {
                 internalSampleBuffer = sampleBuffer
+                
+            }
+            DispatchQueue.main.async {
+                self.draw()
             }
         }
         
@@ -266,6 +270,8 @@ class PreviewMetalView: MTKView {
         colorPixelFormat = .bgra8Unorm
         framebufferOnly = false
         clearColor = MTLClearColorMake(1.0, 0.0, 0.0, 1.0);
+        enableSetNeedsDisplay = false
+        isPaused = true
         
     }
     
@@ -435,7 +441,7 @@ class PreviewMetalView: MTKView {
 
         commandBuffer.present(drawable)
         commandBuffer.commit()
-        commandBuffer.waitUntilCompleted()
+        
     }
     
     
