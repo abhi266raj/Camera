@@ -8,7 +8,12 @@
 import Foundation
 import Photos
 
-class VideoSaver {
+
+protocol VideoSaver {
+    func save(outputFileURL: URL, error: Error?)
+}
+
+class VideoSaverImp: VideoSaver {
     
     func save(outputFileURL: URL, error: Error?) {
        if let error = error {

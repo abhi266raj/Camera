@@ -15,7 +15,7 @@ public protocol CameraOutput {
     
     var supportedOutput: CameraOutputAction {get}
     
-    func performAction( action: CameraOutputAction) throws -> Bool
+    func performAction( action: CameraOutputAction) async throws -> Bool
     
 }
 

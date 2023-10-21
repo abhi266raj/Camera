@@ -17,8 +17,7 @@ class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
     
     
     func sampleBufferRendered(_ buffer: CMSampleBuffer) {
-        output.videoOutput.videoRecorder?.appendSampleBuffer(buffer)
-        
+        output.appendSampleBuffer(buffer)
     }
         
     private let captureSession: AVCaptureSession
@@ -89,24 +88,20 @@ class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
         
         return true
     }
-    
-    
-    
-    
+
 }
 
 
 
 extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
-
-    
-
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
-        if let videoPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
+        if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
             self.output.metalView.sampleBuffer = sampleBuffer
+        }else{
+            self.output.appendSampleBuffer(sampleBuffer)
         }
       
     }
