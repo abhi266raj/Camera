@@ -56,7 +56,9 @@ class PreviewMetalView: MTKView {
                 
             }
             DispatchQueue.main.async {
-                self.draw()
+                if counter1 == 0 {
+                    self.draw()
+                }
             }
         }
         
@@ -273,6 +275,7 @@ class PreviewMetalView: MTKView {
         enableSetNeedsDisplay = false
         isPaused = true
         
+        
     }
     
     
@@ -435,6 +438,8 @@ class PreviewMetalView: MTKView {
                     if let newSampleBuffer {
                         self?.renderingDelegate?.sampleBufferRendered(newSampleBuffer)
                     }
+                    counter1 -= 1
+                    //print(counter1)
                 }
             }
             
@@ -444,12 +449,15 @@ class PreviewMetalView: MTKView {
 
         commandBuffer.present(drawable)
         commandBuffer.commit()
+        counter1 += 1
        
         
     }
     
     
 }
+
+var counter1  = 0
 
 
 protocol RenderingDelegate  {
@@ -462,8 +470,9 @@ protocol RenderingDelegate  {
 
 func convertMetalTextureToPixelBuffer(_ metalTexture: MTLTexture, samplePixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
     // Get the width and height from the sample pixel buffer
-    let width = metalTexture.width
-    let height = metalTexture.height
+    let width = 1
+    let height = 1
+    //samplePixelBuffer
     
     // Lock the base address of the pixel buffer for writing
     CVPixelBufferLockBaseAddress(samplePixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
@@ -472,7 +481,7 @@ func convertMetalTextureToPixelBuffer(_ metalTexture: MTLTexture, samplePixelBuf
     if let baseAddress = CVPixelBufferGetBaseAddress(samplePixelBuffer) {
         // Copy the contents of the metalTexture into the pixel buffer
         let region = MTLRegionMake2D(0, 0, width, height)
-        metalTexture.getBytes(baseAddress, bytesPerRow: metalTexture.width * 4, from: region, mipmapLevel: 0)
+        metalTexture.getBytes(baseAddress, bytesPerRow: metalTexture.width*4, from: region, mipmapLevel: 0)
         
         // Unlock the pixel buffer
         CVPixelBufferUnlockBaseAddress(samplePixelBuffer, CVPixelBufferLockFlags(rawValue: 0))
