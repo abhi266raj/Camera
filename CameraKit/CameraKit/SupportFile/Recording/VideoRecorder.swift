@@ -20,7 +20,7 @@ class VideoRecorder {
     private var audioWriterInput: AVAssetWriterInput?
     private var outputURL: URL
 
-    init(outputURL: URL) {
+    init(outputURL: URL, rotationAngle: CGFloat = CGFloat.pi/2) {
         self.outputURL = outputURL
         do {
             videoWriter = try AVAssetWriter(outputURL: outputURL, fileType: .mov)
@@ -35,6 +35,7 @@ class VideoRecorder {
 
             videoWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: videoSettings)
             videoWriterInput?.expectsMediaDataInRealTime = true
+            videoWriterInput?.transform = CGAffineTransform(rotationAngle: rotationAngle)
             if videoWriter!.canAdd(videoWriterInput!) {
                 videoWriter!.add(videoWriterInput!)
             } else {
