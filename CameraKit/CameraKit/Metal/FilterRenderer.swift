@@ -150,7 +150,7 @@ class CIFilterRenderer: FilterRenderer {
         }
         inputFormatDescription = formatDescription
         ciContext = CIContext()
-        cifilter = CIFilter(name: "CIColorInvert")
+        cifilter = CIFilter(name: "CIColorMonochrome")
         //rosyFilter!.setValue(CIVector(x: 0, y: 0, z: 0, w: 0), forKey: "inputGVector")
         isPrepared = true
     }

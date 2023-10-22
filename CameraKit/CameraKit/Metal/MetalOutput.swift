@@ -25,18 +25,22 @@ class MetalOutput: CameraOutput {
     init(session: AVCaptureSession, videoOutput: VideoOutput = VideoOutputImp()) {
         self.session = session
         self.videoOutput = videoOutput
-        metalView = PreviewMetalView(frame: CGRectMake(0, 0, 1080/4, 1920/4))
-        previewView = UIView(frame: CGRectMake(0, 0, 1080/4, 1920/4))
+        metalView = PreviewMetalView(frame: CGRectMake(0, 0, 100, 100))
+        previewView = UIView(frame: CGRectMake(0, 0, 100, 100))
+        metalView.translatesAutoresizingMaskIntoConstraints = false
         previewView.addSubview(metalView)
-        //previewView.backgroundColor = .green
-        metalView.backgroundColor = .yellow
+        NSLayoutConstraint.activate([
+            metalView.leadingAnchor.constraint(equalTo: previewView.leadingAnchor),
+            metalView.trailingAnchor.constraint(equalTo: previewView.trailingAnchor),
+            metalView.bottomAnchor.constraint(equalTo: previewView.bottomAnchor),
+            metalView.topAnchor.constraint(equalTo: previewView.topAnchor),
+        ])
+        
             
     }
     
     func updateFrame () {
-        if previewView.bounds != CGRectZero {
-            metalView.frame = previewView.bounds
-        }
+
    }
     
     func performAction(action: CameraOutputAction) async throws -> Bool {

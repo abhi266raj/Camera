@@ -21,7 +21,7 @@ class EffectCameraProcessor : CameraProccessor {
     func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
         
         var resultBuffer = process(sampleBuffer: sampleBuffer, filterRender: filterRender1)
-        resultBuffer = process(sampleBuffer: resultBuffer, filterRender: filterRender2)
+        //resultBuffer = process(sampleBuffer: resultBuffer, filterRender: filterRender2)
         return resultBuffer
         
     }

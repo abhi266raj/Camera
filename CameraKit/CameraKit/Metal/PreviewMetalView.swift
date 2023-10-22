@@ -271,7 +271,7 @@ class PreviewMetalView: MTKView {
         
         colorPixelFormat = .bgra8Unorm
         framebufferOnly = false
-        clearColor = MTLClearColorMake(1.0, 0.0, 0.0, 1.0);
+        clearColor = MTLClearColorMake(0.0, 0.0, 1.0, 1.0);
         enableSetNeedsDisplay = false
         isPaused = true
         
@@ -348,8 +348,7 @@ class PreviewMetalView: MTKView {
                 return
         }
         drawable.layer.framebufferOnly = false
-       // drawable.layer.pixelFormat = .bgra8Unorm
-        
+       
         // Create a Metal texture from the image buffer.
         let width = CVPixelBufferGetWidth(previewPixelBuffer)
         let height = CVPixelBufferGetHeight(previewPixelBuffer)
@@ -480,7 +479,7 @@ func convertMetalTextureToPixelBuffer(_ metalTexture: MTLTexture, samplePixelBuf
     // Get the base address of the pixel buffer
     if let baseAddress = CVPixelBufferGetBaseAddress(samplePixelBuffer) {
         // Copy the contents of the metalTexture into the pixel buffer
-        let region = MTLRegionMake2D(0, 0, width, height)
+        let region =  MTLRegionMake2D(0, 0, width, height)
         metalTexture.getBytes(baseAddress, bytesPerRow: metalTexture.width*4, from: region, mipmapLevel: 0)
         
         // Unlock the pixel buffer
