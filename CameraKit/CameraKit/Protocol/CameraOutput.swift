@@ -8,16 +8,28 @@
 import Foundation
 import UIKit
 
+
 public protocol CameraOutput {
     
+   
     var previewView: UIView {get}
     func updateFrame()
     
     var supportedOutput: CameraOutputAction {get}
     
+    var outputState: CameraOutputState {get}
+    
     func performAction( action: CameraOutputAction) async throws -> Bool
     
 }
+
+public enum CameraOutputState {
+    case unknown
+    case rendering
+    case switching
+    case recording
+}
+
 
 
 public struct CameraOutputAction: OptionSet {

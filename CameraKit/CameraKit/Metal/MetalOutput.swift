@@ -11,16 +11,18 @@ import AssetsLibrary
 import UIKit
 import Photos
 
-class MetalOutput: CameraOutput {
+@Observable class MetalOutput: CameraOutput {
+    private (set) var outputState: CameraOutputState = .rendering
+    
     
     let videoOutput: VideoOutput
     
-    var supportedOutput: CameraOutputAction = [.filterView, .startRecord, .stopRecord]
+    let supportedOutput: CameraOutputAction = [.filterView, .startRecord, .stopRecord]
     
     
     private var session:AVCaptureSession
-    var previewView: UIView
-    var metalView: PreviewMetalView
+    let previewView: UIView
+    let metalView: PreviewMetalView
     
     init(session: AVCaptureSession, videoOutput: VideoOutput = VideoOutputImp()) {
         self.session = session
@@ -35,8 +37,6 @@ class MetalOutput: CameraOutput {
             metalView.bottomAnchor.constraint(equalTo: previewView.bottomAnchor),
             metalView.topAnchor.constraint(equalTo: previewView.topAnchor),
         ])
-        
-            
     }
     
     func updateFrame () {
@@ -49,10 +49,14 @@ class MetalOutput: CameraOutput {
         }
         
         if action == .startRecord {
+            self.outputState = .switching
            await videoOutput.startRecord()
+            self.outputState = .recording
             return true
         }else if action == .stopRecord {
+            self.outputState = .switching
             await videoOutput.stopRecord()
+            self.outputState = .rendering
             return true
         }
         throw CameraOutputAction.ActionError.unsupported

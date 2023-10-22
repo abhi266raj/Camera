@@ -24,17 +24,33 @@ struct ContentView: View {
                     Button("Adjust") {
                         viewModel.cameraInputManger.output.updateFrame()
                     }.frame(height: 60)
-                    
-                    Button("Start") {
-                        Task {
-                            try? await viewModel.cameraInputManger.output.performAction(action: .startRecord)
-                        }
-                    }.frame(height: 60)
-                    Button("Stop") {
-                        Task {
-                            try? await viewModel.cameraInputManger.output.performAction(action: .stopRecord)
-                        }
-                    }.frame(height: 60)
+                    if viewModel.cameraInputManger.output.outputState == .rendering {
+                        Button("Start") {
+                            Task {
+                                try? await viewModel.cameraInputManger.output.performAction(action: .startRecord)
+                            }
+                        }.frame(height: 60)
+                    } else if viewModel.cameraInputManger.output.outputState == .recording {
+                        Button("Stop") {
+                            Task {
+                                try? await viewModel.cameraInputManger.output.performAction(action: .stopRecord)
+                            }
+                        }.frame(height: 60)
+                        
+                    } else if viewModel.cameraInputManger.output.outputState == .switching {
+                        Button("Loading") {}.frame(height: 60)
+                    }
+
+//                    Button("Start") {
+//                        Task {
+//                            try? await viewModel.cameraInputManger.output.performAction(action: .startRecord)
+//                        }
+//                    }.frame(height: 60)
+//                    Button("Stop") {
+//                        Task {
+//                            try? await viewModel.cameraInputManger.output.performAction(action: .stopRecord)
+//                        }
+//                    }.frame(height: 60)
                 }
                 
             case .paused:

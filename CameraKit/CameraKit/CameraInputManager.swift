@@ -18,6 +18,7 @@ actor CameraInputSession {
 
 @CameraInputSession
 class CameraInputImp: CameraInput {
+    
     var session: AVCaptureSession?
     
     nonisolated init() {
@@ -58,6 +59,8 @@ class CameraInputImp: CameraInput {
 
 
 class CameraOutputImp: CameraOutput {
+    var outputState: CameraOutputState = .unknown
+    
     func performAction(action: CameraOutputAction) throws -> Bool {
         guard self.supportedOutput.contains(action) else {
             throw CameraOutputAction.ActionError.invalidInput
