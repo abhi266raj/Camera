@@ -23,7 +23,7 @@ class BasicVideoPipeline:  CameraPipeline {
     let output: CameraOutputImp
     let input: InputType
     let fileOutput = AVCaptureMovieFileOutput()
-    let processor = EmptyCameraProcessor()
+    var processor = EmptyCameraProcessor()
     
     init() {
         let session = AVCaptureSession()

@@ -10,5 +10,12 @@ import CoreMedia
 
 public protocol CameraProccessor {
     func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer
+    func updateSelection(filter: (any FilterModel)?)
+}
+
+extension CameraProccessor {
+    func updateSelection(filter: (any FilterModel)?) {
+        
+    }
 }
 

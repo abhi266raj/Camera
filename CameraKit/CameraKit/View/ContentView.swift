@@ -21,11 +21,11 @@ struct ContentView: View {
             case .active:
                 ZStack {
                     CameraPreview(cameraOutput: viewModel.cameraInputManger.output)
-//                    Button("Adjust") {
-//                        viewModel.cameraInputManger.output.updateFrame()
-//                    }.frame(height: 60)
                     VStack {
                         Spacer()
+                        FilterListView { selection in
+                            viewModel.cameraInputManger.processor.updateSelection(filter: selection)
+                        }
                         HStack {
                             Button("Toggle") {
                                 Task {

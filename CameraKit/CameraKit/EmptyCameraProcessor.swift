@@ -10,6 +10,7 @@ import CoreMedia
 
 
 class EmptyCameraProcessor: CameraProccessor {
+    
     func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
         return sampleBuffer
     }
