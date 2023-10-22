@@ -19,4 +19,6 @@ public protocol CameraInput {
     var audioDevice: AVCaptureDeviceInput? {get}
     var videoDevice: AVCaptureDeviceInput? {get}
     
+    func toggleCamera() async -> Bool 
+    
 }

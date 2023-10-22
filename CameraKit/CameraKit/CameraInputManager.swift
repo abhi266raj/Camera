@@ -44,8 +44,15 @@ class CameraInputImp: CameraInput {
         }
     }
     
-    nonisolated var videoDevice: AVCaptureDeviceInput? {
-        let device =  AVCaptureDevice.default(for: .video)
+    
+    var selectedPosition: AVCaptureDevice.Position = .front
+    
+    nonisolated var videoDevice:  AVCaptureDeviceInput? {
+        frontCamera
+    }
+    
+    nonisolated var frontCamera: AVCaptureDeviceInput? {
+        let device =  AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         guard let device else {return nil}
         do {
             let input = try AVCaptureDeviceInput(device: device)
@@ -53,6 +60,47 @@ class CameraInputImp: CameraInput {
         }catch {
             return nil
         }
+    }
+    
+    nonisolated var backCamera: AVCaptureDeviceInput? {
+        let device =  AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+        guard let device else {return nil}
+        do {
+            let input = try AVCaptureDeviceInput(device: device)
+            return input
+        }catch {
+            return nil
+        }
+    }
+    
+    
+    
+    func toggleCamera()  async -> Bool {
+       
+        var camera = frontCamera
+        if selectedPosition == .front {
+            camera = backCamera
+            self.selectedPosition = .back
+        }else {
+            self.selectedPosition = .front
+        }
+        
+       
+        guard let camera, let session else {
+            return false
+        }
+        session.beginConfiguration()
+        defer {
+            session.commitConfiguration()
+        }
+        if let videoInput = session.inputs.first(where: { ($0 as? AVCaptureDeviceInput)?.device.hasMediaType(.video) ?? false }) as? AVCaptureDeviceInput {
+            session.removeInput(videoInput)
+        }
+        if session.canAddInput(camera) {
+            session.addInput(camera)
+        }
+        
+        return true
     }
     
 }

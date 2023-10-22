@@ -19,38 +19,47 @@ struct ContentView: View {
             case .permissionDenied:
                 Text("Permission Denied")
             case .active:
-                VStack {
+                ZStack {
                     CameraPreview(cameraOutput: viewModel.cameraInputManger.output)
-                    Button("Adjust") {
-                        viewModel.cameraInputManger.output.updateFrame()
-                    }.frame(height: 60)
-                    if viewModel.cameraInputManger.output.outputState == .rendering {
-                        Button("Start") {
-                            Task {
-                                try? await viewModel.cameraInputManger.output.performAction(action: .startRecord)
+//                    Button("Adjust") {
+//                        viewModel.cameraInputManger.output.updateFrame()
+//                    }.frame(height: 60)
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Button("Toggle") {
+                                Task {
+                                     await viewModel.cameraInputManger.input.toggleCamera()
+                                }
+                                
+                            }.frame(height: 60)
+                                .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
+                                .foregroundColor(.white)
+                            if viewModel.cameraInputManger.output.outputState == .rendering {
+                                Button("Start Recording") {
+                                    Task {
+                                        try? await viewModel.cameraInputManger.output.performAction(action: .startRecord)
+                                    }
+                                }.frame(height: 60)
+                                    .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
+                                    .foregroundColor(.white)
+                                
+                            } else if viewModel.cameraInputManger.output.outputState == .recording {
+                                Button("Stop Recording") {
+                                    Task {
+                                        try? await viewModel.cameraInputManger.output.performAction(action: .stopRecord)
+                                    }
+                                }.frame(height: 60)
+                                    .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
+                                    .foregroundColor(.white)
+                                
+                            } else if viewModel.cameraInputManger.output.outputState == .switching {
+                                Button("Loading") {}.frame(height: 60)
+                                    .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
+                                    .foregroundColor(.white)
                             }
-                        }.frame(height: 60)
-                    } else if viewModel.cameraInputManger.output.outputState == .recording {
-                        Button("Stop") {
-                            Task {
-                                try? await viewModel.cameraInputManger.output.performAction(action: .stopRecord)
-                            }
-                        }.frame(height: 60)
-                        
-                    } else if viewModel.cameraInputManger.output.outputState == .switching {
-                        Button("Loading") {}.frame(height: 60)
+                        }
                     }
-
-//                    Button("Start") {
-//                        Task {
-//                            try? await viewModel.cameraInputManger.output.performAction(action: .startRecord)
-//                        }
-//                    }.frame(height: 60)
-//                    Button("Stop") {
-//                        Task {
-//                            try? await viewModel.cameraInputManger.output.performAction(action: .stopRecord)
-//                        }
-//                    }.frame(height: 60)
                 }
                 
             case .paused:
