@@ -82,35 +82,7 @@ class OutputAction
 class OutputState
 class PipelineOutput
 }
-```
-
-```mermaid
-classDiagram
-direction TD
-
-class NormalVideoPipeline {
- 
-} 
-
-NormalVideoPipeline o-- CameraSessionVideoOutput 
-NormalVideoPipeline o-- CameraInputImp
-NormalVideoPipeline o-- EmptyProcessor
-
-class NormalPhotoPipeline {
- 
-} 
-
-
-NormalPhotoPipeline o-- PhotoSessionOuput 
-NormalPhotoPipeline o-- CameraInputImp
-NormalPhotoPipeline o-- EmptyProcessor
-
-
-
-class MetalCameraPipeline
-
-MetalCameraPipeline o-- BufferVideoOuptut 
-MetalCameraPipeline o-- CameraInputImp
-MetalCameraPipeline o-- FilterProcessor
 
 ```
+
+
