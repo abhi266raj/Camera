@@ -7,7 +7,14 @@
 
 import Foundation
 
-public protocol CameraPipeline {
+
+public protocol CameraService {
+    func start()
+    func stop()
+    func toggleCamera()
+}
+
+public protocol CameraPipelineService {
     associatedtype PipelineInput: CameraInput
     associatedtype PipelineOutput: CameraOutput
     associatedtype PipelineProcessor: CameraProccessor

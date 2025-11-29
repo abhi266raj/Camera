@@ -7,13 +7,11 @@
 
 import Foundation
 import AVFoundation
-import AssetsLibrary
 import UIKit
 import Photos
 
 @Observable class MetalOutput: CameraOutput {
-    private (set) var outputState: CameraOutputState = .rendering
-    
+    private (set) var outputState:CameraOutputState = .rendering
     
     let videoOutput: VideoOutput
     

@@ -7,7 +7,6 @@
 
 import Foundation
 import AVFoundation
-import AssetsLibrary
 import UIKit
 import Photos
 import CoreMedia
@@ -126,3 +125,4 @@ class VideoRecorder {
        isSessionStarted = true
     }
 }
+

@@ -7,13 +7,12 @@
 
 import Foundation
 import AVFoundation
-import AssetsLibrary
 import UIKit
 import Photos
 
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicVideoPipeline:  CameraPipeline {
+class BasicVideoPipeline:  CameraPipelineService {
     
     typealias InputType = CameraInputImp
     typealias ProcessorType = EmptyCameraProcessor

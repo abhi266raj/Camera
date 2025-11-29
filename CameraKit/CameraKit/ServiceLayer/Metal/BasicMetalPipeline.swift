@@ -7,13 +7,12 @@
 
 import Foundation
 import AVFoundation
-import AssetsLibrary
 import UIKit
 import Photos
 import CoreMedia
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraPipeline, RenderingDelegate {
+class BasicMetalPipeline: NSObject, CameraPipelineService, RenderingDelegate {
     
     
     func sampleBufferRendered(_ buffer: CMSampleBuffer) {

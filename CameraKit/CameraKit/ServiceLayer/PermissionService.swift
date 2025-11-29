@@ -7,15 +7,20 @@
 
 import Foundation
 import AVFoundation
-import AssetsLibrary
 
-protocol PermissionHandler {
-    func requestForPermission() async -> Bool
+public enum PermissionStatus {
+    case authorized
+    case denied
 }
 
-struct CameraPermissionHandler: PermissionHandler {
+protocol PermissionService {
     @MainActor
-    func requestForPermission() async -> Bool {
+    func requestCameraAndMicrophoneIfNeeded() async -> Bool
+}
+
+struct CameraPermissionService: PermissionService {
+    @MainActor
+    func requestCameraAndMicrophoneIfNeeded() async -> Bool {
         let videoPermission = await withCheckedContinuation { continuation in
             AVCaptureDevice.requestAccess(for: .video) { (granted: Bool) in
                 continuation.resume(returning: granted)
@@ -33,3 +38,4 @@ struct CameraPermissionHandler: PermissionHandler {
         return true
     }
 }
+

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    var viewModel: CameraManager = CameraManager()
+    var viewModel: CameraViewModel = CameraViewModel()
     var body: some View {
         VStack {
             switch viewModel.state {
@@ -20,40 +20,40 @@ struct ContentView: View {
                 Text("Permission Denied")
             case .active:
                 ZStack {
-                    CameraPreview(cameraOutput: viewModel.cameraInputManger.output)
+                    CameraPreview(cameraOutput: viewModel.getOutputView())
                     VStack {
                         Spacer()
                         FilterListView { selection in
-                            viewModel.cameraInputManger.processor.updateSelection(filter: selection)
+                            viewModel.updateSelection(filter: selection)
                         }
                         HStack {
                             Button("Toggle") {
                                 Task {
-                                     await viewModel.cameraInputManger.input.toggleCamera()
+                                     await viewModel.toggleCamera()
                                 }
                                 
                             }.frame(height: 60)
                                 .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
                                 .foregroundColor(.white)
-                            if viewModel.cameraInputManger.output.outputState == .rendering {
+                            if viewModel.cameraOutputState == .rendering {
                                 Button("Start Recording") {
                                     Task {
-                                        try? await viewModel.cameraInputManger.output.performAction(action: .startRecord)
+                                        try? await viewModel.performAction(action: .startRecord)
                                     }
                                 }.frame(height: 60)
                                     .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
                                     .foregroundColor(.white)
                                 
-                            } else if viewModel.cameraInputManger.output.outputState == .recording {
+                            } else if viewModel.cameraOutputState == .recording {
                                 Button("Stop Recording") {
                                     Task {
-                                        try? await viewModel.cameraInputManger.output.performAction(action: .stopRecord)
+                                        try? await viewModel.performAction(action: .stopRecord)
                                     }
                                 }.frame(height: 60)
                                     .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
                                     .foregroundColor(.white)
                                 
-                            } else if viewModel.cameraInputManger.output.outputState == .switching {
+                            } else if viewModel.cameraOutputState == .switching {
                                 Button("Loading") {}.frame(height: 60)
                                     .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
                                     .foregroundColor(.white)
