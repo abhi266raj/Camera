@@ -168,7 +168,7 @@ class PreviewMetalView: MTKView {
         scaleY = 1.0
         
         // Vertex coordinate takes the gravity into account.
-        var vertexData: [Float] = [
+        let vertexData: [Float] = [
             -scaleX, -scaleY, 0, 1.0,
              scaleX, -scaleY, 0, 1.0,
              -scaleX, scaleY, 0, 1.0,

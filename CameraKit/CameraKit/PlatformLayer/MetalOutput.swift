@@ -10,7 +10,7 @@ import AVFoundation
 import UIKit
 import Photos
 
-@Observable class MetalOutput: CameraOutput {
+@Observable class MetalOutput: CameraOutputService {
     private (set) var outputState:CameraOutputState = .rendering
     
     let videoOutput: VideoOutput

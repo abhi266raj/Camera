@@ -12,6 +12,7 @@
 		6B577E682AE5558A009EF4B3 /* FilterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B577E672AE5558A009EF4B3 /* FilterModel.swift */; };
 		6B577E6A2AE55FBD009EF4B3 /* FilterModelImp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B577E692AE55FBD009EF4B3 /* FilterModelImp.swift */; };
 		6B577E6C2AE564A2009EF4B3 /* FilterListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B577E6B2AE564A2009EF4B3 /* FilterListView.swift */; };
+		6B5F73342EDC4976007453B2 /* CameraPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B5F73332EDC496F007453B2 /* CameraPipeline.swift */; };
 		6B79FC9F2AD3192D00215CEA /* BasicVideoPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B79FC9E2AD3192D00215CEA /* BasicVideoPipeline.swift */; };
 		6B79FCA12AD3205600215CEA /* BasicPhotoPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B79FCA02AD3205600215CEA /* BasicPhotoPipeline.swift */; };
 		6BACD4E42AD4627A003C86D2 /* BasicMetalPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BACD4E32AD4627A003C86D2 /* BasicMetalPipeline.swift */; };
@@ -26,9 +27,9 @@
 		6BD7F5C52ADABF7D004BBC84 /* EffectCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */; };
 		6BD7F5C72ADAC920004BBC84 /* EmptyCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */; };
 		6BD7F5CA2ADDA0A5004BBC84 /* MetalFilterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */; };
-		6BD7F5CE2ADDA349004BBC84 /* CameraPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5CD2ADDA349004BBC84 /* CameraPipeline.swift */; };
+		6BD7F5CE2ADDA349004BBC84 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5CD2ADDA349004BBC84 /* CameraService.swift */; };
 		6BD7F5D02ADDA516004BBC84 /* CameraInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5CF2ADDA516004BBC84 /* CameraInput.swift */; };
-		6BD7F5D22ADDA525004BBC84 /* CameraOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5D12ADDA525004BBC84 /* CameraOutput.swift */; };
+		6BD7F5D22ADDA525004BBC84 /* CameraOutputService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5D12ADDA525004BBC84 /* CameraOutputService.swift */; };
 		6BD7F5D42ADDA531004BBC84 /* CameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5D32ADDA531004BBC84 /* CameraProcessor.swift */; };
 		6BE804DA2AB738E800DAF8B4 /* CameraKitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804D92AB738E800DAF8B4 /* CameraKitApp.swift */; };
 		6BE804DC2AB738E800DAF8B4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804DB2AB738E800DAF8B4 /* ContentView.swift */; };
@@ -65,6 +66,7 @@
 		6B577E672AE5558A009EF4B3 /* FilterModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterModel.swift; sourceTree = "<group>"; };
 		6B577E692AE55FBD009EF4B3 /* FilterModelImp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterModelImp.swift; sourceTree = "<group>"; };
 		6B577E6B2AE564A2009EF4B3 /* FilterListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterListView.swift; sourceTree = "<group>"; };
+		6B5F73332EDC496F007453B2 /* CameraPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipeline.swift; sourceTree = "<group>"; };
 		6B79FC9E2AD3192D00215CEA /* BasicVideoPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicVideoPipeline.swift; sourceTree = "<group>"; };
 		6B79FCA02AD3205600215CEA /* BasicPhotoPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicPhotoPipeline.swift; sourceTree = "<group>"; };
 		6BACD4E32AD4627A003C86D2 /* BasicMetalPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicMetalPipeline.swift; sourceTree = "<group>"; };
@@ -79,9 +81,9 @@
 		6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectCameraProcessor.swift; sourceTree = "<group>"; };
 		6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCameraProcessor.swift; sourceTree = "<group>"; };
 		6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFilterRenderer.swift; sourceTree = "<group>"; };
-		6BD7F5CD2ADDA349004BBC84 /* CameraPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPipeline.swift; sourceTree = "<group>"; };
+		6BD7F5CD2ADDA349004BBC84 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 		6BD7F5CF2ADDA516004BBC84 /* CameraInput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInput.swift; sourceTree = "<group>"; };
-		6BD7F5D12ADDA525004BBC84 /* CameraOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOutput.swift; sourceTree = "<group>"; };
+		6BD7F5D12ADDA525004BBC84 /* CameraOutputService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraOutputService.swift; sourceTree = "<group>"; };
 		6BD7F5D32ADDA531004BBC84 /* CameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraProcessor.swift; sourceTree = "<group>"; };
 		6BE804D62AB738E800DAF8B4 /* CameraKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BE804D92AB738E800DAF8B4 /* CameraKitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraKitApp.swift; sourceTree = "<group>"; };
@@ -145,17 +147,12 @@
 		6B5F732E2EDB39BC007453B2 /* ServiceLayer */ = {
 			isa = PBXGroup;
 			children = (
-				6BD7F5CD2ADDA349004BBC84 /* CameraPipeline.swift */,
+				6BD7F5CD2ADDA349004BBC84 /* CameraService.swift */,
+				6B5F73332EDC496F007453B2 /* CameraPipeline.swift */,
 				6BE8051A2AB754C800DAF8B4 /* PermissionService.swift */,
-				6BD7F5D32ADDA531004BBC84 /* CameraProcessor.swift */,
-				6B577E672AE5558A009EF4B3 /* FilterModel.swift */,
-				6BD7F5CF2ADDA516004BBC84 /* CameraInput.swift */,
-				6BD7F5D12ADDA525004BBC84 /* CameraOutput.swift */,
-				6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */,
 				6B79FCA02AD3205600215CEA /* BasicPhotoPipeline.swift */,
 				6B79FC9E2AD3192D00215CEA /* BasicVideoPipeline.swift */,
-				6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */,
-				6BACD4EB2AD5AD40003C86D2 /* Metal */,
+				6BACD4E32AD4627A003C86D2 /* BasicMetalPipeline.swift */,
 			);
 			path = ServiceLayer;
 			sourceTree = "<group>";
@@ -168,21 +165,27 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		6B5F73322EDB3FF4007453B2 /* SystemLayer */ = {
+		6B5F73322EDB3FF4007453B2 /* PlatformLayer */ = {
 			isa = PBXGroup;
 			children = (
+				6BACD4EC2AD5AD5C003C86D2 /* MetalOutput.swift */,
+				6BD7F5D12ADDA525004BBC84 /* CameraOutputService.swift */,
+				6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */,
+				6B577E672AE5558A009EF4B3 /* FilterModel.swift */,
+				6BD7F5D32ADDA531004BBC84 /* CameraProcessor.swift */,
+				6BD7F5CF2ADDA516004BBC84 /* CameraInput.swift */,
+				6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */,
+				6BACD4EB2AD5AD40003C86D2 /* Metal */,
 			);
-			path = SystemLayer;
+			path = PlatformLayer;
 			sourceTree = "<group>";
 		};
 		6BACD4EB2AD5AD40003C86D2 /* Metal */ = {
 			isa = PBXGroup;
 			children = (
-				6BACD4E32AD4627A003C86D2 /* BasicMetalPipeline.swift */,
 				6BACD4E92AD5A8E8003C86D2 /* PreviewMetalView.swift */,
 				6BACD4E72AD5A820003C86D2 /* FilterRenderer.swift */,
 				6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */,
-				6BACD4EC2AD5AD5C003C86D2 /* MetalOutput.swift */,
 				6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */,
 				6B577E692AE55FBD009EF4B3 /* FilterModelImp.swift */,
 				6BACD4EE2AD5B13A003C86D2 /* Shaders */,
@@ -237,7 +240,7 @@
 				6BD7F5CB2ADDA2E1004BBC84 /* View */,
 				6B5F73302EDB3A69007453B2 /* ViewModel */,
 				6B5F732E2EDB39BC007453B2 /* ServiceLayer */,
-				6B5F73322EDB3FF4007453B2 /* SystemLayer */,
+				6B5F73322EDB3FF4007453B2 /* PlatformLayer */,
 				6BE805192AB752F500DAF8B4 /* Info.plist */,
 				6B4BC29D2AE3C17D00A70B3D /* SupportFile */,
 				6BE804DD2AB738EB00DAF8B4 /* Assets.xcassets */,
@@ -402,14 +405,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				6BACD4F52AD5B13A003C86D2 /* Mixer.metal in Sources */,
-				6BD7F5D22ADDA525004BBC84 /* CameraOutput.swift in Sources */,
+				6BD7F5D22ADDA525004BBC84 /* CameraOutputService.swift in Sources */,
 				6BACD4F42AD5B13A003C86D2 /* DepthToGrayscale.metal in Sources */,
 				6BE804DC2AB738E800DAF8B4 /* ContentView.swift in Sources */,
 				6BD7F5C72ADAC920004BBC84 /* EmptyCameraProcessor.swift in Sources */,
 				6BE8051D2AB7575E00DAF8B4 /* CameraInputManager.swift in Sources */,
 				6BE8051B2AB754C800DAF8B4 /* PermissionService.swift in Sources */,
-				6BD7F5CE2ADDA349004BBC84 /* CameraPipeline.swift in Sources */,
+				6BD7F5CE2ADDA349004BBC84 /* CameraService.swift in Sources */,
 				6B577E6A2AE55FBD009EF4B3 /* FilterModelImp.swift in Sources */,
+				6B5F73342EDC4976007453B2 /* CameraPipeline.swift in Sources */,
 				6BD7F5D42ADDA531004BBC84 /* CameraProcessor.swift in Sources */,
 				6BACD4F32AD5B13A003C86D2 /* RosyEffect.metal in Sources */,
 				6BD7F5CA2ADDA0A5004BBC84 /* MetalFilterRenderer.swift in Sources */,

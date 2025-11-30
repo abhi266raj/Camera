@@ -81,7 +81,7 @@ struct ContentView: View {
 
 
 struct CameraPreview: UIViewRepresentable {
-    let cameraOutput: any CameraOutput
+    let cameraOutput: any CameraOutputService
 
     func makeUIView(context: Context) -> UIView {
         let view =  cameraOutput.previewView

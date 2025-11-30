@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import AVFoundation
+// import AVFoundation
 import Observation
 
 
@@ -20,14 +20,14 @@ enum CameraState {
 
 @Observable class CameraViewModel {
     
-    init(permissionService: PermissionService = CameraPermissionService(), cameraInputManger: any CameraPipelineService = BasicPhotoPipeline()) {
+    init(permissionService: PermissionService = CameraPermissionService(), cameraInputManger: any CameraService = BasicPhotoPipeline()) {
         self.permissionService = permissionService
         self.cameraInputManger = cameraInputManger
     }
     
     private let permissionService: PermissionService
     var state: CameraState = .unknown
-    private let cameraInputManger: any CameraPipelineService
+    private let cameraInputManger: any CameraService
     
     @MainActor public func setup() async {
         if state == .unknown {
@@ -41,27 +41,27 @@ enum CameraState {
         }
     }
     
-    func getOutputView() -> CameraOutput {
-        return cameraInputManger.output
+    func getOutputView() -> CameraOutputService {
+        return cameraInputManger.getOutputView()
         
     }
     
     func updateSelection(filter: (any FilterModel)?)  {
-        cameraInputManger.processor.updateSelection(filter: filter)
+        cameraInputManger.updateSelection(filter: filter)
     }
     
     
     func toggleCamera() async  -> Bool {
-        return await cameraInputManger.input.toggleCamera()
+        return await cameraInputManger.toggleCamera()
     }
     
     
     var cameraOutputState: CameraOutputState  {
-        return cameraInputManger.output.outputState
+        return cameraInputManger.cameraOutputState
     }
     
     func performAction( action: CameraOutputAction) async throws -> Bool {
-        return try await cameraInputManger.output.performAction(action:action)
+        return try await cameraInputManger.performAction(action:action)
     }
     
 }
