@@ -15,7 +15,6 @@ protocol VideoOutput {
     var videoRecorder: VideoRecorder? {get}
 }
 
-
 class VideoOutputImp {
     var videoRecorder: VideoRecorder?
     let videoSaver: VideoSaver  = VideoSaverImp()

@@ -10,36 +10,17 @@ import AVFoundation
 import UIKit
 import Photos
 
-@Observable class MetalOutput: CameraOutputService {
+@Observable
+class SampleBufferCameraRecorderService: CameraContentRecordingService {
     private(set) var outputState:CameraOutputState = .rendering
     
     let videoOutput: VideoOutput
     
     let supportedOutput: CameraOutputAction = [.filterView, .startRecord, .stopRecord]
     
-    
-    private var session:AVCaptureSession
-    let previewView: UIView
-    let metalView: PreviewMetalView
-    
-    init(session: AVCaptureSession, videoOutput: VideoOutput = VideoOutputImp()) {
-        self.session = session
+    init(videoOutput: VideoOutput) {
         self.videoOutput = videoOutput
-        metalView = PreviewMetalView(frame: CGRectMake(0, 0, 100, 100))
-        previewView = UIView(frame: CGRectMake(0, 0, 100, 100))
-        metalView.translatesAutoresizingMaskIntoConstraints = false
-        previewView.addSubview(metalView)
-        NSLayoutConstraint.activate([
-            metalView.leadingAnchor.constraint(equalTo: previewView.leadingAnchor),
-            metalView.trailingAnchor.constraint(equalTo: previewView.trailingAnchor),
-            metalView.bottomAnchor.constraint(equalTo: previewView.bottomAnchor),
-            metalView.topAnchor.constraint(equalTo: previewView.topAnchor),
-        ])
     }
-    
-    func updateFrame () {
-
-   }
     
     func performAction(action: CameraOutputAction) async throws -> Bool {
         guard self.supportedOutput.contains(action) else {
@@ -58,13 +39,46 @@ import Photos
             return true
         }
         throw CameraOutputAction.ActionError.unsupported
-       
     }
     
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         videoOutput.videoRecorder?.appendSampleBuffer(sampleBuffer)
     }
+}
+
+final class MetalCameraPreviewView: UIView, CameraContentPreviewService {
+    var previewView: UIView {
+        return self
+    }
     
+    func updateFrame() {
+        setNeedsLayout()
+        setNeedsDisplay()
+    }
+    
+    let metalView: PreviewMetalView
+
+    init(metalView: PreviewMetalView) {
+        self.metalView = metalView
+        super.init(frame: .zero)
+        metalView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(metalView)
+        NSLayoutConstraint.activate([
+            metalView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            metalView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            metalView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            metalView.topAnchor.constraint(equalTo: topAnchor),
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        return nil
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        metalView.frame = bounds
+    }
 }
 
 

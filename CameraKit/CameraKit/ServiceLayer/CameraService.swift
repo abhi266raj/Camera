@@ -9,7 +9,7 @@ import Foundation
 
 
 public protocol CameraService {
-    func getOutputView() -> CameraOutputService
+    func getOutputView() -> CameraContentPreviewService
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
     var cameraOutputState: CameraOutputState {get}
@@ -48,9 +48,22 @@ protocol CameraPipelineService: CameraService {
 }
 
 
+protocol CameraPipelineServiceNew: CameraService {
+    associatedtype PipelineInput: CameraInput
+    associatedtype PipelinePreviewOutput: CameraContentPreviewService
+    associatedtype PipelineRecordingOutput: CameraContentRecordingService
+    associatedtype PipelineProcessor: CameraProccessor
+    
+    var input: PipelineInput {get}
+    var previewOutput: PipelinePreviewOutput {get}
+    var recordOutput: PipelineRecordingOutput {get }
+    var processor: PipelineProcessor {get}
+}
+
+
 extension CameraPipelineService {
-    func getOutputView() -> CameraOutputService {
-        return output
+    func getOutputView() -> CameraContentPreviewService {
+        return output.previewService
         
     }
     
@@ -65,11 +78,39 @@ extension CameraPipelineService {
     
     
     var cameraOutputState: CameraOutputState  {
-        return output.outputState
+        return output.recordingService.outputState
     }
     
     func performAction( action: CameraOutputAction) async throws -> Bool {
-        return try await output.performAction(action:action)
+        return try await output.recordingService.performAction(action:action)
+    }
+    
+}
+
+
+
+extension CameraPipelineServiceNew {
+    func getOutputView() -> CameraContentPreviewService {
+        return previewOutput
+        
+    }
+    
+    func updateSelection(filter: (any FilterModel)?)  {
+        processor.updateSelection(filter: filter)
+    }
+    
+    
+    func toggleCamera() async  -> Bool {
+        return await input.toggleCamera()
+    }
+    
+    
+    var cameraOutputState: CameraOutputState  {
+        return recordOutput.outputState
+    }
+    
+    func performAction( action: CameraOutputAction) async throws -> Bool {
+        return try await recordOutput.performAction(action:action)
     }
     
 }

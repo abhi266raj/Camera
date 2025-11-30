@@ -44,7 +44,7 @@ enum CameraState {
         }
     }
     
-    func getOutputView() -> CameraOutputService {
+    func getOutputView() -> CameraContentPreviewService {
         return cameraInputManger.getOutputView()
         
     }

@@ -12,15 +12,16 @@ import Photos
 import CoreMedia
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraPipelineService, RenderingDelegate {
-    
+class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate {
     
     func sampleBufferRendered(_ buffer: CMSampleBuffer) {
-        output.appendSampleBuffer(buffer)
+        recordOutput.appendSampleBuffer(buffer)
     }
         
     private let captureSession: AVCaptureSession
-    let output: MetalOutput
+    let previewOutput: MetalCameraPreviewView
+    let recordOutput: SampleBufferCameraRecorderService
+
     let input: CameraInputImp
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
@@ -33,15 +34,15 @@ class BasicMetalPipeline: NSObject, CameraPipelineService, RenderingDelegate {
     override init() {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = MetalOutput(session: session)
-        
+        let videoOutput = VideoOutputImp()
+        recordOutput = SampleBufferCameraRecorderService(videoOutput: videoOutput)
+        let metalView = PreviewMetalView(frame: .zero)
+        previewOutput = MetalCameraPreviewView(metalView: metalView)
         self.input = CameraInputImp()
         super.init() 
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
-        output.metalView.renderingDelegate = self
-        
-       
+        previewOutput.metalView.renderingDelegate = self
     }
     
     func setup() {
@@ -99,9 +100,11 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
         
         let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
-            self.output.metalView.sampleBuffer = sampleBuffer
+            // Image render it than use via delegate to record
+            self.previewOutput.metalView.sampleBuffer = sampleBuffer
         }else{
-            self.output.appendSampleBuffer(sampleBuffer)
+            // Audio delegate record it
+            self.recordOutput.appendSampleBuffer(sampleBuffer)
         }
       
     }

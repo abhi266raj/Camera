@@ -80,7 +80,7 @@ struct CameraView: View {
 
 
 struct CameraPreview: UIViewRepresentable {
-    let cameraOutput: any CameraOutputService
+    let cameraOutput: any CameraContentPreviewService
 
     func makeUIView(context: Context) -> UIView {
         let view =  cameraOutput.previewView

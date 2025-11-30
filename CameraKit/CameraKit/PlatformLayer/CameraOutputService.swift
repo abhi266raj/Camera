@@ -11,17 +11,26 @@ import UIKit
 import Photos
 
 
-public protocol CameraOutputService {
-    
+public protocol CameraContentPreviewService {
     var previewView: UIView {get}
     func updateFrame()
-    
+}
+
+
+public protocol CameraContentRecordingService {
     var supportedOutput: CameraOutputAction {get}
-    
     var outputState: CameraOutputState {get}
-    
     func performAction( action: CameraOutputAction) async throws -> Bool
     
+}
+
+public protocol CameraOutputService {
+    
+    associatedtype PreviewService: CameraContentPreviewService
+    associatedtype RecordingService: CameraContentRecordingService
+    
+    var previewService: PreviewService {get}
+    var recordingService: RecordingService {get}
 }
 
 public enum CameraOutputState {
@@ -32,7 +41,16 @@ public enum CameraOutputState {
 }
 
 
-final class CameraPreviewView: UIView {
+final class CameraPreviewView: UIView, CameraContentPreviewService {
+    var previewView: UIView {
+        return self
+    }
+    
+    func updateFrame() {
+        setNeedsLayout()
+        setNeedsDisplay()
+    }
+    
     private let previewLayer: AVCaptureVideoPreviewLayer
 
     init(session: AVCaptureSession) {
@@ -52,7 +70,7 @@ final class CameraPreviewView: UIView {
     }
 }
 
-class CameraOutputImp: CameraOutputService {
+class CameraNonRecordingCameraService: CameraContentRecordingService {
     var outputState: CameraOutputState = .unknown
     
     func performAction(action: CameraOutputAction) throws -> Bool {
@@ -64,19 +82,16 @@ class CameraOutputImp: CameraOutputService {
     }
     
     var supportedOutput: CameraOutputAction = [.normalView]
-    
-    
-    private var session:AVCaptureSession
-    let previewView: UIView
+}
+
+class CameraOutputImp: CameraOutputService {
+   
+    let previewService: CameraPreviewView
+    let recordingService: CameraNonRecordingCameraService = CameraNonRecordingCameraService()
     
     init(session: AVCaptureSession) {
-        self.session = session
-        previewView = CameraPreviewView(session: session)
+        previewService = CameraPreviewView(session: session)
     }
     
-    func updateFrame () {
-        previewView.setNeedsLayout()
-        previewView.layoutIfNeeded()
-    }
     
 }
