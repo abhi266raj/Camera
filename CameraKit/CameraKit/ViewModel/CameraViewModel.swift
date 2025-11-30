@@ -32,6 +32,10 @@ enum CameraState {
     var state: CameraState = .unknown
     private let cameraInputManger: any CameraService
     
+    var showCamera: Bool {
+        return cameraConfig.cameraOutputAction.contains(.photo)
+    }
+    
     @MainActor public func setup() async {
         if state == .unknown {
             let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()

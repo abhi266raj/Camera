@@ -22,7 +22,7 @@ struct FilterListView: View {
                     ForEach(filterListModel.model.indices, id: \.self) { index in
                         Button("\(index)", action: {
                             onItemSelection(filterListModel.model[index])
-                        }).frame(width: 100, height: 50)
+                        }).frame(width: 70, height: 50)
                     }
                 }
             }
@@ -32,5 +32,5 @@ struct FilterListView: View {
 }
 
 struct FilterListModel {
-    var model: [any FilterModel] = [CIFilterModel(contents: CIFilter(name: "CIColorMonochrome")!), MetalFilterModel(), EmptyFilterModel()]
+    var model: [any FilterModel] = [CIFilterModel(contents: CIFilter(name: "CIColorMonochrome")!), MetalFilterModel(), MetalFilterModel(contents: "greenEffect"),MetalFilterModel(contents: "d2"), EmptyFilterModel()]
 }

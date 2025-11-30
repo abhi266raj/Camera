@@ -13,10 +13,10 @@ class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipe
     
     typealias PipelineInput = CameraInputImp
     typealias PipelineProcessor = EffectCameraProcessor
-    typealias PipelineOutput = CameraOutputImp
+    typealias PipelineOutput = CameraVideoOutputImp
  
     private let captureSession: AVCaptureSession
-    let output: CameraOutputImp
+    let output: CameraVideoOutputImp
     let input: CameraInputImp
     var processor: EffectCameraProcessor
     let fileOutput = AVCaptureMovieFileOutput()
@@ -24,7 +24,7 @@ class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipe
     override init() {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraOutputImp(session: session)
+        self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)
         self.processor = EffectCameraProcessor()
         self.input = CameraInputImp()
     }

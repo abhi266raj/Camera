@@ -16,10 +16,10 @@ class BasicPhotoPipeline: NSObject, CameraPipelineService {
     
     typealias InputType = CameraInputImp
     typealias ProcessorType = EmptyCameraProcessor
-    typealias OutputType = CameraOutputImp
+    typealias OutputType = CameraPhotoOutputImp
     
     private let captureSession: AVCaptureSession
-    let output: CameraOutputImp
+    let output: CameraPhotoOutputImp
     let input: InputType
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
     var processor = EmptyCameraProcessor()
@@ -27,7 +27,7 @@ class BasicPhotoPipeline: NSObject, CameraPipelineService {
     override init() {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraOutputImp(session: session)
+        self.output = CameraPhotoOutputImp(session: session, photoOutput: photoOutput)
         self.input = CameraInputImp()
     }
     
@@ -67,48 +67,4 @@ class BasicPhotoPipeline: NSObject, CameraPipelineService {
         return true
     }
     
-    
-    func start(_ record: Bool) {
-        let photoSettings = AVCapturePhotoSettings()
-        //photoSettings.isAutoStillImageStabilizationEnabled = true
-        
-        photoOutput.capturePhoto(with: photoSettings, delegate: self)
-    }
-    
 }
-
-extension BasicPhotoPipeline : AVCapturePhotoCaptureDelegate {
-    
-    // AVCapturePhotoCaptureDelegate method to handle captured photo
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let imageData = photo.fileDataRepresentation() {
-            // Save the captured image to the Photos library
-            PHPhotoLibrary.requestAuthorization { status in
-                if status == .authorized {
-                    PHPhotoLibrary.shared().performChanges {
-                        let creationRequest = PHAssetCreationRequest.forAsset()
-                        creationRequest.addResource(with: .photo, data: imageData, options: nil)
-                    } completionHandler: { success, error in
-                        if success {
-                            // The image was successfully saved to the Photos library
-                            DispatchQueue.main.async {
-                                // Handle UI updates or feedback to the user if needed
-                                print("Image saved to Photos library")
-                            }
-                        } else if let error = error {
-                            // Handle the error
-                            print("Error saving image to Photos library: \(error.localizedDescription)")
-                        }
-                    }
-                } else {
-                    // Handle the case where permission to access the Photos library is denied
-                    print("Permission to access Photos library denied")
-                }
-            }
-        }
-    }
-}
-
-
-
-

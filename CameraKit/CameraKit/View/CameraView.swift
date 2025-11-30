@@ -25,6 +25,15 @@ struct CameraView: View {
                         FilterListView { selection in
                             viewModel.updateSelection(filter: selection)
                         }
+                        if viewModel.showCamera  {
+                            Button("Click Photo") {
+                                Task {
+                                    try? await viewModel.performAction(action: .photo)
+                                }
+                            }.frame(height: 60)
+                                .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
+                                .foregroundColor(.white)
+                        }
                         HStack {
                             Button("Toggle") {
                                 Task {

@@ -15,7 +15,7 @@ import CoreMedia
 class EffectCameraProcessor : CameraProccessor {
     
     var filterRender1: CIFilterRenderer = CIFilterRenderer()
-    var filterRender2: FilterRenderer = MetalFilterRenderer()
+    var filterRender2: MetalFilterRenderer = MetalFilterRenderer()
     
     var selectedFilter: (any FilterModel)? {
         didSet {
@@ -26,6 +26,7 @@ class EffectCameraProcessor : CameraProccessor {
             }
             
             if let selectedFilter = selectedFilter as? MetalFilterModel {
+                filterRender2.createKernel(filter: selectedFilter.contents)
                 
             }
         }

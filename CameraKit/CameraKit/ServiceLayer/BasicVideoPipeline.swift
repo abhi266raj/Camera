@@ -16,10 +16,10 @@ class BasicVideoPipeline:  CameraPipelineService {
     
     typealias InputType = CameraInputImp
     typealias ProcessorType = EmptyCameraProcessor
-    typealias OutputType = CameraOutputImp
+    typealias OutputType = CameraVideoOutputImp
  
     private let captureSession: AVCaptureSession
-    let output: CameraOutputImp
+    let output: CameraVideoOutputImp
     let input: InputType
     let fileOutput = AVCaptureMovieFileOutput()
     var processor = EmptyCameraProcessor()
@@ -27,7 +27,7 @@ class BasicVideoPipeline:  CameraPipelineService {
     init() {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraOutputImp(session: session)
+        self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)
         self.input = CameraInputImp()
     }
 

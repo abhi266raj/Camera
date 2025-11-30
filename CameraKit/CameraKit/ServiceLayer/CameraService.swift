@@ -23,7 +23,6 @@ class CameraServiceBuilder {
     func getService(cameraType: CameraType) -> CameraService
     {
         switch cameraType {
-            
         case .camera:
             return CameraPipeline()
         case .basicPhoto:
@@ -92,18 +91,15 @@ extension CameraPipelineService {
 extension CameraPipelineServiceNew {
     func getOutputView() -> CameraContentPreviewService {
         return previewOutput
-        
     }
     
     func updateSelection(filter: (any FilterModel)?)  {
         processor.updateSelection(filter: filter)
     }
     
-    
     func toggleCamera() async  -> Bool {
         return await input.toggleCamera()
     }
-    
     
     var cameraOutputState: CameraOutputState  {
         return recordOutput.outputState

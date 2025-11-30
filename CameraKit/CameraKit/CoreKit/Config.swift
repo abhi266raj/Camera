@@ -26,11 +26,11 @@ public struct CameraOutputAction: OptionSet {
 }
 
 protocol BaseConfig {
-    var cameraOutputAction:[CameraOutputAction] {get}
+    var cameraOutputAction:CameraOutputAction {get}
 }
 
 struct CameraConfig: BaseConfig {
-    let cameraOutputAction: [CameraOutputAction]
+    let cameraOutputAction: CameraOutputAction
 }
 
 enum CameraType: CaseIterable, Identifiable {
@@ -54,14 +54,14 @@ enum CameraType: CaseIterable, Identifiable {
         }
     }
     
-    var cameraOutputAction:[CameraOutputAction] {
+    var cameraOutputAction:CameraOutputAction {
         switch self {
         case .camera:
             [.normalView]
         case .basicPhoto:
-            [.normalView]
+            [.normalView, .photo]
         case .basicVideo:
-            [.normalView]
+            [.normalView, .startRecord, .stopRecord]
         case .metal:
             [.filterView, .startRecord, .stopRecord]
         }

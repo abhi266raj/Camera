@@ -22,7 +22,11 @@ class CIFilterModel : FilterModel {
 
 class MetalFilterModel : FilterModel {
     let type: FilterType = .metalFilter
-    let contents: String = ""
+    let contents: String
+    
+    init(contents: String = "rosyEffect") {
+        self.contents = contents
+    }
     
 }
 

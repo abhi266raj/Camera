@@ -70,28 +70,124 @@ final class CameraPreviewView: UIView, CameraContentPreviewService {
     }
 }
 
-class CameraNonRecordingCameraService: CameraContentRecordingService {
+class CameraPhotoCameraService: NSObject, CameraContentRecordingService {
     var outputState: CameraOutputState = .unknown
+    
+    var photoOutput:AVCapturePhotoOutput
+    
+    
+    init(photoOutput: AVCapturePhotoOutput) {
+        self.photoOutput = photoOutput
+    }
     
     func performAction(action: CameraOutputAction) throws -> Bool {
         guard self.supportedOutput.contains(action) else {
             throw CameraOutputAction.ActionError.invalidInput
         }
+        
+        let photoSettings = AVCapturePhotoSettings()
+        //photoSettings.isAutoStillImageStabilizationEnabled = true
+        
+        photoOutput.capturePhoto(with: photoSettings, delegate: self)
+        
+        
         throw CameraOutputAction.ActionError.unsupported
        
     }
     
-    var supportedOutput: CameraOutputAction = [.normalView]
+    var supportedOutput: CameraOutputAction = [.normalView, .photo]
 }
 
-class CameraOutputImp: CameraOutputService {
+class CameraPhotoOutputImp: CameraOutputService {
    
     let previewService: CameraPreviewView
-    let recordingService: CameraNonRecordingCameraService = CameraNonRecordingCameraService()
+    let recordingService: CameraPhotoCameraService
     
-    init(session: AVCaptureSession) {
+    init(session: AVCaptureSession, photoOutput: AVCapturePhotoOutput) {
         previewService = CameraPreviewView(session: session)
+        recordingService = CameraPhotoCameraService(photoOutput: photoOutput)
+    }
+}
+
+@Observable
+class CameraRecordingCameraService: CameraContentRecordingService {
+    var outputState: CameraOutputState = .unknown
+    let videoCaptureOutput:AVCaptureMovieFileOutput
+    var fileRecorder: BasicFileRecorder?
+    let supportedOutput: CameraOutputAction = [.filterView, .startRecord, .stopRecord]
+    
+    init(videoCaptureOutput: AVCaptureMovieFileOutput) {
+        self.videoCaptureOutput = videoCaptureOutput
+        self.outputState = .rendering
     }
     
+    func performAction(action: CameraOutputAction) async throws -> Bool {
+        guard self.supportedOutput.contains(action) else {
+            throw CameraOutputAction.ActionError.invalidInput
+        }
+        if action == .startRecord {
+            self.outputState = .switching
+            fileRecorder = BasicFileRecorder(fileOutput: videoCaptureOutput)
+            await fileRecorder?.start(true)
+            self.outputState = .recording
+            return true
+        }else if action == .stopRecord {
+            self.outputState = .switching
+            await fileRecorder?.start(false)
+            self.outputState = .rendering
+            return true
+        }
+            throw CameraOutputAction.ActionError.unsupported
+        }
     
+    //var supportedOutput: CameraOutputAction = [.normalView, .startRecord, .stopRecord]
 }
+
+
+class CameraVideoOutputImp: CameraOutputService {
+    let previewService: CameraPreviewView
+    let recordingService: CameraRecordingCameraService
+    
+    init(session: AVCaptureSession, videoCaptureOutput: AVCaptureMovieFileOutput) {
+        previewService = CameraPreviewView(session: session)
+        recordingService = CameraRecordingCameraService(videoCaptureOutput: videoCaptureOutput)
+    }
+}
+
+
+extension CameraPhotoCameraService : AVCapturePhotoCaptureDelegate {
+    
+    // AVCapturePhotoCaptureDelegate method to handle captured photo
+    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
+        if let imageData = photo.fileDataRepresentation() {
+            // Save the captured image to the Photos library
+            PHPhotoLibrary.requestAuthorization { status in
+                if status == .authorized {
+                    PHPhotoLibrary.shared().performChanges {
+                        let creationRequest = PHAssetCreationRequest.forAsset()
+                        creationRequest.addResource(with: .photo, data: imageData, options: nil)
+                    } completionHandler: { success, error in
+                        if success {
+                            // The image was successfully saved to the Photos library
+                            DispatchQueue.main.async {
+                                // Handle UI updates or feedback to the user if needed
+                                print("Image saved to Photos library")
+                            }
+                        } else if let error = error {
+                            // Handle the error
+                            print("Error saving image to Photos library: \(error.localizedDescription)")
+                        }
+                    }
+                } else {
+                    // Handle the case where permission to access the Photos library is denied
+                    print("Permission to access Photos library denied")
+                }
+            }
+        }
+    }
+}
+
+
+
+
+

@@ -32,13 +32,18 @@ class MetalFilterRenderer: FilterRenderer {
     }()
     
     required init() {
+        createKernel()
+    }
+    
+    func createKernel(filter: String = "rosyEffect") {
         let defaultLibrary = metalDevice.makeDefaultLibrary()!
-        let kernelFunction = defaultLibrary.makeFunction(name: "rosyEffect")
+        let kernelFunction = defaultLibrary.makeFunction(name: filter)
         do {
             computePipelineState = try metalDevice.makeComputePipelineState(function: kernelFunction!)
         } catch {
             print("Could not create pipeline state: \(error)")
         }
+        
     }
     
     func prepare(with formatDescription: CMFormatDescription, outputRetainedBufferCountHint: Int) {
