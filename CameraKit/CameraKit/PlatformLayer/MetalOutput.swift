@@ -11,7 +11,7 @@ import UIKit
 import Photos
 
 @Observable class MetalOutput: CameraOutputService {
-    private (set) var outputState:CameraOutputState = .rendering
+    private(set) var outputState:CameraOutputState = .rendering
     
     let videoOutput: VideoOutput
     

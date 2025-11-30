@@ -11,9 +11,6 @@ import Photos
 
 class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipelineService {
     
-    
-    
-    
     typealias PipelineInput = CameraInputImp
     typealias PipelineProcessor = EffectCameraProcessor
     typealias PipelineOutput = CameraOutputImp

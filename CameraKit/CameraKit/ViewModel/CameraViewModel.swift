@@ -20,11 +20,14 @@ enum CameraState {
 
 @Observable class CameraViewModel {
     
-    init(permissionService: PermissionService = CameraPermissionService(), cameraInputManger: any CameraService = BasicPhotoPipeline()) {
+    init(permissionService: PermissionService = CameraPermissionService(), cameraType: CameraType = .camera) {
         self.permissionService = permissionService
-        self.cameraInputManger = cameraInputManger
+        let serviceBuilder = CameraServiceBuilder()
+        self.cameraInputManger = serviceBuilder.getService(cameraType: cameraType)
+        self.cameraConfig = cameraType.getCameraConfig()
     }
     
+    private let cameraConfig: CameraConfig
     private let permissionService: PermissionService
     var state: CameraState = .unknown
     private let cameraInputManger: any CameraService

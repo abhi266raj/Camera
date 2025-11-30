@@ -7,8 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    
+struct CameraView: View {
     var viewModel: CameraViewModel = CameraViewModel()
     var body: some View {
         VStack {
@@ -76,7 +75,7 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    CameraView()
 }
 
 

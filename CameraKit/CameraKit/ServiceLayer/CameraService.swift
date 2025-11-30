@@ -18,7 +18,26 @@ public protocol CameraService {
 }
 
 
-public protocol CameraPipelineService: CameraService {
+class CameraServiceBuilder {
+    
+    func getService(cameraType: CameraType) -> CameraService
+    {
+        switch cameraType {
+            
+        case .camera:
+            return CameraPipeline()
+        case .basicPhoto:
+            return BasicPhotoPipeline()
+        case .basicVideo:
+            return BasicVideoPipeline()
+        case .metal:
+            return BasicMetalPipeline()
+        }
+    }
+}
+
+
+protocol CameraPipelineService: CameraService {
     associatedtype PipelineInput: CameraInput
     associatedtype PipelineOutput: CameraOutputService
     associatedtype PipelineProcessor: CameraProccessor
