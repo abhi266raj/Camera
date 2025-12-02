@@ -85,10 +85,6 @@ import Combine
         return value
     }
     
-    var cameraOutputState: CameraState  {
-        return cameraService.cameraOutputState
-    }
-    
     func performAction( action: CameraAction) async throws -> Bool {
         return try await cameraService.performAction(action:action)
     }

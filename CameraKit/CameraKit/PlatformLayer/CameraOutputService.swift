@@ -21,7 +21,6 @@ public protocol CameraContentPreviewService {
 public protocol CameraContentRecordingService {
     var supportedOutput: CameraAction {get}
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
-    var outputState: CameraState {get}
     func performAction( action: CameraAction) async throws -> Bool
     
 }
@@ -67,21 +66,17 @@ final class CameraPreviewView: UIView, CameraContentPreviewService {
 class CameraPhotoCameraService: NSObject, CameraContentRecordingService {
     var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     
-    var outputState: CameraState = .idle
-    
     var photoOutput:AVCapturePhotoOutput
     
     
     init(photoOutput: AVCapturePhotoOutput) {
         self.photoOutput = photoOutput
-        self.outputState = .preview
     }
     
     func performAction(action: CameraAction) throws -> Bool {
         guard self.supportedOutput.contains(action) else {
             throw CameraAction.ActionError.invalidInput
         }
-        self.outputState = .capturingPhoto
         cameraModePublisher.send(.capture(.photo))
         let photoSettings = AVCapturePhotoSettings()
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
@@ -105,9 +100,7 @@ class CameraPhotoOutputImp: CameraOutputService {
     }
 }
 
-@Observable
 class CameraRecordingCameraService: CameraContentRecordingService {
-    var outputState: CameraState = .idle
     var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     let videoCaptureOutput:AVCaptureMovieFileOutput
     var fileRecorder: BasicFileRecorder?
@@ -115,7 +108,6 @@ class CameraRecordingCameraService: CameraContentRecordingService {
     
     init(videoCaptureOutput: AVCaptureMovieFileOutput) {
         self.videoCaptureOutput = videoCaptureOutput
-        self.outputState = .preview
     }
     
     func performAction(action: CameraAction) async throws -> Bool {
@@ -123,18 +115,14 @@ class CameraRecordingCameraService: CameraContentRecordingService {
             throw CameraAction.ActionError.invalidInput
         }
         if action == .startRecord {
-            self.outputState = .switching
             cameraModePublisher.send(.initiatingCapture)
             fileRecorder = BasicFileRecorder(fileOutput: videoCaptureOutput)
             await fileRecorder?.start(true)
-            self.outputState = .recording
             cameraModePublisher.send(.capture(.video))
             return true
         }else if action == .stopRecord {
             cameraModePublisher.send(.initiatingCapture)
-            self.outputState = .switching
             await fileRecorder?.start(false)
-            self.outputState = .preview
             cameraModePublisher.send(.preview)
             return true
         }
@@ -162,7 +150,6 @@ extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
                      error: Error?)
     {
         guard error == nil else {
-            self.outputState = .preview
             cameraModePublisher.send(.preview)
             return
         }
@@ -170,11 +157,9 @@ extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
         Task {
             do {
                 try await savePhotoToLibrary(photo)
-                self.outputState = .preview
                 cameraModePublisher.send(.preview)
                 print("Image saved to Photos library")
             } catch {
-                self.outputState = .preview
                 cameraModePublisher.send(.preview)
                 print("Failed to save photo: \(error.localizedDescription)")
             }

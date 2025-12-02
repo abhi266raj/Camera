@@ -24,8 +24,7 @@ struct CameraCaptureControl: View {
 
             case .inactive, .paused, .switching:
                 loadingView
-                Text("sfd")
-
+                
             case .active(let mode):
                 switch mode {
                 case .preview:
@@ -47,20 +46,6 @@ struct CameraCaptureControl: View {
                     }
 
                 }
-//                if viewModel.showRecording {
-//                    startRecordingButton
-//                } else if viewModel.showCamera {
-//                    capturePhotoButton
-//                } else {
-//                    errorView("Unavailable")
-//                }
-
-//            case .recording:
-//                if viewModel.showRecording {
-//                    stopRecordingButton
-//                } else {
-//                    errorView("Recording Error")
-//                }
             }
         }
     }

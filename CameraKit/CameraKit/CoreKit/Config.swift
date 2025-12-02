@@ -27,16 +27,6 @@ public enum CaptureType {
     case video
 }
 
-public enum CameraState {
-    case idle
-    case preview
-    case recording
-    case switching
-    case capturingPhoto
-    case paused
-    
-}
-
 public struct CameraAction: OptionSet {
     
     enum ActionError: Error {

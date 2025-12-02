@@ -15,7 +15,6 @@ public protocol CameraService {
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
-    @ObservationTracked var cameraOutputState: CameraState {get}
     func performAction( action: CameraAction) async throws -> Bool
     func setup()
 }
@@ -79,11 +78,6 @@ extension CameraPipelineService {
         return await input.toggleCamera()
     }
     
-    
-    var cameraOutputState: CameraState  {
-        return output.recordingService.outputState
-    }
-    
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
         return output.recordingService.cameraModePublisher
     }
@@ -108,11 +102,7 @@ extension CameraPipelineServiceNew {
     func toggleCamera() async  -> Bool {
         return await input.toggleCamera()
     }
-    
-    var cameraOutputState: CameraState  {
-        return recordOutput.outputState
-    }
-    
+
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
         return recordOutput.cameraModePublisher
     }
