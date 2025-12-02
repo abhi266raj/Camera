@@ -15,9 +15,9 @@ struct CameraAuthorizedView: View {
 
             VStack(spacing: 12) {
                 // Top bar with switch at top-right
-                topRightControls
-                    .padding(.horizontal, 12)
-                    .padding(.top, 8)
+                CameraActionBar(viewModel: viewModel)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
 
                 Spacer()
 
@@ -31,25 +31,6 @@ struct CameraAuthorizedView: View {
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 24)
             }
-        }
-    }
-
-    // MARK: - Top Right Controls
-    private var topRightControls: some View {
-        HStack {
-            Spacer()
-            Button(action: {
-                Task { await viewModel.toggleCamera() }
-            }) {
-                Image(systemName: "arrow.triangle.2.circlepath.camera")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 40, height: 40)
-                    .background(controlBackground)
-                    .clipShape(Circle())
-                    .padding(8)
-            }
-            .accessibilityLabel("Toggle Camera")
         }
     }
 
