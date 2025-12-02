@@ -57,7 +57,6 @@ private extension CameraCaptureControl {
     var loadingView: some View {
         HStack(spacing: 8) {
             ProgressView().tint(.white)
-            Text("Preparing…")
                 .foregroundStyle(.white)
         }
         .padding(.horizontal, 14)
@@ -85,13 +84,19 @@ private extension CameraCaptureControl {
         Button {
             Task { try? await viewModel.performAction(action: .startRecord) }
         } label: {
-            Image(systemName: "record.circle")
-                .symbolRenderingMode(.multicolor)
-                .font(.system(size: 34))
-                .foregroundStyle(.red, .white)
-                .frame(width: controlSize * 1.1, height: controlSize * 1.1)
-                .background(controlBackground)
-                .clipShape(Circle())
+            ZStack {
+                // Outer white ring (iOS-style record button ring)
+                Circle()
+                    .stroke(lineWidth: controlSize * 0.08)
+                    .foregroundStyle(.white)
+                    .frame(width: controlSize, height: controlSize)
+
+                // Inner solid red circle
+                Circle()
+                    .fill(.red)
+                    .frame(width: controlSize * 0.70, height: controlSize * 0.70)
+                    .shadow(radius: 2)
+            }
         }
         .accessibilityLabel("Start Recording")
     }
@@ -100,12 +105,20 @@ private extension CameraCaptureControl {
         Button {
             Task { try? await viewModel.performAction(action: .stopRecord) }
         } label: {
-            Image(systemName: "stop.circle")
-                .font(.system(size: 34))
-                .foregroundStyle(.white)
-                .frame(width: controlSize * 1.1, height: controlSize * 1.1)
-                .background(Color.red.opacity(0.9))
-                .clipShape(Circle())
+            ZStack {
+                // Outer red ring
+                Circle()
+                    .stroke(lineWidth: controlSize * 0.08)
+                    .foregroundStyle(.red)
+                    .frame(width: controlSize, height: controlSize)
+
+                // Inner white square (stop symbol)
+                RoundedRectangle(cornerRadius: controlSize * 0.06, style: .continuous)
+                    .fill(.white)
+                    .frame(width: controlSize * 0.55, height: controlSize * 0.55)
+                    .shadow(radius: 2)
+            }
+            
         }
         .accessibilityLabel("Stop Recording")
     }
