@@ -10,28 +10,26 @@ import Foundation
 import Observation
 
 
-enum CameraState {
-    case unknown
-    case permissionDenied
-    case active
-    case paused
-}
-
-
 @Observable class CameraViewModel {
     
-    init(permissionService: PermissionService = CameraPermissionService(), cameraType: CameraType = .camera) {
+    init(permissionService: PermissionService = CameraPermissionService(), cameraConfig: CameraConfig , cameraService: CameraService) {
         self.permissionService = permissionService
-        self.cameraConfig = cameraType.getCameraConfig()
+        self.cameraConfig = cameraConfig
+        self.cameraService = cameraService
+    }
+    
+    init() {
+        permissionService = CameraPermissionService()
+        let cameraType:CameraType = .camera
+        cameraConfig = cameraType.getCameraConfig()
         let serviceBuilder = CameraServiceBuilder()
-        self.cameraInputManger = serviceBuilder.getService(cameraType: cameraType, cameraConfig: cameraConfig)
-        
+        cameraService = serviceBuilder.getService(cameraType: cameraType, cameraConfig: cameraConfig)
     }
     
     private let cameraConfig: CameraConfig
     private let permissionService: PermissionService
-    var state: CameraState = .unknown
-    private let cameraInputManger: any CameraService
+    var cameraPermissionState: PermissionStatus = .unknown
+    private let cameraService:CameraService
     
     var showCamera: Bool {
         return cameraConfig.supportedTask == .capturePhoto
@@ -47,38 +45,32 @@ enum CameraState {
     
     
     @MainActor public func setup() async {
-        if state == .unknown {
+        if cameraPermissionState == .unknown {
             let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()
             if permission == false {
-                self.state = .permissionDenied
+                cameraPermissionState = .denied
             }else {
-                cameraInputManger.setup()
-                self.state = .active
+                cameraService.setup()
+                cameraPermissionState = .authorized
             }
         }
     }
     
     func getOutputView() -> CameraContentPreviewService {
-        return cameraInputManger.getOutputView()
+        return cameraService.getOutputView()
         
     }
     
-    func updateSelection(filter: (any FilterModel)?)  {
-        cameraInputManger.updateSelection(filter: filter)
-    }
-    
-    
     func toggleCamera() async  -> Bool {
-        return await cameraInputManger.toggleCamera()
+        return await cameraService.toggleCamera()
     }
     
-    
-    var cameraOutputState: CameraOutputState  {
-        return cameraInputManger.cameraOutputState
+    var cameraOutputState: CameraState  {
+        return cameraService.cameraOutputState
     }
     
     func performAction( action: CameraAction) async throws -> Bool {
-        return try await cameraInputManger.performAction(action:action)
+        return try await cameraService.performAction(action:action)
     }
     
 }

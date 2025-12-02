@@ -19,7 +19,7 @@ public protocol CameraContentPreviewService {
 
 public protocol CameraContentRecordingService {
     var supportedOutput: CameraAction {get}
-    var outputState: CameraOutputState {get}
+    var outputState: CameraState {get}
     func performAction( action: CameraAction) async throws -> Bool
     
 }
@@ -32,14 +32,6 @@ public protocol CameraOutputService {
     var previewService: PreviewService {get}
     var recordingService: RecordingService {get}
 }
-
-public enum CameraOutputState {
-    case unknown
-    case rendering
-    case switching
-    case recording
-}
-
 
 final class CameraPreviewView: UIView, CameraContentPreviewService {
     var previewView: UIView {
@@ -71,7 +63,7 @@ final class CameraPreviewView: UIView, CameraContentPreviewService {
 }
 
 class CameraPhotoCameraService: NSObject, CameraContentRecordingService {
-    var outputState: CameraOutputState = .unknown
+    var outputState: CameraState = .idle
     
     var photoOutput:AVCapturePhotoOutput
     
@@ -111,7 +103,7 @@ class CameraPhotoOutputImp: CameraOutputService {
 
 @Observable
 class CameraRecordingCameraService: CameraContentRecordingService {
-    var outputState: CameraOutputState = .unknown
+    var outputState: CameraState = .idle
     let videoCaptureOutput:AVCaptureMovieFileOutput
     var fileRecorder: BasicFileRecorder?
     let supportedOutput: CameraAction = [.startRecord, .stopRecord]

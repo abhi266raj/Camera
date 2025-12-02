@@ -8,7 +8,9 @@
 import Foundation
 import AVFoundation
 
+
 public enum PermissionStatus {
+    case unknown
     case authorized
     case denied
 }

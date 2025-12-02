@@ -8,29 +8,32 @@
 import SwiftUI
 
 struct FilterListView: View {
-    @State var filterListModel: FilterListModel = FilterListModel()
-    var onItemSelection: (any FilterModel) -> Void
+    private let viewModel: FilterListViewModel
     
-    init(onItemSelection: @escaping (any FilterModel) -> Void) {
-        self.onItemSelection = onItemSelection
+    init(viewModel: FilterListViewModel) {
+        self.viewModel = viewModel
     }
-    
-    
+
     var body: some View {
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHGrid(rows: [GridItem(.flexible())], spacing: 10) {
-                    ForEach(filterListModel.model.indices, id: \.self) { index in
-                        Button("\(index)", action: {
-                            onItemSelection(filterListModel.model[index])
-                        }).frame(width: 70, height: 50)
+        ScrollView(.horizontal, showsIndicators: false) {
+            LazyHGrid(rows: [GridItem(.flexible())], spacing: 10) {
+                ForEach(0..<viewModel.count, id: \.self) { index in
+                    Button(action: {
+                        viewModel.selectItem(at: index)
+                    }) {
+                        Text(viewModel.title(for: index))
+                            .font(.callout)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(.white)
+                            .frame(width: 80, height: 44)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                    .fill(Color.gray)
+                            )
                     }
+                    .accessibilityLabel(viewModel.title(for: index))
                 }
             }
         }
-    
-    
-}
-
-struct FilterListModel {
-    var model: [any FilterModel] = [CIFilterModel(contents: CIFilter(name: "CIColorMonochrome")!), MetalFilterModel(), MetalFilterModel(contents: "greenEffect"),MetalFilterModel(contents: "d2"), EmptyFilterModel()]
+    }
 }

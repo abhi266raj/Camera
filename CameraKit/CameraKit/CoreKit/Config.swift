@@ -5,6 +5,23 @@
 //  Created by Abhiraj on 30/11/25.
 //
 
+
+public enum CameraState {
+    case idle
+    case rendering
+    case switching
+    case recording
+}
+
+//public enum CameraState {
+//    case idle            // session created, not running
+//    case preview         // live camera preview
+//    case recording       // active video recording
+//    case paused          // background/interruption
+//    case switching       // camera/device/session configuration changes
+//    case capturingPhoto  // still image capture in progress
+//}
+
 public struct CameraAction: OptionSet {
     
     enum ActionError: Error {

@@ -12,7 +12,7 @@ import Photos
 
 @Observable
 class SampleBufferCameraRecorderService: CameraContentRecordingService {
-    private(set) var outputState:CameraOutputState = .rendering
+    private(set) var outputState:CameraState = .rendering
     
     let videoOutput: VideoOutput
     

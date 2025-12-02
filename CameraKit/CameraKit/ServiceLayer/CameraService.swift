@@ -13,7 +13,7 @@ public protocol CameraService {
     func getOutputView() -> CameraContentPreviewService
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
-    @ObservationTracked var cameraOutputState: CameraOutputState {get}
+    @ObservationTracked var cameraOutputState: CameraState {get}
     func performAction( action: CameraAction) async throws -> Bool
     func setup()
 }
@@ -21,8 +21,9 @@ public protocol CameraService {
 
 class CameraServiceBuilder {
     
-    func getService(cameraType: CameraType, cameraConfig: CameraConfig) -> CameraService
+    func getService(cameraType: CameraType, cameraConfig: CameraConfig? = nil) -> CameraService
     {
+        let cameraConfig = cameraConfig ?? cameraType.getCameraConfig()
         switch cameraType {
         case .camera:
             return CameraPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
@@ -77,7 +78,7 @@ extension CameraPipelineService {
     }
     
     
-    var cameraOutputState: CameraOutputState  {
+    var cameraOutputState: CameraState  {
         return output.recordingService.outputState
     }
     
@@ -102,7 +103,7 @@ extension CameraPipelineServiceNew {
         return await input.toggleCamera()
     }
     
-    var cameraOutputState: CameraOutputState  {
+    var cameraOutputState: CameraState  {
         return recordOutput.outputState
     }
     

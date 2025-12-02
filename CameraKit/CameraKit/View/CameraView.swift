@@ -8,24 +8,29 @@
 import SwiftUI
 
 struct CameraView: View {
-    var viewModel: CameraViewModel = CameraViewModel()
+    let viewModel: CameraViewModel
+    let filterListViewModel: FilterListViewModel
+    
+    init(viewModel: CameraViewModel = CameraViewModel(), filterListViewModel: FilterListViewModel = FilterListViewModel()) {
+        self.viewModel = viewModel
+        self.filterListViewModel = filterListViewModel
+    }
+    
     var body: some View {
         VStack {
-            switch viewModel.state {
+            switch viewModel.cameraPermissionState {
             case .unknown:
                 Text("Loading")
                // CameraPreview(cameraOutput: viewModel.cameraInputManger.output)
-            case .permissionDenied:
+            case .denied:
                 Text("Permission Denied")
-            case .active:
+            case .authorized:
                 ZStack {
                     CameraPreview(cameraOutput: viewModel.getOutputView())
                     VStack {
                         Spacer()
                         if viewModel.showFilter {
-                            FilterListView { selection in
-                                viewModel.updateSelection(filter: selection)
-                            }
+                            FilterListView(viewModel: filterListViewModel)
                         }
                         if viewModel.showCamera  {
                             Button("Click Photo") {
@@ -73,10 +78,6 @@ struct CameraView: View {
                         }
                     }
                 }
-                
-            case .paused:
-                Text("Paused")
-                
             }
         }.onAppear(perform: {
             Task.detached(priority: .userInitiated)  {
