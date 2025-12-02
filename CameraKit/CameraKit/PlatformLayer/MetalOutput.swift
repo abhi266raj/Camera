@@ -16,15 +16,15 @@ class SampleBufferCameraRecorderService: CameraContentRecordingService {
     
     let videoOutput: VideoOutput
     
-    let supportedOutput: CameraOutputAction = [.filterView, .startRecord, .stopRecord]
+    let supportedOutput: CameraAction = [.startRecord, .stopRecord]
     
     init(videoOutput: VideoOutput) {
         self.videoOutput = videoOutput
     }
     
-    func performAction(action: CameraOutputAction) async throws -> Bool {
+    func performAction(action: CameraAction) async throws -> Bool {
         guard self.supportedOutput.contains(action) else {
-            throw CameraOutputAction.ActionError.invalidInput
+            throw CameraAction.ActionError.invalidInput
         }
         
         if action == .startRecord {
@@ -38,7 +38,7 @@ class SampleBufferCameraRecorderService: CameraContentRecordingService {
             self.outputState = .rendering
             return true
         }
-        throw CameraOutputAction.ActionError.unsupported
+        throw CameraAction.ActionError.unsupported
     }
     
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {

@@ -5,7 +5,7 @@
 //  Created by Abhiraj on 30/11/25.
 //
 
-public struct CameraOutputAction: OptionSet {
+public struct CameraAction: OptionSet {
     
     enum ActionError: Error {
         case invalidInput
@@ -18,19 +18,32 @@ public struct CameraOutputAction: OptionSet {
         self.rawValue = rawValue
     }
     
-    public static let startRecord = CameraOutputAction(rawValue: 1 << 0)
-    public static let stopRecord = CameraOutputAction(rawValue: 1 << 1)
-    public static let photo = CameraOutputAction(rawValue: 1 << 3)
-    public static let normalView = CameraOutputAction(rawValue: 1 << 4)
-    public static let filterView = CameraOutputAction(rawValue: 1 << 5)
+    public static let startRecord = CameraAction(rawValue: 1 << 0)
+    public static let stopRecord = CameraAction(rawValue: 1 << 1)
+    public static let photo = CameraAction(rawValue: 1 << 3)
+}
+
+enum CameraRenderMode {
+    case basic
+    case metal
+}
+
+enum SupportedCameraTask {
+    case capturePhoto
+    case recordVideo
+    case none
 }
 
 protocol BaseConfig {
-    var cameraOutputAction:CameraOutputAction {get}
+    var cameraOutputAction:CameraAction {get}
+    var renderMode: CameraRenderMode {get}
+    var supportedTask: SupportedCameraTask {get}
 }
 
 struct CameraConfig: BaseConfig {
-    let cameraOutputAction: CameraOutputAction
+    let cameraOutputAction: CameraAction
+    let renderMode: CameraRenderMode
+    let supportedTask: SupportedCameraTask
 }
 
 enum CameraType: CaseIterable, Identifiable {
@@ -44,26 +57,52 @@ enum CameraType: CaseIterable, Identifiable {
     func getCameraConfig() -> CameraConfig {
         switch self {
         case .camera:
-            return CameraConfig(cameraOutputAction: cameraOutputAction)
+            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
         case .basicPhoto:
-            return CameraConfig(cameraOutputAction: cameraOutputAction)
+            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
         case .basicVideo:
-            return CameraConfig(cameraOutputAction: cameraOutputAction)
+            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
         case .metal:
-            return CameraConfig(cameraOutputAction: cameraOutputAction)
+            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
         }
     }
     
-    var cameraOutputAction:CameraOutputAction {
+    private var renderMode: CameraRenderMode {
         switch self {
         case .camera:
-            [.normalView]
+            return .basic
         case .basicPhoto:
-            [.normalView, .photo]
+            return .basic
         case .basicVideo:
-            [.normalView, .startRecord, .stopRecord]
+            return .basic
         case .metal:
-            [.filterView, .startRecord, .stopRecord]
+            return .metal
+        }
+    }
+    
+    private var supportedTask: SupportedCameraTask {
+        switch self {
+        case .camera:
+            return .capturePhoto
+        case .basicPhoto:
+            return .capturePhoto
+        case .basicVideo:
+            return .recordVideo
+        case .metal:
+            return .recordVideo
+        }
+    }
+    
+    private var cameraOutputAction:CameraAction {
+        switch self {
+        case .camera:
+            []
+        case .basicPhoto:
+            [.photo]
+        case .basicVideo:
+            [.startRecord, .stopRecord]
+        case .metal:
+            [.startRecord, .stopRecord]
         }
     }
 }

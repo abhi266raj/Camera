@@ -22,9 +22,10 @@ enum CameraState {
     
     init(permissionService: PermissionService = CameraPermissionService(), cameraType: CameraType = .camera) {
         self.permissionService = permissionService
-        let serviceBuilder = CameraServiceBuilder()
-        self.cameraInputManger = serviceBuilder.getService(cameraType: cameraType)
         self.cameraConfig = cameraType.getCameraConfig()
+        let serviceBuilder = CameraServiceBuilder()
+        self.cameraInputManger = serviceBuilder.getService(cameraType: cameraType, cameraConfig: cameraConfig)
+        
     }
     
     private let cameraConfig: CameraConfig
@@ -33,8 +34,17 @@ enum CameraState {
     private let cameraInputManger: any CameraService
     
     var showCamera: Bool {
-        return cameraConfig.cameraOutputAction.contains(.photo)
+        return cameraConfig.supportedTask == .capturePhoto
     }
+    
+    var showFilter: Bool {
+        return cameraConfig.renderMode == .metal
+    }
+    
+    var showRecording: Bool {
+        return cameraConfig.supportedTask == .recordVideo
+    }
+    
     
     @MainActor public func setup() async {
         if state == .unknown {
@@ -67,7 +77,7 @@ enum CameraState {
         return cameraInputManger.cameraOutputState
     }
     
-    func performAction( action: CameraOutputAction) async throws -> Bool {
+    func performAction( action: CameraAction) async throws -> Bool {
         return try await cameraInputManger.performAction(action:action)
     }
     

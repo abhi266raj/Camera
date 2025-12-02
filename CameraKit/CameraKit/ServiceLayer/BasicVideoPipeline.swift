@@ -24,7 +24,7 @@ class BasicVideoPipeline:  CameraPipelineService {
     let fileOutput = AVCaptureMovieFileOutput()
     var processor = EmptyCameraProcessor()
     
-    init() {
+    init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
         self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)

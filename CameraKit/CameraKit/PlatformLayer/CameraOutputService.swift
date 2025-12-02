@@ -18,9 +18,9 @@ public protocol CameraContentPreviewService {
 
 
 public protocol CameraContentRecordingService {
-    var supportedOutput: CameraOutputAction {get}
+    var supportedOutput: CameraAction {get}
     var outputState: CameraOutputState {get}
-    func performAction( action: CameraOutputAction) async throws -> Bool
+    func performAction( action: CameraAction) async throws -> Bool
     
 }
 
@@ -80,9 +80,9 @@ class CameraPhotoCameraService: NSObject, CameraContentRecordingService {
         self.photoOutput = photoOutput
     }
     
-    func performAction(action: CameraOutputAction) throws -> Bool {
+    func performAction(action: CameraAction) throws -> Bool {
         guard self.supportedOutput.contains(action) else {
-            throw CameraOutputAction.ActionError.invalidInput
+            throw CameraAction.ActionError.invalidInput
         }
         
         let photoSettings = AVCapturePhotoSettings()
@@ -91,11 +91,11 @@ class CameraPhotoCameraService: NSObject, CameraContentRecordingService {
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
         
         
-        throw CameraOutputAction.ActionError.unsupported
+        throw CameraAction.ActionError.unsupported
        
     }
     
-    var supportedOutput: CameraOutputAction = [.normalView, .photo]
+    var supportedOutput: CameraAction = [.photo]
 }
 
 class CameraPhotoOutputImp: CameraOutputService {
@@ -114,16 +114,16 @@ class CameraRecordingCameraService: CameraContentRecordingService {
     var outputState: CameraOutputState = .unknown
     let videoCaptureOutput:AVCaptureMovieFileOutput
     var fileRecorder: BasicFileRecorder?
-    let supportedOutput: CameraOutputAction = [.filterView, .startRecord, .stopRecord]
+    let supportedOutput: CameraAction = [.startRecord, .stopRecord]
     
     init(videoCaptureOutput: AVCaptureMovieFileOutput) {
         self.videoCaptureOutput = videoCaptureOutput
         self.outputState = .rendering
     }
     
-    func performAction(action: CameraOutputAction) async throws -> Bool {
+    func performAction(action: CameraAction) async throws -> Bool {
         guard self.supportedOutput.contains(action) else {
-            throw CameraOutputAction.ActionError.invalidInput
+            throw CameraAction.ActionError.invalidInput
         }
         if action == .startRecord {
             self.outputState = .switching
@@ -137,7 +137,7 @@ class CameraRecordingCameraService: CameraContentRecordingService {
             self.outputState = .rendering
             return true
         }
-            throw CameraOutputAction.ActionError.unsupported
+            throw CameraAction.ActionError.unsupported
         }
     
     //var supportedOutput: CameraOutputAction = [.normalView, .startRecord, .stopRecord]

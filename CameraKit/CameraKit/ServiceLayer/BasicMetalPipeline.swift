@@ -31,7 +31,7 @@ class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate 
     var processor: EffectCameraProcessor = EffectCameraProcessor()
     
     
-    override init() {
+    init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
         let videoOutput = VideoOutputImp()

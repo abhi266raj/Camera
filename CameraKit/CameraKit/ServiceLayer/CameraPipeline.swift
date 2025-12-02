@@ -21,7 +21,7 @@ class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipe
     var processor: EffectCameraProcessor
     let fileOutput = AVCaptureMovieFileOutput()
     
-    override init() {
+    init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
         self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)

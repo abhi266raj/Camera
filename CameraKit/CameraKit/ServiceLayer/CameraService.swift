@@ -6,31 +6,32 @@
 //
 
 import Foundation
+import Observation
 
 
 public protocol CameraService {
     func getOutputView() -> CameraContentPreviewService
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
-    var cameraOutputState: CameraOutputState {get}
-    func performAction( action: CameraOutputAction) async throws -> Bool
+    @ObservationTracked var cameraOutputState: CameraOutputState {get}
+    func performAction( action: CameraAction) async throws -> Bool
     func setup()
 }
 
 
 class CameraServiceBuilder {
     
-    func getService(cameraType: CameraType) -> CameraService
+    func getService(cameraType: CameraType, cameraConfig: CameraConfig) -> CameraService
     {
         switch cameraType {
         case .camera:
-            return CameraPipeline()
+            return CameraPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
         case .basicPhoto:
-            return BasicPhotoPipeline()
+            return BasicPhotoPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
         case .basicVideo:
-            return BasicVideoPipeline()
+            return BasicVideoPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
         case .metal:
-            return BasicMetalPipeline()
+            return BasicMetalPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
         }
     }
 }
@@ -80,7 +81,7 @@ extension CameraPipelineService {
         return output.recordingService.outputState
     }
     
-    func performAction( action: CameraOutputAction) async throws -> Bool {
+    func performAction( action: CameraAction) async throws -> Bool {
         return try await output.recordingService.performAction(action:action)
     }
     
@@ -105,7 +106,7 @@ extension CameraPipelineServiceNew {
         return recordOutput.outputState
     }
     
-    func performAction( action: CameraOutputAction) async throws -> Bool {
+    func performAction( action: CameraAction) async throws -> Bool {
         return try await recordOutput.performAction(action:action)
     }
     

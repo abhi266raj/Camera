@@ -24,7 +24,7 @@ class BasicPhotoPipeline: NSObject, CameraPipelineService {
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
     var processor = EmptyCameraProcessor()
     
-    override init() {
+    init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
         self.output = CameraPhotoOutputImp(session: session, photoOutput: photoOutput)

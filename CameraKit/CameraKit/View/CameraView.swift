@@ -22,8 +22,10 @@ struct CameraView: View {
                     CameraPreview(cameraOutput: viewModel.getOutputView())
                     VStack {
                         Spacer()
-                        FilterListView { selection in
-                            viewModel.updateSelection(filter: selection)
+                        if viewModel.showFilter {
+                            FilterListView { selection in
+                                viewModel.updateSelection(filter: selection)
+                            }
                         }
                         if viewModel.showCamera  {
                             Button("Click Photo") {
@@ -43,28 +45,30 @@ struct CameraView: View {
                             }.frame(height: 60)
                                 .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
                                 .foregroundColor(.white)
-                            if viewModel.cameraOutputState == .rendering {
-                                Button("Start Recording") {
-                                    Task {
-                                        try? await viewModel.performAction(action: .startRecord)
-                                    }
-                                }.frame(height: 60)
-                                    .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
-                                    .foregroundColor(.white)
-                                
-                            } else if viewModel.cameraOutputState == .recording {
-                                Button("Stop Recording") {
-                                    Task {
-                                        try? await viewModel.performAction(action: .stopRecord)
-                                    }
-                                }.frame(height: 60)
-                                    .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
-                                    .foregroundColor(.white)
-                                
-                            } else if viewModel.cameraOutputState == .switching {
-                                Button("Loading") {}.frame(height: 60)
-                                    .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
-                                    .foregroundColor(.white)
+                            if viewModel.showRecording {
+                                if viewModel.cameraOutputState == .rendering {
+                                    Button("Start Recording") {
+                                        Task {
+                                            try? await viewModel.performAction(action: .startRecord)
+                                        }
+                                    }.frame(height: 60)
+                                        .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
+                                        .foregroundColor(.white)
+                                    
+                                } else if viewModel.cameraOutputState == .recording {
+                                    Button("Stop Recording") {
+                                        Task {
+                                            try? await viewModel.performAction(action: .stopRecord)
+                                        }
+                                    }.frame(height: 60)
+                                        .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
+                                        .foregroundColor(.white)
+                                    
+                                } else if viewModel.cameraOutputState == .switching {
+                                    Button("Loading") {}.frame(height: 60)
+                                        .background(Color.black.opacity(0.2)) // Set the background color to black with alpha 0.2
+                                        .foregroundColor(.white)
+                                }
                             }
                         }
                     }
