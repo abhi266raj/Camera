@@ -8,6 +8,7 @@
 import Foundation
 // import AVFoundation
 import Observation
+import Combine
 
 
 @Observable class CameraViewModel {
@@ -16,6 +17,7 @@ import Observation
         self.permissionService = permissionService
         self.cameraConfig = cameraConfig
         self.cameraService = cameraService
+        setup()
     }
     
     init() {
@@ -24,8 +26,22 @@ import Observation
         cameraConfig = cameraType.getCameraConfig()
         let serviceBuilder = CameraServiceBuilder()
         cameraService = serviceBuilder.getService(cameraType: cameraType, cameraConfig: cameraConfig)
+        setup()
     }
     
+    func setup() {
+        cameraService.cameraModePublisher.sink { [weak self] mode in
+            guard let self else {return }
+            self.cameraMode = mode
+            if case .active(_) = self.cameraPhase {
+                self.cameraPhase = .active(mode)
+            }
+        }.store(in: &cancellables)
+    }
+    
+    private var cameraMode: CameraMode = .preview
+    var cameraPhase: CameraPhase = .inactive
+    private var cancellables = Set<AnyCancellable>()
     private let cameraConfig: CameraConfig
     private let permissionService: PermissionService
     var cameraPermissionState: PermissionStatus = .unknown
@@ -52,6 +68,7 @@ import Observation
             }else {
                 cameraService.setup()
                 cameraPermissionState = .authorized
+                cameraPhase = .active(cameraMode)
             }
         }
     }
@@ -62,7 +79,10 @@ import Observation
     }
     
     func toggleCamera() async  -> Bool {
-        return await cameraService.toggleCamera()
+        cameraPhase = .switching
+        let value =  await cameraService.toggleCamera()
+        cameraPhase = .active(cameraMode)
+        return value
     }
     
     var cameraOutputState: CameraState  {

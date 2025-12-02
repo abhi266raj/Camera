@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CameraView: View {
-    let viewModel: CameraViewModel
-    let filterListViewModel: FilterListViewModel
+    @State var viewModel: CameraViewModel
+    @State var filterListViewModel: FilterListViewModel
     
     init(viewModel: CameraViewModel = CameraViewModel(), filterListViewModel: FilterListViewModel = FilterListViewModel()) {
         self.viewModel = viewModel

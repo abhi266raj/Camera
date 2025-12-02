@@ -7,12 +7,14 @@
 
 import Foundation
 import Observation
+import Combine
 
 
 public protocol CameraService {
     func getOutputView() -> CameraContentPreviewService
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
+    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
     @ObservationTracked var cameraOutputState: CameraState {get}
     func performAction( action: CameraAction) async throws -> Bool
     func setup()
@@ -82,6 +84,10 @@ extension CameraPipelineService {
         return output.recordingService.outputState
     }
     
+    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
+        return output.recordingService.cameraModePublisher
+    }
+    
     func performAction( action: CameraAction) async throws -> Bool {
         return try await output.recordingService.performAction(action:action)
     }
@@ -105,6 +111,10 @@ extension CameraPipelineServiceNew {
     
     var cameraOutputState: CameraState  {
         return recordOutput.outputState
+    }
+    
+    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
+        return recordOutput.cameraModePublisher
     }
     
     func performAction( action: CameraAction) async throws -> Bool {

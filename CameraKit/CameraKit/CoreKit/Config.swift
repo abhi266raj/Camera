@@ -6,23 +6,36 @@
 //
 
 
+// Top-level camera state
+public enum CameraPhase {
+    case inactive
+    case paused
+    case switching
+    case active(CameraMode)
+}
+
+// Camera operation mode
+public enum CameraMode {
+    case preview
+    case initiatingCapture
+    case capture(CaptureType)
+}
+
+// Specific capture type
+public enum CaptureType {
+    case photo
+    case video
+}
+
 public enum CameraState {
     case idle
     case preview
     case recording
     case switching
     case capturingPhoto
+    case paused
     
 }
-
-//public enum CameraState {
-//    case idle            // session created, not running
-//    case preview         // live camera preview
-//    case recording       // active video recording
-//    case paused          // background/interruption
-//    case switching       // camera/device/session configuration changes
-//    case capturingPhoto  // still image capture in progress
-//}
 
 public struct CameraAction: OptionSet {
     

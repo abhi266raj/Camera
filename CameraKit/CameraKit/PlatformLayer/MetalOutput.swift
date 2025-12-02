@@ -9,9 +9,11 @@ import Foundation
 import AVFoundation
 import UIKit
 import Photos
+import Combine
 
 @Observable
 class SampleBufferCameraRecorderService: CameraContentRecordingService {
+    var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     private(set) var outputState:CameraState = .preview
     
     let videoOutput: VideoOutput
@@ -29,13 +31,17 @@ class SampleBufferCameraRecorderService: CameraContentRecordingService {
         
         if action == .startRecord {
             self.outputState = .switching
+            cameraModePublisher.send(.initiatingCapture)
            await videoOutput.startRecord()
             self.outputState = .recording
+            cameraModePublisher.send(.capture(.video))
             return true
         }else if action == .stopRecord {
             self.outputState = .switching
+            cameraModePublisher.send(.initiatingCapture)
             await videoOutput.stopRecord()
             self.outputState = .preview
+            cameraModePublisher.send(.preview)
             return true
         }
         throw CameraAction.ActionError.unsupported

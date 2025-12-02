@@ -20,26 +20,47 @@ struct CameraCaptureControl: View {
 
     var body: some View {
         VStack(spacing: 10) {
-            switch viewModel.cameraOutputState {
+            switch viewModel.cameraPhase {
 
-            case .idle, .switching, .capturingPhoto:
+            case .inactive, .paused, .switching:
                 loadingView
+                Text("sfd")
 
-            case .preview:
-                if viewModel.showRecording {
-                    startRecordingButton
-                } else if viewModel.showCamera {
-                    capturePhotoButton
-                } else {
-                    errorView("Unavailable")
-                }
+            case .active(let mode):
+                switch mode {
+                case .preview:
+                    if viewModel.showRecording {
+                        startRecordingButton
+                    } else if viewModel.showCamera {
+                        capturePhotoButton
+                    } else {
+                        errorView("Unavailable")
+                    }
+                case .initiatingCapture:
+                    loadingView
+                case .capture(let type):
+                    switch type {
+                    case .photo:
+                        loadingView
+                    case .video:
+                        stopRecordingButton
+                    }
 
-            case .recording:
-                if viewModel.showRecording {
-                    stopRecordingButton
-                } else {
-                    errorView("Recording Error")
                 }
+//                if viewModel.showRecording {
+//                    startRecordingButton
+//                } else if viewModel.showCamera {
+//                    capturePhotoButton
+//                } else {
+//                    errorView("Unavailable")
+//                }
+
+//            case .recording:
+//                if viewModel.showRecording {
+//                    stopRecordingButton
+//                } else {
+//                    errorView("Recording Error")
+//                }
             }
         }
     }
