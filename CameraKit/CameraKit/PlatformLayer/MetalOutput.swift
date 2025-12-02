@@ -12,7 +12,7 @@ import Photos
 
 @Observable
 class SampleBufferCameraRecorderService: CameraContentRecordingService {
-    private(set) var outputState:CameraState = .rendering
+    private(set) var outputState:CameraState = .preview
     
     let videoOutput: VideoOutput
     
@@ -35,7 +35,7 @@ class SampleBufferCameraRecorderService: CameraContentRecordingService {
         }else if action == .stopRecord {
             self.outputState = .switching
             await videoOutput.stopRecord()
-            self.outputState = .rendering
+            self.outputState = .preview
             return true
         }
         throw CameraAction.ActionError.unsupported

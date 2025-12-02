@@ -8,9 +8,11 @@
 
 public enum CameraState {
     case idle
-    case rendering
-    case switching
+    case preview
     case recording
+    case switching
+    case capturingPhoto
+    
 }
 
 //public enum CameraState {

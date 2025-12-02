@@ -70,16 +70,15 @@ class CameraPhotoCameraService: NSObject, CameraContentRecordingService {
     
     init(photoOutput: AVCapturePhotoOutput) {
         self.photoOutput = photoOutput
+        self.outputState = .preview
     }
     
     func performAction(action: CameraAction) throws -> Bool {
         guard self.supportedOutput.contains(action) else {
             throw CameraAction.ActionError.invalidInput
         }
-        
+        self.outputState = .capturingPhoto
         let photoSettings = AVCapturePhotoSettings()
-        //photoSettings.isAutoStillImageStabilizationEnabled = true
-        
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
         
         
@@ -110,7 +109,7 @@ class CameraRecordingCameraService: CameraContentRecordingService {
     
     init(videoCaptureOutput: AVCaptureMovieFileOutput) {
         self.videoCaptureOutput = videoCaptureOutput
-        self.outputState = .rendering
+        self.outputState = .preview
     }
     
     func performAction(action: CameraAction) async throws -> Bool {
@@ -126,7 +125,7 @@ class CameraRecordingCameraService: CameraContentRecordingService {
         }else if action == .stopRecord {
             self.outputState = .switching
             await fileRecorder?.start(false)
-            self.outputState = .rendering
+            self.outputState = .preview
             return true
         }
             throw CameraAction.ActionError.unsupported
@@ -146,40 +145,56 @@ class CameraVideoOutputImp: CameraOutputService {
     }
 }
 
-
-extension CameraPhotoCameraService : AVCapturePhotoCaptureDelegate {
+extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
     
-    // AVCapturePhotoCaptureDelegate method to handle captured photo
-    func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?) {
-        if let imageData = photo.fileDataRepresentation() {
-            // Save the captured image to the Photos library
-            PHPhotoLibrary.requestAuthorization { status in
-                if status == .authorized {
-                    PHPhotoLibrary.shared().performChanges {
-                        let creationRequest = PHAssetCreationRequest.forAsset()
-                        creationRequest.addResource(with: .photo, data: imageData, options: nil)
-                    } completionHandler: { success, error in
-                        if success {
-                            // The image was successfully saved to the Photos library
-                            DispatchQueue.main.async {
-                                // Handle UI updates or feedback to the user if needed
-                                print("Image saved to Photos library")
-                            }
-                        } else if let error = error {
-                            // Handle the error
-                            print("Error saving image to Photos library: \(error.localizedDescription)")
-                        }
-                    }
+    func photoOutput(_ output: AVCapturePhotoOutput,
+                     didFinishProcessingPhoto photo: AVCapturePhoto,
+                     error: Error?)
+    {
+        guard error == nil else {
+            self.outputState = .preview
+            return
+        }
+        
+        Task {
+            do {
+                try await savePhotoToLibrary(photo)
+                self.outputState = .preview
+                print("Image saved to Photos library")
+            } catch {
+                self.outputState = .preview
+                print("Failed to save photo: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    /// Async method to request permission and save photo
+    private func savePhotoToLibrary(_ photo: AVCapturePhoto) async throws {
+        guard let imageData = photo.fileDataRepresentation() else {
+            throw NSError(domain: "CameraService", code: 0,
+                          userInfo: [NSLocalizedDescriptionKey: "Failed to get image data"])
+        }
+        
+        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        guard status == .authorized else {
+            throw NSError(domain: "CameraService", code: 1,
+                          userInfo: [NSLocalizedDescriptionKey: "Permission denied"])
+        }
+        
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            PHPhotoLibrary.shared().performChanges {
+                let creationRequest = PHAssetCreationRequest.forAsset()
+                creationRequest.addResource(with: .photo, data: imageData, options: nil)
+            } completionHandler: { success, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else if success {
+                    continuation.resume()
                 } else {
-                    // Handle the case where permission to access the Photos library is denied
-                    print("Permission to access Photos library denied")
+                    continuation.resume(throwing: NSError(domain: "CameraService", code: 2,
+                                                          userInfo: [NSLocalizedDescriptionKey: "Unknown error saving photo"]))
                 }
             }
         }
     }
 }
-
-
-
-
-
