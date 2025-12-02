@@ -66,7 +66,7 @@ import Combine
             if permission == false {
                 cameraPermissionState = .denied
             }else {
-                cameraService.setup()
+                await cameraService.setup()
                 cameraPermissionState = .authorized
                 cameraPhase = .active(cameraMode)
             }

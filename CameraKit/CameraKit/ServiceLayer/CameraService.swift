@@ -16,7 +16,7 @@ public protocol CameraService {
     func toggleCamera() async  -> Bool
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
     func performAction( action: CameraAction) async throws -> Bool
-    func setup()
+    func setup() async
 }
 
 
