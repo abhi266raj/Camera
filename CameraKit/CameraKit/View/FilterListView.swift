@@ -16,7 +16,7 @@ struct FilterListView: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            LazyHGrid(rows: [GridItem(.flexible())], spacing: 10) {
+            LazyHGrid(rows: [GridItem()], spacing: 10) {
                 ForEach(0..<viewModel.count, id: \.self) { index in
                     Button(action: {
                         viewModel.selectItem(at: index)
@@ -25,7 +25,8 @@ struct FilterListView: View {
                             .font(.callout)
                             .fontWeight(.semibold)
                             .foregroundStyle(.white)
-                            .frame(width: 80, height: 44)
+                            .frame(width: 80)
+                            .frame(height: 60)
                             .background(
                                 RoundedRectangle(cornerRadius: 10, style: .continuous)
                                     .fill(Color.gray)
@@ -33,7 +34,7 @@ struct FilterListView: View {
                     }
                     .accessibilityLabel(viewModel.title(for: index))
                 }
-            }
+            }.frame(height: 60)
         }
     }
 }

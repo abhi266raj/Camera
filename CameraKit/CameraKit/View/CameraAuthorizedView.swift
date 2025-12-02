@@ -13,17 +13,20 @@ struct CameraAuthorizedView: View {
             CameraPreview(cameraOutput: viewModel.getOutputView())
                 .ignoresSafeArea()
 
-            VStack(spacing: 12) {
+            VStack() {
                 // Top bar with switch at top-right
-                CameraActionBar(viewModel: viewModel)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 16)
+                HStack {
+                    Spacer()
+                    CameraActionBar(viewModel: viewModel)
+                }
+                .padding(.horizontal, 12)
+                .padding(.top, 8)
 
                 Spacer()
 
                 if viewModel.showFilter {
                     FilterListView(viewModel: filterListViewModel)
-                        .padding(.bottom, 8)
+                        .padding(.bottom)
                 }
 
                 // Bottom centered primary control
