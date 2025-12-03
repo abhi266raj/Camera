@@ -53,7 +53,5 @@ struct CameraPreview: UIViewRepresentable {
 
     func updateUIView(_ uiView: UIView, context: Context) {
         cameraOutput.updateFrame()
-        
-        // Update the view if needed
     }
 }

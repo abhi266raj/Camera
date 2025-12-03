@@ -10,7 +10,6 @@ import Foundation
 
 public struct FilterType: OptionSet {
     
-   
     public let rawValue: Int
     
     public init(rawValue: Int) {
@@ -28,3 +27,8 @@ public protocol FilterModel {
     var contents: Filter {get}
 }
 
+
+struct FilterEntity {
+    let title: String
+    let model: any FilterModel
+}

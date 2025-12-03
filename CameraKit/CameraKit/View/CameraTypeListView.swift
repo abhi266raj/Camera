@@ -23,7 +23,6 @@ struct CameraTypeListView: View {
             .navigationDestination(for: CameraType.self) { type in
                 CameraCoordinator().createView(cameraType: type)
                     .navigationTitle(type.title)
-//                }
             }
         }
     }
