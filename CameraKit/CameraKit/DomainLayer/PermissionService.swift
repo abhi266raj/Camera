@@ -7,6 +7,7 @@
 
 import Foundation
 import AVFoundation
+import Photos
 
 
 public enum PermissionStatus {
@@ -18,6 +19,8 @@ public enum PermissionStatus {
 protocol PermissionService {
     @MainActor
     func requestCameraAndMicrophoneIfNeeded() async -> Bool
+    
+    func requestPhotoAddAccess() async -> Bool
 }
 
 struct CameraPermissionService: PermissionService {
@@ -38,6 +41,24 @@ struct CameraPermissionService: PermissionService {
         guard audioPermission == true else { return false }
        
         return true
+    }
+    
+    func requestPhotoAddAccess() async -> Bool {
+        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        switch status {
+        case .authorized:
+            return true
+        case .notDetermined:
+            return false
+        case .restricted:
+            return true
+        case .denied:
+            return false
+        case .limited:
+            return true
+        @unknown default:
+            return false
+        }
     }
 }
 
