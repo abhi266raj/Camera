@@ -14,7 +14,7 @@ struct CameraCaptureControl: View {
     private let controlSize: CGFloat = 56
     private let controlBackground = Color.black.opacity(0.35)
 
-    init(viewModel: CameraViewModel = CameraViewModel()) {
+    init(viewModel: CameraViewModel) {
         self.viewModel = viewModel
     }
 

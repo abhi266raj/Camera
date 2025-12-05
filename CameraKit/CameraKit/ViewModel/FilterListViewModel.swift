@@ -9,7 +9,7 @@ final class FilterListViewModel {
     private(set) var items: [FilterEntity] = []
 
     init(
-        cameraService: CameraService = CameraServiceBuilder().getService(cameraType: .camera),
+        cameraService: CameraService,
         repository: FilterRepository = FilterRepositoryImpl()
     ) {
         self.cameraService = cameraService

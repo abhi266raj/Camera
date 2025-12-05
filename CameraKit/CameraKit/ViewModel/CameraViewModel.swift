@@ -19,15 +19,6 @@ import Combine
         setup()
     }
     
-    init() {
-        permissionService = CameraPermissionService()
-        let cameraType:CameraType = .camera
-        cameraConfig = cameraType.getCameraConfig()
-        let serviceBuilder = CameraServiceBuilder()
-        cameraService = serviceBuilder.getService(cameraType: cameraType, cameraConfig: cameraConfig)
-        setup()
-    }
-    
     func setup() {
         cameraService.cameraModePublisher.sink { [weak self] mode in
             guard let self else {return }

@@ -36,6 +36,3 @@ struct CameraAuthorizedView: View {
     }
 }
 
-#Preview {
-    CameraAuthorizedView(viewModel: CameraViewModel(), filterListViewModel: FilterListViewModel())
-}

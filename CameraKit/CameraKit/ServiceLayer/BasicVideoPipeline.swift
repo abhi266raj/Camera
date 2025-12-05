@@ -89,8 +89,6 @@ actor BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
     init(fileOutput: AVCaptureMovieFileOutput) {
         self.fileOutput = fileOutput
         super.init()
-       
-        
     }
     
     func start(_ record: Bool) {

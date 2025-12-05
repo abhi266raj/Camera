@@ -37,7 +37,3 @@ struct CameraActionBar: View {
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }
-
-#Preview {
-    CameraActionBar(viewModel: CameraViewModel())
-}

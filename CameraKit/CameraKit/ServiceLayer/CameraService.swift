@@ -9,7 +9,6 @@ import Foundation
 import Observation
 import Combine
 
-
 public protocol CameraService {
     func getOutputView() -> CameraContentPreviewService
     func updateSelection(filter: (any FilterModel)?)
@@ -18,26 +17,6 @@ public protocol CameraService {
     func performAction( action: CameraAction) async throws -> Bool
     func setup() async
 }
-
-
-class CameraServiceBuilder {
-    
-    func getService(cameraType: CameraType, cameraConfig: CameraConfig? = nil) -> CameraService
-    {
-        let cameraConfig = cameraConfig ?? cameraType.getCameraConfig()
-        switch cameraType {
-        case .camera:
-            return CameraPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
-        case .basicPhoto:
-            return BasicPhotoPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
-        case .basicVideo:
-            return BasicVideoPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
-        case .metal:
-            return BasicMetalPipeline(cameraOutputAction: cameraConfig.cameraOutputAction)
-        }
-    }
-}
-
 
 protocol CameraPipelineService: CameraService {
     associatedtype PipelineInput: CameraInput
@@ -61,7 +40,6 @@ protocol CameraPipelineServiceNew: CameraService {
     var recordOutput: PipelineRecordingOutput {get }
     var processor: PipelineProcessor {get}
 }
-
 
 extension CameraPipelineService {
     func getOutputView() -> CameraContentPreviewService {

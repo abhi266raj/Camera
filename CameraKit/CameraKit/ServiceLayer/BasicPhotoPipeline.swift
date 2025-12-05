@@ -66,5 +66,4 @@ class BasicPhotoPipeline: NSObject, CameraPipelineService {
         
         return true
     }
-    
 }

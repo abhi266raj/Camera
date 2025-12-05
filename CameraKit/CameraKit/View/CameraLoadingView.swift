@@ -16,5 +16,5 @@ struct CameraLoadingView: View {
 }
 
 #Preview {
-    CameraLoadingView(viewModel: CameraViewModel())
+    //CameraLoadingView(viewModel: CameraViewModel())
 }

@@ -46,7 +46,6 @@ class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate 
     }
     
     func setup() {
-       
         Task{ @CameraInputSession in
             let _  = setupInputAndOutput()
             input.session = captureSession
@@ -91,8 +90,6 @@ class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate 
     }
 
 }
-
-
 
 extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     

@@ -11,7 +11,7 @@ struct CameraView: View {
     @State var viewModel: CameraViewModel
     @State var filterListViewModel: FilterListViewModel
     
-    init(viewModel: CameraViewModel = CameraViewModel(), filterListViewModel: FilterListViewModel = FilterListViewModel()) {
+    init(viewModel: CameraViewModel, filterListViewModel: FilterListViewModel) {
         self.viewModel = viewModel
         self.filterListViewModel = filterListViewModel
     }
@@ -35,10 +35,6 @@ struct CameraView: View {
         .padding()
     }
 
-}
-
-#Preview {
-    CameraView()
 }
 
 

@@ -9,7 +9,7 @@
 // MARK: - Feature Dependency Protocol
 
 protocol CameraDependencies {
-    var cameraServices: ServiceDependencies { get }      // Injected
+    var viewModelServiceProvider: ViewModelDependenciesProvider { get }      // Injected
 }
 
 
@@ -18,17 +18,16 @@ protocol CameraDependencies {
 final class CameraComponentBuilder: CameraDependencies {
 
     // Injected service dependencies
-    let cameraServices: ServiceDependencies
+    let viewModelServiceProvider: ViewModelDependenciesProvider
 
-    init(services: ServiceDependencies = AppDependencies.shared.services) {
-        self.cameraServices = services
+    init(viewModelServiceProvider: ViewModelDependenciesProvider = AppDependencies.shared.viewModelServiceProvider) {
+        self.viewModelServiceProvider = viewModelServiceProvider
     }
 
     func makeCameraView(cameraType: CameraType = .metal) -> CameraView {
-        let config = cameraType.getCameraConfig()
-        let service = cameraServices.cameraServiceBuilder.getService(cameraType: cameraType, cameraConfig: config)
-        let vm = CameraViewModel(cameraConfig: config, cameraService: service)
-        let filterVM = FilterListViewModel(cameraService: service, repository: cameraServices.filterRepository)
+        let viewModelDependcies = viewModelServiceProvider.viewModelDependenciesFor(cameraType: cameraType)
+        let vm = viewModelDependcies.cameraViewModel
+        let filterVM = viewModelDependcies.filterListViewModel
         return CameraView(viewModel: vm, filterListViewModel: filterVM)
     }
 }
