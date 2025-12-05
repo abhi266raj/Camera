@@ -100,10 +100,13 @@ actor BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
             }
         }else {
             fileOutput.stopRecording()
-            isRecording = false
+            stopRecording()
         }
     }
     
+    func stopRecording() {
+        self.isRecording = false
+    }
     
     
     deinit {
@@ -111,6 +114,9 @@ actor BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
     }
     
     nonisolated func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        Task {
+            await stopRecording()
+        }
         if let error = error {
             // Handle the error, e.g., display an error message.
             print("Error recording video: \(error.localizedDescription)")
