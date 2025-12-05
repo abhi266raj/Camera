@@ -5,27 +5,19 @@
 //  Created by Abhiraj on 30/11/25.
 //
 
-
-// MARK: - Feature Dependency Protocol
-
-protocol CameraDependencies {
-    var viewModelServiceProvider: ViewModelDependenciesProvider { get }      // Injected
-}
-
-
 // MARK: - Camera Component (Child)
 
-final class CameraComponentBuilder: CameraDependencies {
+final class CameraComponentBuilder {
 
     // Injected service dependencies
     let viewModelServiceProvider: ViewModelDependenciesProvider
 
-    init(viewModelServiceProvider: ViewModelDependenciesProvider = AppDependencies.shared.viewModelServiceProvider) {
+    init(viewModelServiceProvider: ViewModelDependenciesProvider = AppDependencies.shared.viewModels) {
         self.viewModelServiceProvider = viewModelServiceProvider
     }
 
     func makeCameraView(cameraType: CameraType = .metal) -> CameraView {
-        let viewModelDependcies = viewModelServiceProvider.viewModelDependenciesFor(cameraType: cameraType)
+        let viewModelDependcies = viewModelServiceProvider.viewModels(for: cameraType)
         let vm = viewModelDependcies.cameraViewModel
         let filterVM = viewModelDependcies.filterListViewModel
         return CameraView(viewModel: vm, filterListViewModel: filterVM)
