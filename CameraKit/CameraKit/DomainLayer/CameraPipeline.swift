@@ -29,7 +29,7 @@ class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipe
         self.input = CameraInputImp()
     }
 
-    @CameraInputSession func setup() async  {
+    @CameraInputSessionActor func setup() async  {
         let _  = setupInputAndOutput()
                 input.session = captureSession
                 input.startRunning()

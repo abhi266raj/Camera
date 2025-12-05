@@ -32,7 +32,7 @@ class BasicVideoPipeline:  CameraPipelineService {
     }
 
     func setup() {
-            Task{ @CameraInputSession in
+            Task{ @CameraInputSessionActor in
                 let _  = setupInputAndOutput()
                 input.session = captureSession
                 input.startRunning()

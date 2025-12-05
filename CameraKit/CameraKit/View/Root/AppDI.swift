@@ -1,27 +1,46 @@
 // MARK: - SERVICE LAYER
 
-protocol ServiceDependencies {
+protocol CoreDependencies {
+    var filterRepository: FilterRepository { get }
+    var permissionService: CameraPermissionService { get }
+}
+
+class CoreDependenciesImpl: CoreDependencies {
+    lazy var filterRepository: FilterRepository = FilterRepositoryImpl()
+    lazy var permissionService: CameraPermissionService = CameraPermissionService()
+}
+
+protocol CameraDependencies {
     var cameraService: CameraService { get }
     var filterRepository: FilterRepository { get }
     var permissionService: CameraPermissionService { get }
 }
 
-struct CameraDependencies: ServiceDependencies {
+struct CameraDependenciesImpl: CameraDependencies {
+    
+    let coreDependencies:CoreDependencies
     let cameraService: CameraService
-    let filterRepository: FilterRepository
-    let permissionService: CameraPermissionService
+    var filterRepository: FilterRepository {
+        return coreDependencies.filterRepository
+    }
+    var permissionService: CameraPermissionService {
+        return coreDependencies.permissionService
+    }
 }
 
-protocol ServiceDependenciesProvider {
-    func dependencies(for cameraType: CameraType, config: CameraConfig?) -> ServiceDependencies
+protocol CameraDependenciesProvider {
+    func dependencies(for cameraType: CameraType, config: CameraConfig?) -> CameraDependencies
 }
 
-final class ServiceDependenciesProviderImpl: ServiceDependenciesProvider {
+final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
 
-    private let sharedFilterRepository = FilterRepositoryImpl()
-    private let sharedPermissionService = CameraPermissionService()
+    let core:CoreDependencies
+    
+    init(core:CoreDependencies) {
+        self.core = core
+    }
 
-    func dependencies(for cameraType: CameraType, config: CameraConfig?) -> ServiceDependencies {
+    func dependencies(for cameraType: CameraType, config: CameraConfig?) -> CameraDependencies {
         let resolvedConfig = config ?? cameraType.getCameraConfig()
 
         let cameraService: CameraService = {
@@ -37,10 +56,8 @@ final class ServiceDependenciesProviderImpl: ServiceDependenciesProvider {
             }
         }()
 
-        return CameraDependencies(
-            cameraService: cameraService,
-            filterRepository: sharedFilterRepository,
-            permissionService: sharedPermissionService
+        return CameraDependenciesImpl(
+            coreDependencies: core, cameraService: cameraService
         )
     }
 }
@@ -63,7 +80,7 @@ protocol ViewModelDependenciesProvider {
 }
 
 struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
-    let services: ServiceDependenciesProvider
+    let services: CameraDependenciesProvider
 
     func viewModels(for cameraType: CameraType) -> ViewModelDependencies {
         let deps = services.dependencies(for: cameraType, config: nil)
@@ -92,11 +109,14 @@ struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
 final class AppDependencies {
     static let shared = AppDependencies()
 
-    let services: ServiceDependenciesProvider
+    let core: CoreDependencies
+    let services: CameraDependenciesProvider
     let viewModels: ViewModelDependenciesProvider
 
     private init() {
-        let serviceProvider = ServiceDependenciesProviderImpl()
+        let core = CoreDependenciesImpl()
+        self.core = core
+        let serviceProvider = CameraDependenciesProviderImpl(core:core)
         self.services = serviceProvider
         self.viewModels = ViewModelDependenciesProviderImpl(services: serviceProvider)
     }

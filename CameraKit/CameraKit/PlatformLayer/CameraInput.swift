@@ -22,7 +22,7 @@ public protocol CameraInput {
     
 }
 
-@CameraInputSession
+@CameraInputSessionActor
 class CameraInputImp: CameraInput {
     
     var session: AVCaptureSession?

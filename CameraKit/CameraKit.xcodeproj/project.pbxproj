@@ -33,6 +33,8 @@
 		6BB394A22EDF29F000A45141 /* CameraActionBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394A12EDF29F000A45141 /* CameraActionBar.swift */; };
 		6BB394A42EDF366000A45141 /* CameraCaptureControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394A32EDF366000A45141 /* CameraCaptureControl.swift */; };
 		6BB394A62EDFD63B00A45141 /* FilterRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394A52EDFD63B00A45141 /* FilterRepository.swift */; };
+		6BB394AA2EE343FB00A45141 /* CameraContentRecordingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394A92EE343FB00A45141 /* CameraContentRecordingService.swift */; };
+		6BB394AD2EE3447A00A45141 /* SampleBufferCameraRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394AC2EE3447A00A45141 /* SampleBufferCameraRecorderService.swift */; };
 		6BD7F5C52ADABF7D004BBC84 /* EffectCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */; };
 		6BD7F5C72ADAC920004BBC84 /* EmptyCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */; };
 		6BD7F5CA2ADDA0A5004BBC84 /* MetalFilterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */; };
@@ -49,7 +51,7 @@
 		6BE804F72AB738EB00DAF8B4 /* CameraKitUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804F62AB738EB00DAF8B4 /* CameraKitUITestsLaunchTests.swift */; };
 		6BE805042AB7394200DAF8B4 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE805032AB7394200DAF8B4 /* CameraViewModel.swift */; };
 		6BE8051B2AB754C800DAF8B4 /* PermissionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE8051A2AB754C800DAF8B4 /* PermissionService.swift */; };
-		6BE8051D2AB7575E00DAF8B4 /* CameraInputManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */; };
+		6BE8051D2AB7575E00DAF8B4 /* CameraInputSessionActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE8051C2AB7575E00DAF8B4 /* CameraInputSessionActor.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +98,8 @@
 		6BB394A12EDF29F000A45141 /* CameraActionBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraActionBar.swift; sourceTree = "<group>"; };
 		6BB394A32EDF366000A45141 /* CameraCaptureControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraCaptureControl.swift; sourceTree = "<group>"; };
 		6BB394A52EDFD63B00A45141 /* FilterRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterRepository.swift; sourceTree = "<group>"; };
+		6BB394A92EE343FB00A45141 /* CameraContentRecordingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraContentRecordingService.swift; sourceTree = "<group>"; };
+		6BB394AC2EE3447A00A45141 /* SampleBufferCameraRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleBufferCameraRecorderService.swift; sourceTree = "<group>"; };
 		6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectCameraProcessor.swift; sourceTree = "<group>"; };
 		6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCameraProcessor.swift; sourceTree = "<group>"; };
 		6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFilterRenderer.swift; sourceTree = "<group>"; };
@@ -116,7 +120,7 @@
 		6BE805032AB7394200DAF8B4 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		6BE805192AB752F500DAF8B4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6BE8051A2AB754C800DAF8B4 /* PermissionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionService.swift; sourceTree = "<group>"; };
-		6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInputManager.swift; sourceTree = "<group>"; };
+		6BE8051C2AB7575E00DAF8B4 /* CameraInputSessionActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraInputSessionActor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -166,7 +170,7 @@
 			path = Recording;
 			sourceTree = "<group>";
 		};
-		6B5F732E2EDB39BC007453B2 /* ServiceLayer */ = {
+		6B5F732E2EDB39BC007453B2 /* DomainLayer */ = {
 			isa = PBXGroup;
 			children = (
 				6BB394A52EDFD63B00A45141 /* FilterRepository.swift */,
@@ -177,7 +181,7 @@
 				6B79FC9E2AD3192D00215CEA /* BasicVideoPipeline.swift */,
 				6BACD4E32AD4627A003C86D2 /* BasicMetalPipeline.swift */,
 			);
-			path = ServiceLayer;
+			path = DomainLayer;
 			sourceTree = "<group>";
 		};
 		6B5F73302EDB3A69007453B2 /* ViewModel */ = {
@@ -192,9 +196,10 @@
 		6B5F73322EDB3FF4007453B2 /* PlatformLayer */ = {
 			isa = PBXGroup;
 			children = (
+				6BB394AB2EE3443800A45141 /* ContentRecording */,
 				6BACD4EC2AD5AD5C003C86D2 /* MetalOutput.swift */,
 				6BD7F5D12ADDA525004BBC84 /* CameraOutputService.swift */,
-				6BE8051C2AB7575E00DAF8B4 /* CameraInputManager.swift */,
+				6BE8051C2AB7575E00DAF8B4 /* CameraInputSessionActor.swift */,
 				6BD7F5D32ADDA531004BBC84 /* CameraProcessor.swift */,
 				6BD7F5CF2ADDA516004BBC84 /* CameraInput.swift */,
 				6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */,
@@ -234,6 +239,15 @@
 				6BACD4F22AD5B13A003C86D2 /* PassThrough.metal */,
 			);
 			path = Shaders;
+			sourceTree = "<group>";
+		};
+		6BB394AB2EE3443800A45141 /* ContentRecording */ = {
+			isa = PBXGroup;
+			children = (
+				6BB394AC2EE3447A00A45141 /* SampleBufferCameraRecorderService.swift */,
+				6BB394A92EE343FB00A45141 /* CameraContentRecordingService.swift */,
+			);
+			path = ContentRecording;
 			sourceTree = "<group>";
 		};
 		6BD7F5CB2ADDA2E1004BBC84 /* View */ = {
@@ -279,7 +293,7 @@
 				6B5F73352EDC844E007453B2 /* CoreKit */,
 				6BD7F5CB2ADDA2E1004BBC84 /* View */,
 				6B5F73302EDB3A69007453B2 /* ViewModel */,
-				6B5F732E2EDB39BC007453B2 /* ServiceLayer */,
+				6B5F732E2EDB39BC007453B2 /* DomainLayer */,
 				6B5F73322EDB3FF4007453B2 /* PlatformLayer */,
 				6BE805192AB752F500DAF8B4 /* Info.plist */,
 				6B4BC29D2AE3C17D00A70B3D /* SupportFile */,
@@ -451,10 +465,11 @@
 				6BD7F5D22ADDA525004BBC84 /* CameraOutputService.swift in Sources */,
 				6BACD4F42AD5B13A003C86D2 /* DepthToGrayscale.metal in Sources */,
 				6BE804DC2AB738E800DAF8B4 /* CameraView.swift in Sources */,
+				6BB394AD2EE3447A00A45141 /* SampleBufferCameraRecorderService.swift in Sources */,
 				6BD7F5C72ADAC920004BBC84 /* EmptyCameraProcessor.swift in Sources */,
 				6BB394A62EDFD63B00A45141 /* FilterRepository.swift in Sources */,
 				6B6CF9922EDEECD700AFFE8A /* FilterListViewModel.swift in Sources */,
-				6BE8051D2AB7575E00DAF8B4 /* CameraInputManager.swift in Sources */,
+				6BE8051D2AB7575E00DAF8B4 /* CameraInputSessionActor.swift in Sources */,
 				6BE8051B2AB754C800DAF8B4 /* PermissionService.swift in Sources */,
 				6BD7F5CE2ADDA349004BBC84 /* CameraService.swift in Sources */,
 				6B577E6A2AE55FBD009EF4B3 /* FilterModelImp.swift in Sources */,
@@ -467,6 +482,7 @@
 				6BACD4ED2AD5AD5C003C86D2 /* MetalOutput.swift in Sources */,
 				6BB394A42EDF366000A45141 /* CameraCaptureControl.swift in Sources */,
 				6BB394A22EDF29F000A45141 /* CameraActionBar.swift in Sources */,
+				6BB394AA2EE343FB00A45141 /* CameraContentRecordingService.swift in Sources */,
 				6BB3949D2EDF21FC00A45141 /* CameraDeniedView.swift in Sources */,
 				6BE805042AB7394200DAF8B4 /* CameraViewModel.swift in Sources */,
 				6B5F73372EDC845D007453B2 /* Config.swift in Sources */,

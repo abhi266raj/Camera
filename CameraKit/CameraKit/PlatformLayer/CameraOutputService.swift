@@ -17,14 +17,6 @@ public protocol CameraContentPreviewService {
     func updateFrame()
 }
 
-
-public protocol CameraContentRecordingService {
-    var supportedOutput: CameraAction {get}
-    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
-    func performAction( action: CameraAction) async throws -> Bool
-    
-}
-
 public protocol CameraOutputService {
     
     associatedtype PreviewService: CameraContentPreviewService
