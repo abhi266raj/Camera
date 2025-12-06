@@ -84,7 +84,9 @@ class BasicVideoPipeline:  CameraPipelineService {
 actor BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
     
     var fileOutput: AVCaptureMovieFileOutput
-    var isRecording = false
+    var isRecording: Bool {
+        fileOutput.isRecording
+    }
     
     init(fileOutput: AVCaptureMovieFileOutput) {
         self.fileOutput = fileOutput
@@ -94,29 +96,20 @@ actor BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
     func start(_ record: Bool) {
         if record {
             if !isRecording {
-                isRecording = true
                 let outputFilePath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("A \(UUID().uuidString).mov")!
                 fileOutput.startRecording(to: outputFilePath, recordingDelegate: self)
             }
         }else {
             fileOutput.stopRecording()
-            stopRecording()
         }
     }
-    
-    func stopRecording() {
-        self.isRecording = false
-    }
-    
     
     deinit {
         fileOutput.stopRecording()
     }
     
     nonisolated func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        Task {
-            await stopRecording()
-        }
+        
         if let error = error {
             // Handle the error, e.g., display an error message.
             print("Error recording video: \(error.localizedDescription)")
