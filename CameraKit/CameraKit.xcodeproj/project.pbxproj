@@ -37,6 +37,7 @@
 		6BB394B12EE3468E00A45141 /* CameraRecordingCameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394B02EE3468E00A45141 /* CameraRecordingCameraService.swift */; };
 		6BB394B32EE3E95300A45141 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6BB394B22EE3E95300A45141 /* README.md */; };
 		6BB394C32EE402FE00A45141 /* CoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6BB394C22EE402FE00A45141 /* CoreKit */; };
+		6BB394C62EE40B1C00A45141 /* PlatformKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6BB394C52EE40B1C00A45141 /* PlatformKit */; };
 		6BD7F5C52ADABF7D004BBC84 /* EffectCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */; };
 		6BD7F5C72ADAC920004BBC84 /* EmptyCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */; };
 		6BD7F5CA2ADDA0A5004BBC84 /* MetalFilterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */; };
@@ -135,6 +136,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BB394C62EE40B1C00A45141 /* PlatformKit in Frameworks */,
 				6BB394C32EE402FE00A45141 /* CoreKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -434,6 +436,7 @@
 			mainGroup = 6BE804CD2AB738E800DAF8B4;
 			packageReferences = (
 				6BB394C12EE402FE00A45141 /* XCLocalSwiftPackageReference "CoreKit" */,
+				6BB394C42EE40B1C00A45141 /* XCLocalSwiftPackageReference "PlatformKit" */,
 			);
 			productRefGroup = 6BE804D72AB738E800DAF8B4 /* Products */;
 			projectDirPath = "";
@@ -852,12 +855,20 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = CoreKit;
 		};
+		6BB394C42EE40B1C00A45141 /* XCLocalSwiftPackageReference "PlatformKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PlatformKit;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		6BB394C22EE402FE00A45141 /* CoreKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CoreKit;
+		};
+		6BB394C52EE40B1C00A45141 /* PlatformKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PlatformKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

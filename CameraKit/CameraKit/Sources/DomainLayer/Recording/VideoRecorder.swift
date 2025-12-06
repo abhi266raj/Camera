@@ -10,9 +10,11 @@ import AVFoundation
 import UIKit
 import Photos
 import CoreMedia
+import PlatformKit
 
 
-class VideoRecorder {
+
+class VideoRecorderImp: VideoRecorder {
     var isRecording: Bool = false
     private var videoWriter: AVAssetWriter?
     private var videoWriterInput: AVAssetWriterInput?

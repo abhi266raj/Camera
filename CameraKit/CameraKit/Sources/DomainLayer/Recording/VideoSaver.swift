@@ -7,13 +7,15 @@
 
 import Foundation
 import Photos
+import PlatformKit
 
 
-protocol VideoSaver {
-    func save(outputFileURL: URL, error: Error?)
-}
+//protocol VideoSaver {
+//    func save(outputFileURL: URL, error: Error?)
+//}
 
 class VideoSaverImp: VideoSaver {
+    
     
     func save(outputFileURL: URL, error: Error?) {
        if let error = error {

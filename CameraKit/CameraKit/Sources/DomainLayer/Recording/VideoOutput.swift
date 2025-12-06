@@ -6,14 +6,8 @@
 //
 
 import Foundation
+import PlatformKit
 
-
-protocol VideoOutput {
-    func startRecord() async
-    func stopRecord() async
-    var videoSaver: VideoSaver {get}
-    var videoRecorder: VideoRecorder? {get}
-}
 
 class VideoOutputImp {
     var videoRecorder: VideoRecorder?
@@ -28,7 +22,7 @@ extension VideoOutputImp: VideoOutput {
             let videoOutputPath = (documentsPath as NSString).appendingPathComponent("output.mov")
             let videoOutputURL = URL(fileURLWithPath: videoOutputPath)
             
-            let recorder = VideoRecorder(outputURL: videoOutputURL)
+            let recorder = VideoRecorderImp(outputURL: videoOutputURL)
             recorder.startRecording()
             videoRecorder = recorder
             

@@ -10,6 +10,7 @@ import AVFoundation
 import UIKit
 import Photos
 import CoreKit
+import PlatformKit
 
 
 /// Basic Camera Pipeline Use UIView and record on camera
@@ -77,74 +78,6 @@ class BasicVideoPipeline:  CameraPipelineService {
             await basicFileRecorder?.start(record)
         }
         
-    }
-    
-}
-
-
-actor BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
-    
-    var fileOutput: AVCaptureMovieFileOutput
-    var isRecording: Bool {
-        fileOutput.isRecording
-    }
-    
-    init(fileOutput: AVCaptureMovieFileOutput) {
-        self.fileOutput = fileOutput
-        super.init()
-    }
-    
-    func start(_ record: Bool) {
-        if record {
-            if !isRecording {
-                let outputFilePath = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("A \(UUID().uuidString).mov")!
-                fileOutput.startRecording(to: outputFilePath, recordingDelegate: self)
-            }
-        }else {
-            fileOutput.stopRecording()
-        }
-    }
-    
-    deinit {
-        fileOutput.stopRecording()
-    }
-    
-    nonisolated func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        
-        if let error = error {
-            // Handle the error, e.g., display an error message.
-            print("Error recording video: \(error.localizedDescription)")
-            return
-        }
-        
-        // Request permission to access the photo library.
-        PHPhotoLibrary.requestAuthorization { status in
-            if status == .authorized {
-                // If permission is granted, save the video to the gallery.
-                PHPhotoLibrary.shared().performChanges {
-                    let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputFileURL)
-                    request?.creationDate = Date()
-                } completionHandler: { success, error in
-                    if success {
-                        // Video saved successfully.
-                        print("Video saved to the gallery.")
-                    } else if let error = error {
-                        // Handle the error, e.g., display an error message.
-                        print("Error saving video to the gallery: \(error.localizedDescription)")
-                    }
-                    
-                    // Optionally, you can delete the temporary file.
-                    do {
-                        try FileManager.default.removeItem(at: outputFileURL)
-                    } catch {
-                        print("Error deleting temporary file: \(error.localizedDescription)")
-                    }
-                }
-            } else {
-                // Handle the case where permission is denied.
-                print("Permission to access the photo library denied.")
-            }
-        }
     }
     
 }

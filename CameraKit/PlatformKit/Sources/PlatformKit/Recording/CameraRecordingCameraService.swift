@@ -9,25 +9,24 @@ import Foundation
 import Combine
 import AVFoundation
 import CoreKit
-import PlatformKit
 
-class CameraRecordingCameraService: CameraContentRecordingService {
-    var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
+public class CameraRecordingCameraService: CameraContentRecordingService {
+    public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     let videoCaptureOutput:AVCaptureMovieFileOutput
     var fileRecorder: BasicFileRecorder?
-    let supportedOutput: CameraAction = [.startRecord, .stopRecord]
+    public let supportedOutput: CameraAction = [.startRecord, .stopRecord]
     
-    init(videoCaptureOutput: AVCaptureMovieFileOutput) {
+    public init(videoCaptureOutput: AVCaptureMovieFileOutput) {
         self.videoCaptureOutput = videoCaptureOutput
     }
     
-    func performAction(action: CameraAction) async throws -> Bool {
+    public func performAction(action: CameraAction) async throws -> Bool {
         guard self.supportedOutput.contains(action) else {
             throw CameraAction.ActionError.invalidInput
         }
         if action == .startRecord {
             cameraModePublisher.send(.initiatingCapture)
-            fileRecorder = BasicFileRecorder(fileOutput: videoCaptureOutput)
+            fileRecorder =  BasicFileRecorder(fileOutput: videoCaptureOutput)
             await fileRecorder?.start(true)
             cameraModePublisher.send(.capture(.video))
             return true

@@ -12,20 +12,19 @@ import UIKit
 import Photos
 import Combine
 import CoreKit
-import PlatformKit
 
-class SampleBufferCameraRecorderService: CameraContentRecordingService {
-    var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
+public class SampleBufferCameraRecorderService: CameraContentRecordingService {
+    public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     
     let videoOutput: VideoOutput
     
-    let supportedOutput: CameraAction = [.startRecord, .stopRecord]
+    public let supportedOutput: CameraAction = [.startRecord, .stopRecord]
     
-    init(videoOutput: VideoOutput) {
+    public init(videoOutput: VideoOutput) {
         self.videoOutput = videoOutput
     }
     
-    func performAction(action: CameraAction) async throws -> Bool {
+    public func performAction(action: CameraAction) async throws -> Bool {
         guard self.supportedOutput.contains(action) else {
             throw CameraAction.ActionError.invalidInput
         }
@@ -44,7 +43,7 @@ class SampleBufferCameraRecorderService: CameraContentRecordingService {
         throw CameraAction.ActionError.unsupported
     }
     
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         videoOutput.videoRecorder?.appendSampleBuffer(sampleBuffer)
     }
 }
