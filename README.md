@@ -1,58 +1,106 @@
 # CameraKit Architecture
 
-**CameraKit** is a modular, protocol-oriented camera framework that uses a pipeline-based architecture to cleanly separate input, output, and processing concerns. It is designed for extensibility, modern Swift, and high-performance camera, video, and photo workflows—including Metal-based real-time effects.
+**CameraKit** is a modular, protocol-oriented camera framework that uses a pipeline-based design to cleanly separate input, output, and processing concerns. It is designed for extensibility, modern Swift patterns, and high-performance camera workflows—including Metal-accelerated real-time effects.
+
+---
 
 ## Architectural Overview
 
-The CameraKit codebase is organized into distinct layers, each with a focused responsibility. At the top sits the **Composition Root**, orchestrating the construction and wiring of all layers.
+CameraKit is structured into clearly defined layers. The **Composition Root** sits at the top and assembles the entire system. The **Core Layer** provides shared utilities accessible across all layers. Between them sits the main architectural stack consisting of the View, ViewModel, Domain, and Platform layers.
+
+---
+
+## Layer Descriptions
 
 ### 1. Composition Root
-- Responsible for application setup and dependency injection. Assembles and coordinates all other layers.
+- Responsible for application setup and dependency injection.
+- Constructs and wires all services, pipelines, and layers.
+- Has visibility into the entire architecture but is not used by other layers.
 
 ### 2. View Layer
-- Contains all UI code (SwiftUI, UIKit). Presents the user interface and reacts to state from the view models.
+- Contains all UI code (SwiftUI, UIKit).
+- Presents state and responds to actions.
+- Binds directly to ViewModels.
 
 ### 3. ViewModel Layer
-- Acts as a bridge between the view and domain layers.
-- Exposes UI-ready data and actions, managing state and transforming domain outputs for presentation.
+- Acts as an intermediary between the View and Domain layers.
+- Holds UI-ready state and transforms domain results.
+- Sends user actions to the Domain layer.
 
 ### 4. Domain Layer
-- Encapsulates all business logic, camera pipelines, processing abstractions, and domain-specific rules.
-- Contains pipelines, processors, protocols, and most testable core logic.
+- Contains business logic, camera pipelines, and processing abstractions.
+- Defines rules, transformations, and pipeline orchestration.
+- Uses Platform and Core layers for system-level and shared functionality.
 
 ### 5. Platform Layer
-- Implements platform-specific concerns (AVFoundation, Metal, OS-level permissions, device handling, etc.).
-- Provides concrete services to the domain layer.
+- Implements system integrations: AVFoundation, Metal, device handling, permissions.
+- Exposes concrete platform services to the Domain layer.
 
 ### 6. Core Layer
-- Provides shared, cross-cutting utilities, types, and services reused across all layers (e.g., logging, configuration, extension utilities).
+- Provides shared utilities, configuration, logging, and reusable types.
+- Dependency-free and accessible to all layers.
+- Does not depend on any higher layer.
 
+---
 
-### Layered Interaction
-- The Composition Root wires the entire dependency graph, injecting platform and core services into domain, viewmodels, and views.
-- The View Layer binds to ViewModels, which delegate to the Domain Layer.
-- The Domain Layer relies on the Platform Layer for system-level integrations, and on the Core Layer for shared functionality.
-- The Core Layer is designed to be dependency-free and reusable everywhere.
+## Layered Interaction Model
 
+- **Composition Root** wires all dependencies and initializes the system.
+- **View Layer** displays ViewModel state and forwards user actions.
+- **ViewModel Layer** prepares data for the UI and delegates work to the Domain layer.
+- **Domain Layer** performs processing and business logic, using:
+  - **Platform Layer** for system APIs and hardware access.
+  - **Core Layer** for shared utilities.
+- **Core Layer** remains independent and is used across the framework without depending on any other layer.
+
+---
+
+## Responsibility Matrix
+
+| Layer             | Responsibilities                                             | Depends On           |
+|------------------|---------------------------------------------------------------|-----------------------|
+| Composition Root | Setup, wiring, dependency injection                          | All layers            |
+| View Layer       | UI rendering, user interaction                               | ViewModel, Core       |
+| ViewModel Layer  | State management, UI-friendly transformations                | Domain, Core          |
+| Domain Layer     | Business logic, pipelines, processing                        | Platform, Core        |
+| Platform Layer   | AVFoundation, Metal, device and OS interactions               | Core                  |
+| Core Layer       | Shared utilities, types, logging, configuration               | None                  |
+
+---
 
 ## Architecture Diagram
 
 ```mermaid
-graph TD
-  A[Composition Root]
-  B[View Layer]
-  C[ViewModel Layer]
-  D[Domain Layer]
-  E[Platform Layer]
-  F[Core Layer]
+flowchart TD
 
-  A --> B
-  A --> C
-  A --> D
-  A --> E
-  A --> F
-  B --> C
-  C --> D
-  D --> E
-  D --> F
-  E --> F
+    %% Composition Root in its own group
+    subgraph composition_system["Composition_System"]
+        composition_root[Composition_Root]
+    end
+
+    %% Main architecture group
+    subgraph app_system["CameraKit_System"]
+
+        %% Four base layers grouped together
+        subgraph base_layers["Base_Layers"]
+            view_layer[View_Layer]
+            viewmodel_layer[ViewModel_Layer]
+            domain_layer[Domain_Layer]
+            platform_layer[Platform_Layer]
+        end
+
+        %% Core layer below them
+        core_layer[Core_Layer]
+    end
+
+    %% Vertical flow inside base layers
+    view_layer --> viewmodel_layer
+    viewmodel_layer --> domain_layer
+    domain_layer --> platform_layer
+
+    %% Base layers know the core layer
+    base_layers --> core_layer
+
+    %% Composition Root knows the entire app system
+    composition_root --> app_system
+```
