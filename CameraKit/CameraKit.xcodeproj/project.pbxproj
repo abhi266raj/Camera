@@ -37,6 +37,7 @@
 		6BB394AD2EE3447A00A45141 /* SampleBufferCameraRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394AC2EE3447A00A45141 /* SampleBufferCameraRecorderService.swift */; };
 		6BB394AF2EE344DD00A45141 /* CameraPhotoCameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394AE2EE344DD00A45141 /* CameraPhotoCameraService.swift */; };
 		6BB394B12EE3468E00A45141 /* CameraRecordingCameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB394B02EE3468E00A45141 /* CameraRecordingCameraService.swift */; };
+		6BB394B32EE3E95300A45141 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6BB394B22EE3E95300A45141 /* README.md */; };
 		6BD7F5C52ADABF7D004BBC84 /* EffectCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */; };
 		6BD7F5C72ADAC920004BBC84 /* EmptyCameraProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */; };
 		6BD7F5CA2ADDA0A5004BBC84 /* MetalFilterRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */; };
@@ -104,6 +105,7 @@
 		6BB394AC2EE3447A00A45141 /* SampleBufferCameraRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleBufferCameraRecorderService.swift; sourceTree = "<group>"; };
 		6BB394AE2EE344DD00A45141 /* CameraPhotoCameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPhotoCameraService.swift; sourceTree = "<group>"; };
 		6BB394B02EE3468E00A45141 /* CameraRecordingCameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraRecordingCameraService.swift; sourceTree = "<group>"; };
+		6BB394B22EE3E95300A45141 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = SOURCE_ROOT; };
 		6BD7F5C42ADABF7D004BBC84 /* EffectCameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectCameraProcessor.swift; sourceTree = "<group>"; };
 		6BD7F5C62ADAC920004BBC84 /* EmptyCameraProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCameraProcessor.swift; sourceTree = "<group>"; };
 		6BD7F5C92ADDA0A5004BBC84 /* MetalFilterRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalFilterRenderer.swift; sourceTree = "<group>"; };
@@ -296,6 +298,7 @@
 		6BE804D82AB738E800DAF8B4 /* CameraKit */ = {
 			isa = PBXGroup;
 			children = (
+				6BB394B22EE3E95300A45141 /* README.md */,
 				6B5F73352EDC844E007453B2 /* CoreKit */,
 				6BD7F5CB2ADDA2E1004BBC84 /* View */,
 				6B5F73302EDB3A69007453B2 /* ViewModel */,
@@ -441,6 +444,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6BB394B32EE3E95300A45141 /* README.md in Resources */,
 				6BE804E12AB738EB00DAF8B4 /* Preview Assets.xcassets in Resources */,
 				6BE804DE2AB738EB00DAF8B4 /* Assets.xcassets in Resources */,
 			);
