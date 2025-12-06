@@ -1,5 +1,7 @@
 // MARK: - SERVICE LAYER
 
+import CoreKit
+
 protocol CoreDependencies {
     var filterRepository: FilterRepository { get }
     var permissionService: CameraPermissionService { get }

@@ -8,6 +8,8 @@
 import Foundation
 import Observation
 import Combine
+import CoreKit
+
 
 public protocol CameraService {
     func getOutputView() -> CameraContentPreviewService

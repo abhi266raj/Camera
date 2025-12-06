@@ -10,6 +10,7 @@ import AVFoundation
 import UIKit
 import Photos
 import CoreMedia
+import CoreKit
 
 /// Basic Camera Pipeline Use UIView and record on camera
 class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate {

@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreMedia
+import CoreKit
 
 public protocol CameraProccessor {
     func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer

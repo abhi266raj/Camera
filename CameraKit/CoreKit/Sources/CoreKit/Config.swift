@@ -5,7 +5,6 @@
 //  Created by Abhiraj on 30/11/25.
 //
 
-
 // Top-level camera state
 public enum CameraPhase {
     case inactive
@@ -27,9 +26,9 @@ public enum CaptureType {
     case video
 }
 
-public struct CameraAction: OptionSet {
+public struct CameraAction: OptionSet, Sendable {
     
-    enum ActionError: Error {
+    public enum ActionError: Error {
         case invalidInput
         case unsupported
     }
@@ -45,38 +44,38 @@ public struct CameraAction: OptionSet {
     public static let photo = CameraAction(rawValue: 1 << 3)
 }
 
-enum CameraRenderMode {
+public enum CameraRenderMode {
     case basic
     case metal
 }
 
-enum SupportedCameraTask {
+public enum SupportedCameraTask {
     case capturePhoto
     case recordVideo
     case none
 }
 
-protocol BaseConfig {
+public protocol BaseConfig {
     var cameraOutputAction:CameraAction {get}
     var renderMode: CameraRenderMode {get}
     var supportedTask: SupportedCameraTask {get}
 }
 
-struct CameraConfig: BaseConfig {
-    let cameraOutputAction: CameraAction
-    let renderMode: CameraRenderMode
-    let supportedTask: SupportedCameraTask
+public struct CameraConfig: BaseConfig {
+    public let cameraOutputAction: CameraAction
+    public let renderMode: CameraRenderMode
+    public let supportedTask: SupportedCameraTask
 }
 
-enum CameraType: CaseIterable, Identifiable {
+public enum CameraType: CaseIterable, Identifiable {
     case camera
     case basicPhoto
     case basicVideo
     case metal
 
-    var id: Self { self }
+    public var id: Self { self }
     
-    func getCameraConfig() -> CameraConfig {
+    public func getCameraConfig() -> CameraConfig {
         switch self {
         case .camera:
             return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
@@ -128,3 +127,4 @@ enum CameraType: CaseIterable, Identifiable {
         }
     }
 }
+

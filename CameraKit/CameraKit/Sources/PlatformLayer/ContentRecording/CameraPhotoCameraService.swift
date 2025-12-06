@@ -9,6 +9,7 @@ import Combine
 import Foundation
 import AVFoundation
 import Photos
+import CoreKit
 
 class CameraPhotoCameraService: NSObject, CameraContentRecordingService {
     var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)

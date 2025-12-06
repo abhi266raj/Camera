@@ -6,6 +6,7 @@
 //
 
 import Combine
+import CoreKit
 
 public protocol CameraContentRecordingService {
     var supportedOutput: CameraAction {get}

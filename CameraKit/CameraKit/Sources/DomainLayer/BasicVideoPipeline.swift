@@ -9,6 +9,7 @@ import Foundation
 import AVFoundation
 import UIKit
 import Photos
+import CoreKit
 
 
 /// Basic Camera Pipeline Use UIView and record on camera

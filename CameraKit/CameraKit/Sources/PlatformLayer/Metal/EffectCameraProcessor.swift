@@ -10,7 +10,7 @@ import AVFoundation
 import UIKit
 import Photos
 import CoreMedia
-
+import CoreKit
 
 class EffectCameraProcessor : CameraProccessor {
     

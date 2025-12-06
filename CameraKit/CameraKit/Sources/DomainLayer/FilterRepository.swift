@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreImage
+import CoreKit
 
 // MARK: - Domain
 

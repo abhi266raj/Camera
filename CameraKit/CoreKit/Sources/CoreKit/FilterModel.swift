@@ -8,7 +8,7 @@
 import Foundation
 
 
-public struct FilterType: OptionSet {
+public struct FilterType: OptionSet, Sendable {
     
     public let rawValue: Int
     
@@ -28,7 +28,13 @@ public protocol FilterModel {
 }
 
 
-struct FilterEntity {
-    let title: String
-    let model: any FilterModel
+public struct FilterEntity {
+    public let title: String
+    public let model: any FilterModel
+    
+    public init(title: String, model: any FilterModel) {
+        self.title = title
+        self.model = model
+    }
 }
+

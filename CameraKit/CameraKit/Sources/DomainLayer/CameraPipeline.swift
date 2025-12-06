@@ -8,6 +8,8 @@ import Foundation
 import AVFoundation
 import UIKit
 import Photos
+import CoreKit
+
 
 class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipelineService {
     

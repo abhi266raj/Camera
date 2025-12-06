@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreKit
 
 extension CameraType {
     var title: String {

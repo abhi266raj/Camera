@@ -9,6 +9,7 @@ import Foundation
 import CoreMedia
 import CoreVideo
 import CoreImage
+import CoreKit
 
 
 class CIFilterModel : FilterModel {
