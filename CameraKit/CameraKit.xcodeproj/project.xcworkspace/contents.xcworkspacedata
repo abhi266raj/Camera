@@ -5,6 +5,6 @@
       location = "self:">
    </FileRef>
    <FileRef
-      location = "group:README.md">
+      location = "group:test.md">
    </FileRef>
 </Workspace>
