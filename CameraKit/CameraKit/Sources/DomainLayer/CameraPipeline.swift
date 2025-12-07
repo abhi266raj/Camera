@@ -9,6 +9,7 @@ import AVFoundation
 import UIKit
 import Photos
 import CoreKit
+import PlatformKit_runtime
 
 class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipelineService {
     

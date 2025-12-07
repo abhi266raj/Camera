@@ -13,19 +13,6 @@ import Combine
 import PlatformKit_api
 import PlatformKit_runtime
 
-public protocol CameraContentPreviewService {
-    var previewView: UIView {get}
-    func updateFrame()
-}
-
-public protocol CameraOutputService {
-    
-    associatedtype PreviewService: CameraContentPreviewService
-    associatedtype RecordingService: CameraContentRecordingService
-    
-    var previewService: PreviewService {get}
-    var recordingService: RecordingService {get}
-}
 
 final class CameraPreviewView: UIView, CameraContentPreviewService {
     var previewView: UIView {

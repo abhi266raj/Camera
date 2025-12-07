@@ -11,6 +11,6 @@ import UIKit
 import Photos
 
 @globalActor
-actor CameraInputSessionActor {
-    static var shared =  CameraInputSessionActor()
+public actor CameraInputSessionActor {
+    public static let shared =  CameraInputSessionActor()
 }

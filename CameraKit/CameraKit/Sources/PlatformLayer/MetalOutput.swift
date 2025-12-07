@@ -6,10 +6,8 @@
 //
 
 import Foundation
-import AVFoundation
 import UIKit
-import Photos
-import Combine
+import PlatformKit_api
 
 final class MetalCameraPreviewView: UIView, CameraContentPreviewService {
     var previewView: UIView {

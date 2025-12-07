@@ -8,37 +8,26 @@
 import Foundation
 import AVFoundation
 import UIKit
-import Photos
-
-public protocol CameraInput {
-    func startRunning() async
-    func stopRunning() async
-    
-    var audioDevice: AVCaptureDeviceInput? {get}
-    var videoDevice: AVCaptureDeviceInput? {get}
-    
-    func toggleCamera() async -> Bool 
-    
-}
+import PlatformKit_api
 
 @CameraInputSessionActor
-class CameraInputImp: CameraInput {
+public class CameraInputImp: CameraInput {
     
-    var session: AVCaptureSession?
+    public var session: AVCaptureSession?
     
-    nonisolated init() {
+    nonisolated public  init() {
         
     }
     
-    func startRunning() {
+    public func startRunning() {
         session?.startRunning()
     }
     
-    func stopRunning() {
+    public func stopRunning() {
         session?.stopRunning()
     }
     
-    nonisolated var audioDevice: AVCaptureDeviceInput? {
+    nonisolated public var audioDevice: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(for: .audio)
         guard let device else {return nil}
         do {
@@ -52,7 +41,7 @@ class CameraInputImp: CameraInput {
     
     var selectedPosition: AVCaptureDevice.Position = .front
     
-    nonisolated var videoDevice:  AVCaptureDeviceInput? {
+    nonisolated public var videoDevice:  AVCaptureDeviceInput? {
         frontCamera
     }
     
@@ -80,7 +69,7 @@ class CameraInputImp: CameraInput {
     
     
     
-    func toggleCamera()  async -> Bool {
+    public func toggleCamera()  async -> Bool {
        
         var camera = frontCamera
         if selectedPosition == .front {
