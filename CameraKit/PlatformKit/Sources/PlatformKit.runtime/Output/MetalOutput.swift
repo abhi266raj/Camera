@@ -19,9 +19,9 @@ public final class MetalCameraPreviewView: UIView, @preconcurrency CameraContent
         setNeedsDisplay()
     }
     
-    let metalView: PreviewMetalView
+    public let metalView: PreviewMetalView
 
-    init(metalView: PreviewMetalView) {
+    public init(metalView: PreviewMetalView) {
         self.metalView = metalView
         super.init(frame: .zero)
         metalView.translatesAutoresizingMaskIntoConstraints = false

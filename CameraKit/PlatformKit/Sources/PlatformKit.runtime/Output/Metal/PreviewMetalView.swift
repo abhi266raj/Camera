@@ -12,7 +12,7 @@ import MetalKit
 
 public class PreviewMetalView: MTKView {
     
-    var renderingDelegate:RenderingDelegate?
+    public var renderingDelegate:RenderingDelegate?
     
     enum Rotation: Int {
         case rotate0Degrees
@@ -49,7 +49,7 @@ public class PreviewMetalView: MTKView {
         }
     }
     
-    var sampleBuffer: CMSampleBuffer? {
+    public var sampleBuffer: CMSampleBuffer? {
         didSet {
             syncQueue.sync {
                 internalSampleBuffer = sampleBuffer
@@ -261,7 +261,7 @@ public class PreviewMetalView: MTKView {
         colorPixelFormat = .bgra8Unorm
     }
     
-    required init (frame: CGRect = .zero) {
+    required public init (frame: CGRect = .zero) {
         let gpu = MTLCreateSystemDefaultDevice()
         super.init(frame: frame, device: gpu)
         //device = MTLCreateSystemDefaultDevice()
@@ -459,7 +459,7 @@ public class PreviewMetalView: MTKView {
 @MainActor var counter1  = 0
 
 
-protocol RenderingDelegate  {
+public protocol RenderingDelegate  {
     func sampleBufferRendered(_ buffer: CMSampleBuffer)
 }
 
