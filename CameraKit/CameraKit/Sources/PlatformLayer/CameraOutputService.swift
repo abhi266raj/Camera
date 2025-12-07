@@ -10,6 +10,8 @@ import AVFoundation
 import UIKit
 import Photos
 import Combine
+import PlatformKit_api
+import PlatformKit_runtime
 
 public protocol CameraContentPreviewService {
     var previewView: UIView {get}

@@ -10,7 +10,6 @@ import Observation
 import Combine
 import CoreKit
 
-
 @Observable class CameraViewModel {
     
     init(permissionService: PermissionService = CameraPermissionService(), cameraConfig: CameraConfig , cameraService: CameraService) {

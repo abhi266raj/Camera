@@ -12,8 +12,6 @@ import Photos
 import CoreMedia
 import PlatformKit_api
 
-
-
 class VideoRecorderImp: VideoRecorder {
     var isRecording: Bool = false
     private var videoWriter: AVAssetWriter?

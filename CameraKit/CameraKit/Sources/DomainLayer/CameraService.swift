@@ -9,6 +9,7 @@ import Foundation
 import Observation
 import Combine
 import CoreKit
+import PlatformKit_api
 
 public protocol CameraService {
     func getOutputView() -> CameraContentPreviewService
@@ -51,7 +52,6 @@ extension CameraPipelineService {
     func updateSelection(filter: (any FilterModel)?)  {
         processor.updateSelection(filter: filter)
     }
-    
     
     func toggleCamera() async  -> Bool {
         return await input.toggleCamera()

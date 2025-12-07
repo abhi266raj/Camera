@@ -11,6 +11,7 @@ import UIKit
 import Photos
 import CoreMedia
 import CoreKit
+import PlatformKit_api
 
 class EffectCameraProcessor : CameraProccessor {
     
