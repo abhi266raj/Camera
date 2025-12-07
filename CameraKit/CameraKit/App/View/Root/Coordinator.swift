@@ -18,6 +18,7 @@ final class CameraComponentBuilder {
         self.viewModelServiceProvider = viewModelServiceProvider
     }
 
+    @MainActor
     func makeCameraView(cameraType: CameraType = .metal) -> CameraView {
         let viewModelDependcies = viewModelServiceProvider.viewModels(for: cameraType)
         let vm = viewModelDependcies.cameraViewModel
@@ -36,6 +37,7 @@ struct CameraCoordinator {
         self.componentBuilder = componentBuilder
     }
 
+    @MainActor
     func createView(cameraType: CameraType = .metal) -> CameraView {
         componentBuilder.makeCameraView(cameraType: cameraType)
     }
