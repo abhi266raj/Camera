@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import AVFoundation
 import CoreKit
+import PlatformKit_api
 
 public class CameraRecordingCameraService: CameraContentRecordingService {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)

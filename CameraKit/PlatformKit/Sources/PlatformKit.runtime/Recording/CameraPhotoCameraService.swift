@@ -10,6 +10,7 @@ import Foundation
 import AVFoundation
 import Photos
 import CoreKit
+import PlatformKit_api
 
 public class CameraPhotoCameraService: NSObject, CameraContentRecordingService, @unchecked Sendable {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
