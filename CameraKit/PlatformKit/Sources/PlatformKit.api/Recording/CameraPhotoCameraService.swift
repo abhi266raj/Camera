@@ -54,8 +54,6 @@ extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
         
         
         let unsafePhoto = UnsafePhoto(photo: photo)
-        
-        
         Task {
             do {
                 try await self.savePhotoToLibrary(unsafePhoto)

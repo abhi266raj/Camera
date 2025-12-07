@@ -14,7 +14,6 @@ public protocol CameraContentRecordingService {
     var supportedOutput: CameraAction {get}
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
     func performAction( action: CameraAction) async throws -> Bool
-    
 }
 
 public protocol VideoOutput {

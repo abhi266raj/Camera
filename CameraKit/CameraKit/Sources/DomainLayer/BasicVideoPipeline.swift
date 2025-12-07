@@ -10,7 +10,7 @@ import AVFoundation
 import UIKit
 import Photos
 import CoreKit
-import PlatformKit
+import PlatformKit_api
 
 
 /// Basic Camera Pipeline Use UIView and record on camera

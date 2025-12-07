@@ -10,7 +10,6 @@ import AVFoundation
 import UIKit
 import Photos
 
-
 public protocol CameraInput {
     func startRunning() async
     func stopRunning() async

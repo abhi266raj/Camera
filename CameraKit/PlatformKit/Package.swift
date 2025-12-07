@@ -10,23 +10,35 @@ let package = Package(
         .library(
             name: "PlatformKit",
             type: .dynamic,
-            targets: ["PlatformKit"]
+            targets: [
+                "PlatformKit.api",
+                "PlatformKit.runtime"
+            ]
         ),
     ],
     dependencies: [
-        // Local dependency on CoreKit
-        .package(path: "../CoreKit") // ← relative path to CoreKit package
+        .package(path: "../CoreKit")
     ],
     targets: [
         .target(
-            name: "PlatformKit",
+            name: "PlatformKit.api",
             dependencies: [
-                "CoreKit"   // ← target dependency
-            ]
+                "CoreKit"
+            ],
+            path: "Sources/PlatformKit.api",
+            
+        ),
+        .target(
+            name: "PlatformKit.runtime",
+            dependencies: [
+                "PlatformKit.api",
+                "CoreKit"
+            ],
+            path: "Sources/PlatformKit.runtime",
         ),
         .testTarget(
             name: "PlatformKitTests",
-            dependencies: ["PlatformKit"]
+            dependencies: ["PlatformKit.runtime"]
         ),
     ]
 )

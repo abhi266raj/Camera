@@ -12,7 +12,7 @@ import UIKit
 import Photos
 import Combine
 import CoreKit
-import PlatformKit
+import PlatformKit_api
 
 class SampleBufferCameraRecorderService: CameraContentRecordingService {
     var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)

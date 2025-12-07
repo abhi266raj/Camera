@@ -9,7 +9,6 @@ import Foundation
 import AVFoundation
 import Photos
 
-
 public enum PermissionStatus {
     case unknown
     case authorized

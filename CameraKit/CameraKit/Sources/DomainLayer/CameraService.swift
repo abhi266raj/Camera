@@ -10,7 +10,6 @@ import Observation
 import Combine
 import CoreKit
 
-
 public protocol CameraService {
     func getOutputView() -> CameraContentPreviewService
     func updateSelection(filter: (any FilterModel)?)

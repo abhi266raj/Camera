@@ -11,7 +11,6 @@ import UIKit
 import Photos
 import Combine
 
-
 public protocol CameraContentPreviewService {
     var previewView: UIView {get}
     func updateFrame()
