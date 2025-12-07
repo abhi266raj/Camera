@@ -12,27 +12,31 @@ import CoreImage
 import CoreKit
 
 
-class CIFilterModel : FilterModel {
-    let type: FilterType = .ciFilter
-    let contents: CIFilter
+public class CIFilterModel : FilterModel {
+    public let type: FilterType = .ciFilter
+    public let contents: CIFilter
     
-    init(contents: CIFilter) {
+    public init(contents: CIFilter) {
         self.contents = contents
     }
 }
 
-class MetalFilterModel : FilterModel {
-    let type: FilterType = .metalFilter
-    let contents: String
+public class MetalFilterModel : FilterModel {
+    public let type: FilterType = .metalFilter
+    public let contents: String
     
-    init(contents: String = "rosyEffect") {
+    public init(contents: String = "rosyEffect") {
         self.contents = contents
     }
     
 }
 
-class EmptyFilterModel : FilterModel {
-    let type: FilterType = []
-    let contents: String = ""
+public class EmptyFilterModel : FilterModel {
+    public let type: FilterType = []
+    public let contents: String = ""
+    
+    public init() {
+        
+    }
     
 }

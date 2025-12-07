@@ -13,10 +13,14 @@ import CoreMedia
 import CoreKit
 import PlatformKit_api
 
-class EffectCameraProcessor : CameraProccessor {
+public class EffectCameraProcessor : CameraProccessor {
     
     var filterRender1: CIFilterRenderer = CIFilterRenderer()
     var filterRender2: MetalFilterRenderer = MetalFilterRenderer()
+    
+    public init() {
+        
+    }
     
     var selectedFilter: (any FilterModel)? {
         didSet {
@@ -33,7 +37,7 @@ class EffectCameraProcessor : CameraProccessor {
         }
     }
     
-    func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
+    public func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
         guard let selectedFilter else  {return sampleBuffer }
         var resultBuffer = sampleBuffer
         if selectedFilter.type.contains(.ciFilter) {
@@ -74,7 +78,7 @@ class EffectCameraProcessor : CameraProccessor {
         return sampleBuffer
     }
     
-    func updateSelection(filter: (any FilterModel)?)  {
+    public func updateSelection(filter: (any FilterModel)?)  {
         self.selectedFilter = filter
     }
     
