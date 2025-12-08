@@ -6,6 +6,7 @@
 //
 import CoreKit
 import AppView
+import SwiftUI
 
 // MARK: - Camera Component (Child)
 
@@ -41,6 +42,13 @@ struct CameraCoordinator {
     @MainActor
     func createView(cameraType: CameraType = .metal) -> CameraView {
         componentBuilder.makeCameraView(cameraType: cameraType)
+    }
+    
+    @MainActor
+    func showHomeView() ->  some View {
+        let view = CameraTypeListView(viewModel: CameraTypeListViewModel())
+        return view
+        
     }
 }
 

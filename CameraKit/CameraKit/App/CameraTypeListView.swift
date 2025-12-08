@@ -1,6 +1,14 @@
 import SwiftUI
 import CoreKit
 
+@Observable
+public class CameraTypeListViewModel {
+    init() {
+        self.cameraTypes = CameraType.allCases
+    }
+    var cameraTypes: [CameraType]
+}
+
 extension CameraType {
     var title: String {
         switch self {
@@ -12,10 +20,16 @@ extension CameraType {
     }
 }
 
-struct CameraTypeListView: View {
-    var body: some View {
+public struct CameraTypeListView: View {
+    @State private var viewModel: CameraTypeListViewModel
+    
+    public init(viewModel: CameraTypeListViewModel) {
+        self.viewModel = viewModel
+    }
+    
+    public var body: some View {
         NavigationStack {
-            List(CameraType.allCases) { type in
+            List(viewModel.cameraTypes) { type in
                 NavigationLink(value: type) {
                     Text(type.title)
                 }
