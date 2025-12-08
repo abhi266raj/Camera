@@ -7,6 +7,9 @@
 import CoreKit
 import AppView
 import SwiftUI
+import Observation
+import AppViewModel
+import AppView
 
 // MARK: - Camera Component (Child)
 
@@ -30,10 +33,11 @@ final class CameraComponentBuilder {
 }
 
 
-// MARK: - Coordinator
-
-struct CameraCoordinator {
+@Observable
+class AppCoordinator {
+    
     private let componentBuilder: CameraComponentBuilder
+    var path = NavigationPath()
 
     init(componentBuilder: CameraComponentBuilder = CameraComponentBuilder()) {
         self.componentBuilder = componentBuilder
@@ -46,10 +50,23 @@ struct CameraCoordinator {
     
     @MainActor
     func showHomeView() ->  some View {
-        let view = CameraTypeListView(viewModel: CameraTypeListViewModel())
-        return view
+        let viewModel = CameraTypeListViewModel()
+        let view = CameraTypeListView(viewModel: viewModel)
+        viewModel.onSelect = {type in
+            self.path.append(type)
+        }
+        return NavigationStack(path: Binding(
+            get: { self.path },
+            set: { self.path = $0 }
+        )) {
+            view.navigationDestination(for: CameraType.self) { type in
+                self.createView(cameraType: type)
+        }
+        .navigationTitle("Camera Types")
         
+        }
     }
+            
 }
 
 

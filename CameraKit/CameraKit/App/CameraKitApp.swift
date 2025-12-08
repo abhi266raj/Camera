@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct CameraKitApp: App {
-    @State var coordinator = CameraCoordinator()
+    @State var coordinator = AppCoordinator()
     var body: some Scene {
         WindowGroup {
             coordinator.showHomeView()

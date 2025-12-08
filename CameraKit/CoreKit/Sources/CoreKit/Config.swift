@@ -128,3 +128,14 @@ public enum CameraType: CaseIterable, Identifiable {
     }
 }
 
+public extension CameraType {
+    var title: String {
+        switch self {
+        case .camera: return "Camera"
+        case .basicPhoto: return "Photo Camera"
+        case .basicVideo: return "Video Camera"
+        case .metal: return "Filtered (Metal) Camera"
+        }
+    }
+}
+
