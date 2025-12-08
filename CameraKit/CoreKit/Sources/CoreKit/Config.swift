@@ -67,7 +67,7 @@ public struct CameraConfig: BaseConfig {
     public let supportedTask: SupportedCameraTask
 }
 
-public enum CameraType: CaseIterable, Identifiable {
+public enum CameraType: CaseIterable, Identifiable, Sendable {
     case camera
     case basicPhoto
     case basicVideo

@@ -46,7 +46,6 @@ public protocol CameraPipelineServiceNew: CameraService {
 public extension CameraPipelineService {
     func getOutputView() -> CameraContentPreviewService {
         return output.previewService
-        
     }
     
     func updateSelection(filter: (any FilterModel)?)  {
@@ -66,8 +65,6 @@ public extension CameraPipelineService {
     }
     
 }
-
-
 
 public extension CameraPipelineServiceNew {
     func getOutputView() -> CameraContentPreviewService {

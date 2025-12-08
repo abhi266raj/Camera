@@ -24,11 +24,34 @@ final class CameraComponentBuilder {
     }
 
     @MainActor
-    func makeCameraView(cameraType: CameraType = .metal) -> CameraView {
-        let viewModelDependcies = viewModelServiceProvider.viewModels(for: cameraType)
-        let vm = viewModelDependcies.cameraViewModel
-        let filterVM = viewModelDependcies.filterListViewModel
-        return CameraView(viewModel: vm, filterListViewModel: filterVM)
+    func makeCameraView(cameraType: CameraType = .metal) -> some View {
+        let vmodel = AsyncViewModel{
+            let viewModelDependcies = await self.viewModelServiceProvider.viewModels(for: cameraType)
+            let vm = viewModelDependcies.cameraViewModel
+            let filterVM = viewModelDependcies.filterListViewModel
+            let view =  CameraView(viewModel: vm, filterListViewModel: filterVM)
+            return AnyView(view)
+        }
+        let view = AsyncView(model: vmodel)
+        return view
+    }
+}
+
+@Observable class AsyncViewModel {
+    var content: AnyView?
+    init(loadContent: @escaping () async -> AnyView) {
+        Task {
+            content = await loadContent()
+        }
+    }
+}
+
+struct AsyncView: View {
+    
+    @State var model: AsyncViewModel
+    
+    var body: some View {
+        model.content ?? AnyView(Text("Loading"))
     }
 }
 
@@ -44,8 +67,8 @@ class AppCoordinator {
     }
 
     @MainActor
-    func createView(cameraType: CameraType = .metal) -> CameraView {
-        componentBuilder.makeCameraView(cameraType: cameraType)
+    func createView(cameraType: CameraType = .metal) -> some View {
+         componentBuilder.makeCameraView(cameraType: cameraType)
     }
     
     @MainActor

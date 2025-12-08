@@ -35,7 +35,7 @@ struct CameraDependenciesImpl: CameraDependencies {
 }
 
 protocol CameraDependenciesProvider {
-    @MainActor func dependencies(for cameraType: CameraType, config: CameraConfig?) -> CameraDependencies
+    func dependencies(for cameraType: CameraType, config: CameraConfig?) async -> CameraDependencies
 }
 
 final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
@@ -45,18 +45,18 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
     init(core:CoreDependencies) {
         self.core = core
     }
-
-    func dependencies(for cameraType: CameraType, config: CameraConfig?) -> CameraDependencies {
+    
+    func dependencies(for cameraType: CameraType, config: CameraConfig?) async -> CameraDependencies {
         let resolvedConfig = config ?? cameraType.getCameraConfig()
 
-        let cameraService: CameraService = {
+        let cameraService: CameraService = await {
             switch cameraType {
             case .camera:
-                return CameraPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
+                return  await CameraPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             case .basicPhoto:
-                return BasicPhotoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
+                return await BasicPhotoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             case .basicVideo:
-                return BasicVideoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
+                return await BasicVideoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             case .metal:
                 return BasicMetalPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             }
@@ -82,14 +82,14 @@ struct ViewModelDependenciesImpl: ViewModelDependencies {
 }
 
 protocol ViewModelDependenciesProvider {
-    @MainActor func viewModels(for cameraType: CameraType) -> ViewModelDependencies
+    func viewModels(for cameraType: CameraType) async  -> ViewModelDependencies
 }
 
 struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
     let services: CameraDependenciesProvider
 
-    func viewModels(for cameraType: CameraType) -> ViewModelDependencies {
-        let deps = services.dependencies(for: cameraType, config: nil)
+    func viewModels(for cameraType: CameraType) async -> ViewModelDependencies {
+        let deps = await services.dependencies(for: cameraType, config: nil)
 
         let cameraVM = CameraViewModel(
             permissionService: deps.permissionService,
@@ -129,9 +129,3 @@ final class AppDependencies {
 }
 
 
-// MARK: - USAGE EXAMPLE
-
-// let vm = AppDependencies.shared
-//            .viewModels
-//            .viewModels(for: .camera)
-//            .cameraViewModel
