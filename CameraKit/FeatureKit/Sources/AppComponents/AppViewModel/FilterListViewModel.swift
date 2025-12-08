@@ -2,7 +2,6 @@ import Foundation
 import Observation
 import CoreKit
 import DomainKit_api
-import DomainKit_runtime
 
 
 @Observable
@@ -14,7 +13,7 @@ final public class FilterListViewModel: @unchecked Sendable {
 
     public init(
         cameraService: CameraService,
-        repository: FilterRepository = FilterRepositoryImpl()
+        repository: FilterRepository
     ) {
         self.cameraService = cameraService
         self.repository = repository

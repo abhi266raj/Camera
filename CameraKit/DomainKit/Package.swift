@@ -39,7 +39,7 @@ let package = Package(
                 "DomainKit.api",
                 "CoreKit",
                 .product(name: "PlatformKit.api", package: "PlatformKit"),
-                .product(name: "PlatformKit.runtime", package: "PlatformKit")
+                // .product(name: "PlatformKit.runtime", package: "PlatformKit")
             ],
             path: "Sources/DomainKit.runtime"
         ),
