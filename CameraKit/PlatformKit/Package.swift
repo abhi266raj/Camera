@@ -9,7 +9,6 @@ let package = Package(
     products: [
         .library(
             name: "PlatformKit",
-            type: .dynamic,
             targets: [
                 "PlatformKit.api",
                 "PlatformKit.runtime"

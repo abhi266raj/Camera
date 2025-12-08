@@ -9,14 +9,17 @@ import Foundation
 import PlatformKit_api
 
 
-class VideoOutputImp {
-    var videoRecorder: VideoRecorder?
-    let videoSaver: VideoSaver  = VideoSaverImp()
+public class VideoOutputImp {
+    public var videoRecorder: VideoRecorder?
+    public let videoSaver: VideoSaver  = VideoSaverImp()
+    public init() {
+        
+    }
 }
 
 extension VideoOutputImp: VideoOutput {
     
-    func startRecord() async {
+    public func startRecord() async {
         if videoRecorder == nil {
             let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
             let videoOutputPath = (documentsPath as NSString).appendingPathComponent("output.mov")
@@ -30,7 +33,7 @@ extension VideoOutputImp: VideoOutput {
         
     }
     
-    func stopRecord() async  {
+    public func stopRecord() async  {
         guard let recorder = videoRecorder else {return }
         videoRecorder = nil
         return await withCheckedContinuation { continum in
