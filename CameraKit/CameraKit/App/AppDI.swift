@@ -49,18 +49,18 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
     func dependencies(for cameraType: CameraType, config: CameraConfig?) async -> CameraDependencies {
         let resolvedConfig = config ?? cameraType.getCameraConfig()
 
-        let cameraService: CameraService = await {
+        let cameraService: CameraService = await MainActor.run {
             switch cameraType {
             case .camera:
-                return  await CameraPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
+                return  CameraPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             case .basicPhoto:
-                return await BasicPhotoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
+                return  BasicPhotoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             case .basicVideo:
-                return await BasicVideoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
+                return  BasicVideoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             case .metal:
                 return BasicMetalPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             }
-        }()
+        }
 
         return CameraDependenciesImpl(
             coreDependencies: core, cameraService: cameraService
