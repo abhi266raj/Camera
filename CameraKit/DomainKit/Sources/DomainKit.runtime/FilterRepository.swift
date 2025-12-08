@@ -10,17 +10,16 @@ import Foundation
 import CoreImage
 import CoreKit
 import PlatformKit_runtime
-
-// MARK: - Domain
-
-protocol FilterRepository {
-    func fetchAll() async -> [FilterEntity]
-}
+import DomainKit_api
 
 // MARK: - DataSource
 
-final class StaticFilterDataSource {
-    func loadFilters() async -> [FilterEntity] {
+final public class StaticFilterDataSource {
+    
+    public init() {
+        
+    }
+    public func loadFilters() async -> [FilterEntity] {
         [
             FilterEntity(title: "Monochrome", model: CIFilterModel(contents: CIFilter(name: "CIColorMonochrome")!)),
             FilterEntity(title: "Metal", model: MetalFilterModel()),
@@ -33,14 +32,14 @@ final class StaticFilterDataSource {
 
 // MARK: - Repository Implementation
 
-final class FilterRepositoryImpl: FilterRepository {
+final public class FilterRepositoryImpl: FilterRepository {
     private let dataSource: StaticFilterDataSource
 
-    init(dataSource: StaticFilterDataSource = StaticFilterDataSource()) {
+    public init(dataSource: StaticFilterDataSource = StaticFilterDataSource()) {
         self.dataSource = dataSource
     }
 
-    func fetchAll() async -> [FilterEntity] {
+    public func fetchAll() async -> [FilterEntity] {
         await dataSource.loadFilters()
     }
 }

@@ -8,12 +8,17 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "PlatformKit",
-            targets: [
-                "PlatformKit.api",
-                "PlatformKit.runtime"
-            ]
+            name: "PlatformKit",           // Umbrella
+            targets: ["PlatformKit.api", "PlatformKit.runtime"]
         ),
+        .library(
+            name: "PlatformKit.api",       // API-only
+            targets: ["PlatformKit.api"]
+        ),
+        .library(
+            name: "PlatformKit.runtime",   // Runtime-only
+            targets: ["PlatformKit.runtime"]
+        )
     ],
     dependencies: [
         .package(path: "../CoreKit")
@@ -21,11 +26,8 @@ let package = Package(
     targets: [
         .target(
             name: "PlatformKit.api",
-            dependencies: [
-                "CoreKit"
-            ],
-            path: "Sources/PlatformKit.api",
-            
+            dependencies: ["CoreKit"],
+            path: "Sources/PlatformKit.api"
         ),
         .target(
             name: "PlatformKit.runtime",
@@ -33,7 +35,7 @@ let package = Package(
                 "PlatformKit.api",
                 "CoreKit"
             ],
-            path: "Sources/PlatformKit.runtime",
+            path: "Sources/PlatformKit.runtime"
         ),
         .testTarget(
             name: "PlatformKitTests",

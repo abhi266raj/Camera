@@ -8,23 +8,16 @@
 import Foundation
 import AVFoundation
 import Photos
+import DomainKit_api
 
-public enum PermissionStatus {
-    case unknown
-    case authorized
-    case denied
-}
-
-protocol PermissionService {
-    @MainActor
-    func requestCameraAndMicrophoneIfNeeded() async -> Bool
+public struct CameraPermissionService: PermissionService {
     
-    func requestPhotoAddAccess() async -> Bool
-}
-
-struct CameraPermissionService: PermissionService {
+    public init(){
+        
+    }
+    
     @MainActor
-    func requestCameraAndMicrophoneIfNeeded() async -> Bool {
+    public func requestCameraAndMicrophoneIfNeeded() async -> Bool {
         let videoPermission = await withCheckedContinuation { continuation in
             AVCaptureDevice.requestAccess(for: .video) { (granted: Bool) in
                 continuation.resume(returning: granted)
@@ -42,7 +35,7 @@ struct CameraPermissionService: PermissionService {
         return true
     }
     
-    func requestPhotoAddAccess() async -> Bool {
+    public func requestPhotoAddAccess() async -> Bool {
         let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         switch status {
         case .authorized:

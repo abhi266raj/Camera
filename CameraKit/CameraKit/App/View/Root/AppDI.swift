@@ -1,6 +1,8 @@
 // MARK: - SERVICE LAYER
 
 import CoreKit
+import DomainKit_api
+import DomainKit_runtime
 
 protocol CoreDependencies {
     var filterRepository: FilterRepository { get }

@@ -20,7 +20,7 @@ public protocol CameraService {
     func setup() async
 }
 
-protocol CameraPipelineService: CameraService {
+public protocol CameraPipelineService: CameraService {
     associatedtype PipelineInput: CameraInput
     associatedtype PipelineOutput: CameraOutputService
     associatedtype PipelineProcessor: CameraProccessor
@@ -31,7 +31,7 @@ protocol CameraPipelineService: CameraService {
 }
 
 
-protocol CameraPipelineServiceNew: CameraService {
+public protocol CameraPipelineServiceNew: CameraService {
     associatedtype PipelineInput: CameraInput
     associatedtype PipelinePreviewOutput: CameraContentPreviewService
     associatedtype PipelineRecordingOutput: CameraContentRecordingService
@@ -43,7 +43,7 @@ protocol CameraPipelineServiceNew: CameraService {
     var processor: PipelineProcessor {get}
 }
 
-extension CameraPipelineService {
+public extension CameraPipelineService {
     func getOutputView() -> CameraContentPreviewService {
         return output.previewService
         
@@ -69,7 +69,7 @@ extension CameraPipelineService {
 
 
 
-extension CameraPipelineServiceNew {
+public extension CameraPipelineServiceNew {
     func getOutputView() -> CameraContentPreviewService {
         return previewOutput
     }

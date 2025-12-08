@@ -11,6 +11,7 @@ import UIKit
 import Photos
 import CoreKit
 import PlatformKit_runtime
+import DomainKit_api
 
 
 /// Basic Camera Pipeline Use UIView and record on camera
