@@ -26,7 +26,7 @@ let package = Package(
             name: "AppViewModel",
             dependencies: [
                 .product(name: "DomainKit.api", package: "DomainKit"),
-                .product(name: "DomainKit.runtime", package: "DomainKit")
+                // .product(name: "DomainKit.runtime", package: "DomainKit")
             ],
             path: "Sources/AppComponents/AppViewModel"
         ),

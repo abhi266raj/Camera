@@ -11,11 +11,11 @@ import Combine
 import CoreKit
 import PlatformKit_api
 import DomainKit_api
-import DomainKit_runtime
+// import DomainKit_runtime
 
 @Observable public class CameraViewModel: @unchecked Sendable {
     
-    public init(permissionService: PermissionService = CameraPermissionService(), cameraConfig: CameraConfig , cameraService: CameraService) {
+    public init(permissionService: PermissionService, cameraConfig: CameraConfig , cameraService: CameraService) {
         self.permissionService = permissionService
         self.cameraConfig = cameraConfig
         self.cameraService = cameraService
