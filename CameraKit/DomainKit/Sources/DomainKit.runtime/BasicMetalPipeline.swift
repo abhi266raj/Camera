@@ -34,7 +34,6 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDe
     //var processor = EmptyCameraProcessor()
     public var processor: EffectCameraProcessor = EffectCameraProcessor()
     
-    
     public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session

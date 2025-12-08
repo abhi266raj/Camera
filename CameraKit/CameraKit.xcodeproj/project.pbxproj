@@ -11,7 +11,7 @@
 		6B6D7DF02EE6D9FA00B59C01 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DEE2EE6D9FA00B59C01 /* Coordinator.swift */; };
 		6B6D7DF42EE6DAE600B59C01 /* AppViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6D7DF32EE6DAE600B59C01 /* AppViewModel */; };
 		6B6D7DF92EE6DB0200B59C01 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6D7DF82EE6DB0200B59C01 /* AppView */; };
-		6B6F6B882EE6D63500ACAD87 /* DomainKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6F6B872EE6D63500ACAD87 /* DomainKit */; };
+		6B6F6B882EE6D63500ACAD87 /* DomainKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6F6B872EE6D63500ACAD87 /* DomainKit */; settings = {ATTRIBUTES = (Required, ); }; };
 		6BB394B32EE3E95300A45141 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6BB394B22EE3E95300A45141 /* README.md */; };
 		6BB394C32EE402FE00A45141 /* CoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6BB394C22EE402FE00A45141 /* CoreKit */; settings = {ATTRIBUTES = (Required, ); }; };
 		6BB394C62EE40B1C00A45141 /* PlatformKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6BB394C52EE40B1C00A45141 /* PlatformKit */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -41,11 +41,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6BE1D4A72EE6C200006581AB /* CopyFiles */ = {
+		6B6D7DFF2EE705C900B59C01 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 0;
+			dstSubfolderSpec = 7;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -183,7 +183,7 @@
 				6BE804D22AB738E800DAF8B4 /* Sources */,
 				6BE804D32AB738E800DAF8B4 /* Frameworks */,
 				6BE804D42AB738E800DAF8B4 /* Resources */,
-				6BE1D4A72EE6C200006581AB /* CopyFiles */,
+				6B6D7DFF2EE705C900B59C01 /* CopyFiles */,
 			);
 			buildRules = (
 			);

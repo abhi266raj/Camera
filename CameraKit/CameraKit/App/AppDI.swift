@@ -34,8 +34,8 @@ struct CameraDependenciesImpl: CameraDependencies {
     }
 }
 
-@MainActor protocol CameraDependenciesProvider {
-    func dependencies(for cameraType: CameraType, config: CameraConfig?) -> CameraDependencies
+protocol CameraDependenciesProvider {
+    @MainActor func dependencies(for cameraType: CameraType, config: CameraConfig?) -> CameraDependencies
 }
 
 final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
@@ -81,8 +81,8 @@ struct ViewModelDependenciesImpl: ViewModelDependencies {
     let filterListViewModel: FilterListViewModel
 }
 
-@MainActor protocol ViewModelDependenciesProvider {
-    func viewModels(for cameraType: CameraType) -> ViewModelDependencies
+protocol ViewModelDependenciesProvider {
+    @MainActor func viewModels(for cameraType: CameraType) -> ViewModelDependencies
 }
 
 struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
@@ -113,13 +113,12 @@ struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
 // MARK: - APP ROOT CONTAINER
 
 final class AppDependencies {
-    @MainActor static let shared = AppDependencies()
+    static let shared = AppDependencies()
 
     let core: CoreDependencies
     let services: CameraDependenciesProvider
     let viewModels: ViewModelDependenciesProvider
 
-    @MainActor
     private init() {
         let core = CoreDependenciesImpl()
         self.core = core
