@@ -8,10 +8,6 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "FeatureKit",
-            targets: ["FeatureKit"]
-        ),
-        .library(
             name: "AppView",
             targets: ["AppView"]
         ),
@@ -25,12 +21,7 @@ let package = Package(
         .package(path: "../DomainKit")
     ],
     targets: [
-        // Main AppKit target
-        .target(
-            name: "FeatureKit",
-            dependencies: ["AppView", "AppViewModel", "CoreKit"]
-        ),
-        // ViewModel target depends on PlatformKit.api & PlatformKit.runtime
+        // ViewModel target depends on DomainKit.api & DomainKit.runtime
         .target(
             name: "AppViewModel",
             dependencies: [
@@ -46,10 +37,6 @@ let package = Package(
             path: "Sources/AppComponents/AppView"
         ),
         // Test targets
-        .testTarget(
-            name: "FeatureKitTests",
-            dependencies: ["FeatureKit"]
-        ),
         .testTarget(
             name: "AppViewTests",
             dependencies: ["AppView"]
