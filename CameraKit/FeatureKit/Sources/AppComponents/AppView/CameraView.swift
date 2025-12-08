@@ -9,16 +9,16 @@ import SwiftUI
 import PlatformKit_api
 import AppViewModel
 
-struct CameraView: View {
+public struct CameraView: View {
     @State var viewModel: CameraViewModel
     @State var filterListViewModel: FilterListViewModel
     
-    init(viewModel: CameraViewModel, filterListViewModel: FilterListViewModel) {
+    public init(viewModel: CameraViewModel, filterListViewModel: FilterListViewModel) {
         self.viewModel = viewModel
         self.filterListViewModel = filterListViewModel
     }
     
-    var body: some View {
+    public var body: some View {
         VStack {
             switch viewModel.cameraPermissionState {
             case .unknown:
