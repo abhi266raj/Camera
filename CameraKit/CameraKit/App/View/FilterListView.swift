@@ -5,6 +5,7 @@
 //  Created by Abhiraj on 22/10/23.
 //
 
+import AppViewModel
 import SwiftUI
 
 struct FilterListView: View {

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import PlatformKit_api
+import AppViewModel
 
 struct CameraView: View {
     @State var viewModel: CameraViewModel

@@ -1,4 +1,5 @@
 import SwiftUI
+import AppViewModel
 
 struct CameraLoadingView: View {
     let viewModel: CameraViewModel

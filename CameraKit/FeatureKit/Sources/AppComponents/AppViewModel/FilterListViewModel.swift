@@ -6,13 +6,13 @@ import DomainKit_runtime
 
 
 @Observable
-final class FilterListViewModel {
+final public class FilterListViewModel: @unchecked Sendable {
     private let cameraService: CameraService
     private let repository: FilterRepository
 
     private(set) var items: [FilterEntity] = []
 
-    init(
+    public init(
         cameraService: CameraService,
         repository: FilterRepository = FilterRepositoryImpl()
     ) {
@@ -23,18 +23,18 @@ final class FilterListViewModel {
         }
     }
     
-    func refresh() async {
+    public func refresh() async {
         items = await repository.fetchAll()
     }
 
-    var count: Int { items.count }
+    public var count: Int { items.count }
 
-    func title(for index: Int) -> String {
+    public func title(for index: Int) -> String {
         guard items.indices.contains(index) else { return "" }
         return items[index].title
     }
 
-    func selectItem(at index: Int) {
+    public func selectItem(at index: Int) {
         guard items.indices.contains(index) else { return }
         cameraService.updateSelection(filter: items[index].model)
     }

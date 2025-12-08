@@ -13,9 +13,9 @@ import PlatformKit_api
 import DomainKit_api
 import DomainKit_runtime
 
-@Observable class CameraViewModel {
+@Observable public class CameraViewModel: @unchecked Sendable {
     
-    init(permissionService: PermissionService = CameraPermissionService(), cameraConfig: CameraConfig , cameraService: CameraService) {
+    public init(permissionService: PermissionService = CameraPermissionService(), cameraConfig: CameraConfig , cameraService: CameraService) {
         self.permissionService = permissionService
         self.cameraConfig = cameraConfig
         self.cameraService = cameraService
@@ -33,22 +33,22 @@ import DomainKit_runtime
     }
     
     private var cameraMode: CameraMode = .preview
-    var cameraPhase: CameraPhase = .inactive
+    public var cameraPhase: CameraPhase = .inactive
     private var cancellables = Set<AnyCancellable>()
     private let cameraConfig: CameraConfig
     private let permissionService: PermissionService
-    var cameraPermissionState: PermissionStatus = .unknown
+    public var cameraPermissionState: PermissionStatus = .unknown
     private let cameraService:CameraService
     
-    var showCamera: Bool {
+    public var showCamera: Bool {
         return cameraConfig.supportedTask == .capturePhoto
     }
     
-    var showFilter: Bool {
+    public var showFilter: Bool {
         return cameraConfig.renderMode == .metal
     }
     
-    var showRecording: Bool {
+    public var showRecording: Bool {
         return cameraConfig.supportedTask == .recordVideo
     }
     
@@ -66,19 +66,19 @@ import DomainKit_runtime
         }
     }
     
-    func getOutputView() -> CameraContentPreviewService {
+    public func getOutputView() -> CameraContentPreviewService {
         return cameraService.getOutputView()
         
     }
     
-    func toggleCamera() async  -> Bool {
+    public func toggleCamera() async  -> Bool {
         cameraPhase = .switching
         let value =  await cameraService.toggleCamera()
         cameraPhase = .active(cameraMode)
         return value
     }
     
-    func performAction( action: CameraAction) async throws -> Bool {
+    public func performAction( action: CameraAction) async throws -> Bool {
         return try await cameraService.performAction(action:action)
     }
     

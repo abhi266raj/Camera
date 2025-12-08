@@ -3,6 +3,7 @@
 import CoreKit
 import DomainKit_api
 import DomainKit_runtime
+import AppViewModel
 
 protocol CoreDependencies {
     var filterRepository: FilterRepository { get }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppViewModel
 
 struct CameraActionBar: View {
     let viewModel: CameraViewModel
