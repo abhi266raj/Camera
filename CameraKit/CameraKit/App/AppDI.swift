@@ -68,7 +68,6 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
     }
 }
 
-
 // MARK: - VIEWMODEL LAYER
 
 protocol ViewModelDependencies {
@@ -108,7 +107,6 @@ struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
         )
     }
 }
-
 
 // MARK: - APP ROOT CONTAINER
 

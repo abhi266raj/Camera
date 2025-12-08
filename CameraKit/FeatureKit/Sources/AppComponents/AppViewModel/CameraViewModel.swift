@@ -52,7 +52,6 @@ import DomainKit_api
         return cameraConfig.supportedTask == .recordVideo
     }
     
-    
     @MainActor public func setup() async {
         if cameraPermissionState == .unknown {
             let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()
