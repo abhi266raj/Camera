@@ -1,5 +1,5 @@
 //
-//  BasicCameraPipeline.swift
+//  BasicPhotoPipeline.swift
 //  CameraKit
 //
 //  Created by Abhiraj on 08/10/23.
@@ -15,34 +15,41 @@ import DomainKit_api
 
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicVideoPipeline:  CameraPipelineService {
+public class BasicPhotoPipeline: NSObject, CameraPipelineService, @unchecked Sendable {
     
-    typealias InputType = CameraInputImp
+    public typealias InputType = CameraInputImp
     typealias ProcessorType = EmptyCameraProcessor
-    typealias OutputType = CameraVideoOutputImp
- 
+    typealias OutputType = CameraPhotoOutputImp
+    
     private let captureSession: AVCaptureSession
-    let output: CameraVideoOutputImp
-    let input: InputType
-    let fileOutput = AVCaptureMovieFileOutput()
-    var processor = EmptyCameraProcessor()
+    public let output: CameraPhotoOutputImp
+    public let input: InputType
+    let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
+    public var processor = EmptyCameraProcessor()
     
     @MainActor
-    init(cameraOutputAction: CameraAction) {
+    public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)
+        self.output = CameraPhotoOutputImp(session: session, photoOutput: photoOutput)
         self.input = CameraInputImp()
     }
-
-    func setup() {
-            Task{ @CameraInputSessionActor in
-                let _  = setupInputAndOutput()
-                input.session = captureSession
-                input.startRunning()
-            }
+    
+    public func setup() {
+        Task{ @CameraInputSessionActor  in
+            await self.setupInput()
+        }
     }
     
+    @CameraInputSessionActor
+    private func setupInput() async {
+        let _  = self.setupInputAndOutput()
+        input.session = captureSession
+        input.startRunning()
+        
+    }
+    
+    @CameraInputSessionActor
     private func setupInputAndOutput() -> Bool {
         guard let videoDevice =  input.videoDevice else {return false}
         guard let audioDevice =  input.audioDevice else {return false}
@@ -62,26 +69,12 @@ class BasicVideoPipeline:  CameraPipelineService {
             return false
         }
         
-        if captureSession.canAddOutput(fileOutput) {
-            captureSession.addOutput(fileOutput)
+        if captureSession.canAddOutput(photoOutput) {
+            captureSession.addOutput(photoOutput)
         }else {
             return false
         }
-       
+        
         return true
     }
-    
-    var basicFileRecorder: BasicFileRecorder?
-    func start(_ record: Bool) {
-        if basicFileRecorder == nil {
-                basicFileRecorder = BasicFileRecorder(fileOutput: fileOutput)
-        }
-        Task {
-            await basicFileRecorder?.start(record)
-        }
-        
-    }
-    
 }
-
-

@@ -12,20 +12,20 @@ import CoreKit
 import PlatformKit_runtime
 import DomainKit_api
 
-class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipelineService {
+public class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipelineService {
     
-    typealias PipelineInput = CameraInputImp
-    typealias PipelineProcessor = EffectCameraProcessor
-    typealias PipelineOutput = CameraVideoOutputImp
+    public typealias PipelineInput = CameraInputImp
+    public typealias PipelineProcessor = EffectCameraProcessor
+    public typealias PipelineOutput = CameraVideoOutputImp
  
     private let captureSession: AVCaptureSession
-    let output: CameraVideoOutputImp
-    let input: CameraInputImp
-    var processor: EffectCameraProcessor
+    public let output: CameraVideoOutputImp
+    public let input: CameraInputImp
+    public var processor: EffectCameraProcessor
     let fileOutput = AVCaptureMovieFileOutput()
     
     @MainActor
-    init(cameraOutputAction: CameraAction) {
+    public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
         self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)
@@ -33,7 +33,7 @@ class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipe
         self.input = CameraInputImp()
     }
 
-    @CameraInputSessionActor func setup() async  {
+    @CameraInputSessionActor public func setup() async  {
         let _  = setupInputAndOutput()
                 input.session = captureSession
                 input.startRunning()
@@ -81,7 +81,7 @@ class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipe
     }
     
     
-    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+    public func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         if let error = error {
             // Handle the error, e.g., display an error message.
             print("Error recording video: \(error.localizedDescription)")

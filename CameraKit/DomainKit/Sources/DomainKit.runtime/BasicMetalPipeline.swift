@@ -16,26 +16,26 @@ import PlatformKit_api
 import DomainKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate {
+public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate, @unchecked Sendable {
     
-    func sampleBufferRendered(_ buffer: CMSampleBuffer) {
+    public func sampleBufferRendered(_ buffer: CMSampleBuffer) {
         recordOutput.appendSampleBuffer(buffer)
     }
         
     private let captureSession: AVCaptureSession
-    let previewOutput: MetalCameraPreviewView
-    let recordOutput: SampleBufferCameraRecorderService
+    public let previewOutput: MetalCameraPreviewView
+    public let recordOutput: SampleBufferCameraRecorderService
 
-    let input: CameraInputImp
+    public let input: CameraInputImp
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
     //var processor = EmptyCameraProcessor()
-    var processor: EffectCameraProcessor = EffectCameraProcessor()
+    public var processor: EffectCameraProcessor = EffectCameraProcessor()
     
     
-    init(cameraOutputAction: CameraAction) {
+    public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
         let videoOutput = VideoOutputImp()
@@ -49,7 +49,7 @@ class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate 
         previewOutput.metalView.renderingDelegate = self
     }
     
-    func setup() {
+    public func setup() {
         Task{ @CameraInputSessionActor in
             let _  = setupInputAndOutput()
             input.session = captureSession
@@ -97,7 +97,7 @@ class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate 
 
 extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
