@@ -280,7 +280,8 @@ public class PreviewMetalView: MTKView {
     
     
     func configureMetal() {
-        let defaultLibrary = device!.makeDefaultLibrary()!
+        let defaultLibrary = try! device!.makeDefaultLibrary(bundle: .module)
+        //let defaultLibrary = device!.makeDefaultLibrary()!
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.depthAttachmentPixelFormat = .invalid
        

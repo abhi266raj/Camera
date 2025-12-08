@@ -36,7 +36,8 @@ class MetalFilterRenderer: FilterRenderer {
     }
     
     func createKernel(filter: String = "rosyEffect") {
-        let defaultLibrary = metalDevice.makeDefaultLibrary()!
+        let defaultLibrary = try! metalDevice.makeDefaultLibrary(bundle: .module)
+        // let defaultLibrary = metalDevice.makeDefaultLibrary()!
         let kernelFunction = defaultLibrary.makeFunction(name: filter)
         do {
             computePipelineState = try metalDevice.makeComputePipelineState(function: kernelFunction!)

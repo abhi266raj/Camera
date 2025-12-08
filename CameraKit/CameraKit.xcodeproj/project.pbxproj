@@ -14,10 +14,6 @@
 		6B79FC9F2AD3192D00215CEA /* BasicVideoPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B79FC9E2AD3192D00215CEA /* BasicVideoPipeline.swift */; };
 		6B79FCA12AD3205600215CEA /* BasicPhotoPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B79FCA02AD3205600215CEA /* BasicPhotoPipeline.swift */; };
 		6BACD4E42AD4627A003C86D2 /* BasicMetalPipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BACD4E32AD4627A003C86D2 /* BasicMetalPipeline.swift */; };
-		6BACD4F32AD5B13A003C86D2 /* RosyEffect.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6BACD4EF2AD5B13A003C86D2 /* RosyEffect.metal */; };
-		6BACD4F42AD5B13A003C86D2 /* DepthToGrayscale.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6BACD4F02AD5B13A003C86D2 /* DepthToGrayscale.metal */; };
-		6BACD4F52AD5B13A003C86D2 /* Mixer.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6BACD4F12AD5B13A003C86D2 /* Mixer.metal */; };
-		6BACD4F62AD5B13A003C86D2 /* PassThrough.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6BACD4F22AD5B13A003C86D2 /* PassThrough.metal */; };
 		6BB3949B2EDF21F700A45141 /* CameraLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB3949A2EDF21F700A45141 /* CameraLoadingView.swift */; };
 		6BB3949D2EDF21FC00A45141 /* CameraDeniedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB3949C2EDF21FC00A45141 /* CameraDeniedView.swift */; };
 		6BB3949F2EDF220B00A45141 /* CameraAuthorizedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BB3949E2EDF220B00A45141 /* CameraAuthorizedView.swift */; };
@@ -76,10 +72,6 @@
 		6B79FC9E2AD3192D00215CEA /* BasicVideoPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicVideoPipeline.swift; sourceTree = "<group>"; };
 		6B79FCA02AD3205600215CEA /* BasicPhotoPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicPhotoPipeline.swift; sourceTree = "<group>"; };
 		6BACD4E32AD4627A003C86D2 /* BasicMetalPipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicMetalPipeline.swift; sourceTree = "<group>"; };
-		6BACD4EF2AD5B13A003C86D2 /* RosyEffect.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = RosyEffect.metal; sourceTree = "<group>"; };
-		6BACD4F02AD5B13A003C86D2 /* DepthToGrayscale.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = DepthToGrayscale.metal; sourceTree = "<group>"; };
-		6BACD4F12AD5B13A003C86D2 /* Mixer.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Mixer.metal; sourceTree = "<group>"; };
-		6BACD4F22AD5B13A003C86D2 /* PassThrough.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PassThrough.metal; sourceTree = "<group>"; };
 		6BB3949A2EDF21F700A45141 /* CameraLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraLoadingView.swift; sourceTree = "<group>"; };
 		6BB3949C2EDF21FC00A45141 /* CameraDeniedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraDeniedView.swift; sourceTree = "<group>"; };
 		6BB3949E2EDF220B00A45141 /* CameraAuthorizedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraAuthorizedView.swift; sourceTree = "<group>"; };
@@ -164,38 +156,10 @@
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		6B5F73322EDB3FF4007453B2 /* PlatformLayer */ = {
-			isa = PBXGroup;
-			children = (
-				6BACD4EB2AD5AD40003C86D2 /* Metal */,
-			);
-			path = PlatformLayer;
-			sourceTree = "<group>";
-		};
-		6BACD4EB2AD5AD40003C86D2 /* Metal */ = {
-			isa = PBXGroup;
-			children = (
-				6BACD4EE2AD5B13A003C86D2 /* Shaders */,
-			);
-			path = Metal;
-			sourceTree = "<group>";
-		};
-		6BACD4EE2AD5B13A003C86D2 /* Shaders */ = {
-			isa = PBXGroup;
-			children = (
-				6BACD4EF2AD5B13A003C86D2 /* RosyEffect.metal */,
-				6BACD4F02AD5B13A003C86D2 /* DepthToGrayscale.metal */,
-				6BACD4F12AD5B13A003C86D2 /* Mixer.metal */,
-				6BACD4F22AD5B13A003C86D2 /* PassThrough.metal */,
-			);
-			path = Shaders;
-			sourceTree = "<group>";
-		};
 		6BB394B42EE3FCFB00A45141 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
 				6B5F73302EDB3A69007453B2 /* ViewModel */,
-				6B5F73322EDB3FF4007453B2 /* PlatformLayer */,
 				6B5F732E2EDB39BC007453B2 /* DomainLayer */,
 			);
 			path = Sources;
@@ -424,15 +388,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6BACD4F52AD5B13A003C86D2 /* Mixer.metal in Sources */,
-				6BACD4F42AD5B13A003C86D2 /* DepthToGrayscale.metal in Sources */,
 				6BE804DC2AB738E800DAF8B4 /* CameraView.swift in Sources */,
 				6BB394A62EDFD63B00A45141 /* FilterRepository.swift in Sources */,
 				6B6CF9922EDEECD700AFFE8A /* FilterListViewModel.swift in Sources */,
 				6BE8051B2AB754C800DAF8B4 /* PermissionService.swift in Sources */,
 				6BD7F5CE2ADDA349004BBC84 /* CameraService.swift in Sources */,
 				6B5F73342EDC4976007453B2 /* CameraPipeline.swift in Sources */,
-				6BACD4F32AD5B13A003C86D2 /* RosyEffect.metal in Sources */,
 				6B79FC9F2AD3192D00215CEA /* BasicVideoPipeline.swift in Sources */,
 				6BB394A42EDF366000A45141 /* CameraCaptureControl.swift in Sources */,
 				6BB394A22EDF29F000A45141 /* CameraActionBar.swift in Sources */,
@@ -442,7 +403,6 @@
 				6B79FCA12AD3205600215CEA /* BasicPhotoPipeline.swift in Sources */,
 				6BB3949F2EDF220B00A45141 /* CameraAuthorizedView.swift in Sources */,
 				6B5F73412EDC8AF8007453B2 /* CameraTypeListView.swift in Sources */,
-				6BACD4F62AD5B13A003C86D2 /* PassThrough.metal in Sources */,
 				6BACD4E42AD4627A003C86D2 /* BasicMetalPipeline.swift in Sources */,
 				6BE804DA2AB738E800DAF8B4 /* CameraKitApp.swift in Sources */,
 				6BB3949B2EDF21F700A45141 /* CameraLoadingView.swift in Sources */,
