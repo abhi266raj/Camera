@@ -68,16 +68,16 @@ public struct CameraConfig: BaseConfig {
 }
 
 public enum CameraType: CaseIterable, Identifiable, Sendable {
-    case camera
     case basicPhoto
     case basicVideo
     case metal
+    case multicam
 
     public var id: Self { self }
     
     public func getCameraConfig() -> CameraConfig {
         switch self {
-        case .camera:
+        case .multicam:
             return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
         case .basicPhoto:
             return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
@@ -90,7 +90,7 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
     
     private var renderMode: CameraRenderMode {
         switch self {
-        case .camera:
+        case .multicam:
             return .basic
         case .basicPhoto:
             return .basic
@@ -103,8 +103,8 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
     
     private var supportedTask: SupportedCameraTask {
         switch self {
-        case .camera:
-            return .capturePhoto
+        case .multicam:
+            return .none
         case .basicPhoto:
             return .capturePhoto
         case .basicVideo:
@@ -116,7 +116,7 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
     
     private var cameraOutputAction:CameraAction {
         switch self {
-        case .camera:
+        case .multicam:
             []
         case .basicPhoto:
             [.photo]
@@ -131,7 +131,7 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
 public extension CameraType {
     var title: String {
         switch self {
-        case .camera: return "Camera"
+        case .multicam: return "Multi-Cam"
         case .basicPhoto: return "Photo Camera"
         case .basicVideo: return "Video Camera"
         case .metal: return "Filtered (Metal) Camera"

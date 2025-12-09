@@ -17,3 +17,9 @@ public protocol CameraInput {
     func toggleCamera() async -> Bool 
     
 }
+
+
+public protocol MultiCameraInput: CameraInput {
+    var frontCamera: AVCaptureDeviceInput? {get}
+    var backCamera: AVCaptureDeviceInput? {get}
+}

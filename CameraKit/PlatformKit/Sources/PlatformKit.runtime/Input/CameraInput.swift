@@ -11,7 +11,7 @@ import UIKit
 import PlatformKit_api
 
 @CameraInputSessionActor
-public class CameraInputImp: CameraInput {
+public class CameraInputImp: CameraInput, MultiCameraInput {
     
     public var session: AVCaptureSession?
     
@@ -45,7 +45,7 @@ public class CameraInputImp: CameraInput {
         frontCamera
     }
     
-    nonisolated var frontCamera: AVCaptureDeviceInput? {
+    nonisolated public var frontCamera: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         guard let device else {return nil}
         do {
@@ -56,7 +56,7 @@ public class CameraInputImp: CameraInput {
         }
     }
     
-    nonisolated var backCamera: AVCaptureDeviceInput? {
+    nonisolated public var backCamera: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
         guard let device else {return nil}
         do {
