@@ -96,7 +96,7 @@ struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
             cameraService: deps.cameraService
         )
 
-        let filterVM = FilterListViewModel(
+        let filterVM = FilterListViewModelImp(
             cameraService: deps.cameraService,
             repository: deps.filterRepository
         )

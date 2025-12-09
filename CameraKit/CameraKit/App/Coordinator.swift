@@ -25,13 +25,6 @@ final class CameraComponentBuilder {
 
     @MainActor
     func makeCameraView(cameraType: CameraType = .metal) -> some View {
-//        let vmodel = AsyncViewModel{
-//            let viewModelDependcies = await self.viewModelServiceProvider.viewModels(for: cameraType)
-//            let vm = viewModelDependcies.cameraViewModel
-//            let filterVM = viewModelDependcies.filterListViewModel
-//            return CameraView(viewModel: vm, filterListViewModel: filterVM)
-//        }
-        //let view = AsyncView(model: vmodel)
         let view = AsyncView {
             let viewModelDependcies = await self.viewModelServiceProvider.viewModels(for: cameraType)
             let vm = viewModelDependcies.cameraViewModel

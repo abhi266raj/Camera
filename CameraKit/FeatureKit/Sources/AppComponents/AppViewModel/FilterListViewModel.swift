@@ -3,13 +3,20 @@ import Observation
 import CoreKit
 import DomainKit_api
 
+public protocol FilterListViewModel: Observable {
+    var items: [FilterEntity] { get }
+    var count: Int { get }
+    func title(for index: Int) -> String
+    func selectItem(at index: Int)
+    func refresh() async
+}
 
 @Observable
-final public class FilterListViewModel: @unchecked Sendable {
+final public class FilterListViewModelImp: FilterListViewModel, @unchecked Sendable {
     private let cameraService: CameraService
     private let repository: FilterRepository
 
-    private(set) var items: [FilterEntity] = []
+    public private(set) var items: [FilterEntity] = []
 
     public init(
         cameraService: CameraService,
