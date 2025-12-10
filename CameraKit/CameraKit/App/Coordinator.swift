@@ -69,11 +69,9 @@ class AppCoordinator {
     
     @MainActor
     func showHomeView() ->  some View {
-        let viewModel = CameraTypeListViewModel()
+        let viewModel = CameraTypeListViewModelImp()
         let view = CameraTypeListView(viewModel: viewModel)
-        viewModel.onSelect = {type in
-            self.path.append(type)
-        }
+        handleCameraTypeSelection(viewModel: viewModel)
         return NavigationStack(path: Binding(
             get: { self.path },
             set: { self.path = $0 }
@@ -83,6 +81,12 @@ class AppCoordinator {
         }
         .navigationTitle("Camera Types")
         
+        }
+    }
+    
+    private func handleCameraTypeSelection(viewModel: CameraTypeSelectionCoordinator) {
+        viewModel.onSelect = {type in
+            self.path.append(type)
         }
     }
             

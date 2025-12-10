@@ -9,8 +9,17 @@
 import CoreKit
 import Observation
 
+public protocol CameraTypeListViewModel: Observable {
+    var cameraTypes: [CameraType] { get }
+    func didSelect(camera: CameraType)
+}
+
+public protocol CameraTypeSelectionCoordinator: AnyObject {
+    var onSelect: ((CameraType) -> Void)? { get set }
+}
+
 @Observable
-public class CameraTypeListViewModel {
+public class CameraTypeListViewModelImp: CameraTypeListViewModel, CameraTypeSelectionCoordinator {
     public init() {
         self.cameraTypes = CameraType.allCases
     }
