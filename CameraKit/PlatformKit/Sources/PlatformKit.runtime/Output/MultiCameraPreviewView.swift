@@ -23,23 +23,12 @@ public final class MultiCameraPreviewView: UIView, @preconcurrency CameraContent
         setNeedsDisplay()
     }
     
-    private let frontPreviewLayer: AVCaptureVideoPreviewLayer
-    private let backPreviewLayer: AVCaptureVideoPreviewLayer
+    public let frontPreviewLayer: AVCaptureVideoPreviewLayer
+    public let backPreviewLayer: AVCaptureVideoPreviewLayer
     
     private let frontContainerView = UIView()
     private let backContainerView = UIView()
     
-    
-    public func updatePort(front:[AVCaptureInput.Port], back: [AVCaptureInput.Port]) {
-        let frontConnection = AVCaptureConnection(inputPort: front.first!, videoPreviewLayer: frontPreviewLayer)
-        let backConnection = AVCaptureConnection(inputPort: back.first!, videoPreviewLayer: backPreviewLayer)
-        session.removeConnection(frontPreviewLayer.connection!)
-        session.removeConnection(backPreviewLayer.connection!)
-        session.addConnection(frontConnection)
-        session.addConnection(backConnection)
-        
-        
-    }
     let session: AVCaptureMultiCamSession
     public init(session: AVCaptureMultiCamSession) {
         self.session = session

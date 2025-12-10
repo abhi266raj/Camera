@@ -1,16 +1,8 @@
 //
-//  BasicPhotoPipeline 2.swift
+//  MultiCamPipeline.swift
 //  DomainKit
 //
 //  Created by Abhiraj on 09/12/25.
-//
-
-
-//
-//  BasicPhotoPipeline.swift
-//  CameraKit
-//
-//  Created by Abhiraj on 08/10/23.
 //
 
 import Foundation
@@ -26,18 +18,17 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
     
     public let input: CameraInputImp
     public let previewOutput: MultiCameraPreviewView
-    public let recordOutput: CameraPhotoCameraService
+    public let recordOutput: PreviewOnlyService
     public let processor: EmptyCameraProcessor = EmptyCameraProcessor()
     
     private let captureSession: AVCaptureMultiCamSession
-    private let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
-    
+   
     @MainActor
     public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureMultiCamSession()
         self.captureSession = session
         previewOutput = MultiCameraPreviewView(session: session)
-        recordOutput = CameraPhotoCameraService(photoOutput: photoOutput)
+        recordOutput = PreviewOnlyService()
         self.input = CameraInputImp()
     }
     
@@ -55,7 +46,7 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
         
     }
     
-    var ports:[[AVCaptureInput.Port]] = []
+    var ports:[AVCaptureInput.Port] = []
     
     private func setupInputAndOutput() -> Bool {
         guard let frontCamera = input.frontCamera else {return false}
@@ -86,20 +77,29 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
             return false
         }
         
-        if captureSession.canAddOutput(photoOutput) {
-            captureSession.addOutput(photoOutput)
-        }else {
+        guard backCamera.ports.count > 0, frontCamera.ports.count > 0 else {
             return false
         }
-        
-        ports = [backCamera.ports, frontCamera.ports]
+        ports = [backCamera.ports[0], frontCamera.ports[0]]
         return true
     }
     
     public func toggleCamera() async -> Bool {
         ports.swapAt(0, 1)
-        await previewOutput.updatePort(front: ports[0], back: ports[1])
+        await updatePort(front: ports[0], back: ports[1])
         return true
+    }
+    
+    @MainActor
+    public func updatePort(front:AVCaptureInput.Port, back: AVCaptureInput.Port) {
+        captureSession.beginConfiguration()
+        let frontConnection = AVCaptureConnection(inputPort: front, videoPreviewLayer: previewOutput.frontPreviewLayer)
+        let backConnection = AVCaptureConnection(inputPort: back, videoPreviewLayer: previewOutput.backPreviewLayer)
+        captureSession.removeConnection(previewOutput.frontPreviewLayer.connection!)
+        captureSession.removeConnection(previewOutput.backPreviewLayer.connection!)
+        captureSession.addConnection(frontConnection)
+        captureSession.addConnection(backConnection)
+        captureSession.commitConfiguration()
     }
 }
 

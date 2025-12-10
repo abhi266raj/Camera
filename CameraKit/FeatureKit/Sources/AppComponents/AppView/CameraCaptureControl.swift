@@ -34,7 +34,7 @@ struct CameraCaptureControl: View {
                     } else if viewModel.showCamera {
                         capturePhotoButton
                     } else {
-                        errorView("Unavailable")
+                        EmptyView()
                     }
                 case .initiatingCapture:
                     loadingView
