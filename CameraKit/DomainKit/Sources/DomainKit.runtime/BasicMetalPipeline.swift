@@ -76,7 +76,6 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDe
         }
         
         if captureSession.canAddOutput(bufferOutput) {
-            //session.addOutput(videoDataOutput)
             bufferOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
             captureSession.addOutput(bufferOutput)
         }else {

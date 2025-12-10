@@ -12,11 +12,9 @@ import AVFoundation
 import CoreKit
 import PlatformKit_api
 
-public class CameraRecordingCameraService: CameraContentRecordingService {
+public class PreviewOnlyService: CameraContentRecordingService {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
-    let videoCaptureOutput:AVCaptureMovieFileOutput
-    var fileRecorder: BasicFileRecorder?
-    public let supportedOutput: CameraAction = [.startRecord, .stopRecord]
+    public let supportedOutput: CameraAction = []
     
     public init() {
     }
