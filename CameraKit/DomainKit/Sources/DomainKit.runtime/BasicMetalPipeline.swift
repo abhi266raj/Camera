@@ -7,7 +7,6 @@
 
 import Foundation
 import AVFoundation
-import UIKit
 import Photos
 import CoreMedia
 import CoreKit
@@ -31,7 +30,6 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDe
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
-    //var processor = EmptyCameraProcessor()
     public var processor: EffectCameraProcessor = EffectCameraProcessor()
     
     public init(cameraOutputAction: CameraAction) {

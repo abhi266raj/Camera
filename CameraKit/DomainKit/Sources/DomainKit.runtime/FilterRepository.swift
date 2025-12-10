@@ -23,6 +23,7 @@ final public class StaticFilterDataSource {
         [
             FilterEntity(title: "Monochrome", model: CIFilterModel(contents: CIFilter(name: "CIColorMonochrome")!)),
             FilterEntity(title: "Metal", model: MetalFilterModel()),
+            FilterEntity(title: "Four Quadrant Effect", model: MetalFilterModel(contents: "fourQuadrantEffect")),
             FilterEntity(title: "Green Effect", model: MetalFilterModel(contents: "greenEffect")),
             FilterEntity(title: "D2", model: MetalFilterModel(contents: "d2")),
             FilterEntity(title: "None", model: EmptyFilterModel())
