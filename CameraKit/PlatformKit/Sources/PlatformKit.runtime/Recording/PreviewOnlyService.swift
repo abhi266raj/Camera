@@ -13,7 +13,7 @@ import CoreKit
 import PlatformKit_api
 
 public class PreviewOnlyService: CameraContentRecordingService {
-    public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
+    public let cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     public let supportedOutput: CameraAction = []
     
     public init() {

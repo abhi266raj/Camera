@@ -22,7 +22,7 @@ public class CameraPhotoCameraService: NSObject, CameraContentRecordingService, 
     }
     
     public func performAction(action: CameraAction) throws -> Bool {
-        guard self.supportedOutput.contains(action) else {
+        guard action == .photo else {
             throw CameraAction.ActionError.invalidInput
         }
         cameraModePublisher.send(.capture(.photo))
@@ -33,8 +33,6 @@ public class CameraPhotoCameraService: NSObject, CameraContentRecordingService, 
         throw CameraAction.ActionError.unsupported
        
     }
-    
-    public var supportedOutput: CameraAction = [.photo]
 }
 
 private struct UnsafePhoto: @unchecked Sendable {

@@ -18,17 +18,18 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
     
     public let input: CameraInputImp
     public let previewOutput: MultiCameraPreviewView
-    public let recordOutput: PreviewOnlyService
+    public let recordOutput: CameraContentRecordingProxyService
     public let processor: EmptyCameraProcessor = EmptyCameraProcessor()
     
     private let captureSession: AVCaptureMultiCamSession
    
     @MainActor
-    public init(cameraOutputAction: CameraAction) {
+    public init(supportedCameraTask: SupportedCameraTask) {
         let session = AVCaptureMultiCamSession()
         self.captureSession = session
         previewOutput = MultiCameraPreviewView(session: session)
-        recordOutput = PreviewOnlyService()
+        
+        recordOutput = CameraContentRecordingProxyService(supportedCameraTask: supportedCameraTask)
         self.input = CameraInputImp()
     }
     

@@ -52,7 +52,7 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
         let cameraService: CameraService = await MainActor.run {
             switch cameraType {
             case .multicam:
-                return MultiCamPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
+                return MultiCamPipeline(supportedCameraTask: resolvedConfig.supportedTask)
             case .basicPhoto:
                 return  BasicPhotoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             case .basicVideo:
