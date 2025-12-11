@@ -8,21 +8,30 @@
 import AppViewModel
 import SwiftUI
 
-struct FilterListView: View {
-    private let viewModel: FilterListViewModel
+struct FilterListView: MultiActionableView {
+    
+    let viewData: FilterListViewData
+    let onAction: (FilterAction) -> Void
     
     init(viewModel: FilterListViewModel) {
-        self.viewModel = viewModel
+        self.init(viewData: viewModel.viewData) { action in
+            viewModel.trigger(action)
+        }
+    }
+    
+    init(viewData: FilterListViewData, onAction: @escaping (FilterAction) -> Void = {_ in }) {
+        self.viewData = viewData
+        self.onAction = onAction
     }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHGrid(rows: [GridItem()], spacing: 10) {
-                ForEach(0..<viewModel.count, id: \.self) { index in
+                ForEach(0..<viewData.count, id: \.self) { index in
                     Button(action: {
-                        viewModel.selectItem(at: index)
+                        onAction(.select(index: index))
                     }) {
-                        Text(viewModel.title(for: index))
+                        Text(viewData.filters[index].title)
                             .font(.callout)
                             .fontWeight(.semibold)
                             .foregroundStyle(.white)
@@ -33,9 +42,14 @@ struct FilterListView: View {
                                     .fill(Color.gray)
                             )
                     }
-                    .accessibilityLabel(viewModel.title(for: index))
                 }
             }.frame(height: 60)
         }
     }
+}
+
+#Preview {
+    let viewData = FilterListViewData()
+    viewData.filters = [FilterViewData(title: "First"), FilterViewData(title: "Second"), FilterViewData(title: "First")]
+    return FilterListView(viewData: viewData)
 }

@@ -9,6 +9,7 @@
 // Base protocol for a view model providing view data
 public protocol ContentViewModel {
     associatedtype ViewData
+    @MainActor
     var viewData: ViewData { get }
 }
 
