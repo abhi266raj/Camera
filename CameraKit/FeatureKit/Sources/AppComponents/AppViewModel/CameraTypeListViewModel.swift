@@ -9,9 +9,9 @@
 import CoreKit
 import Observation
 
-public protocol CameraTypeListViewModel: Observable {
-    var cameraTypes: [CameraType] { get }
-    func didSelect(camera: CameraType)
+public protocol  CameraTypeListViewModel: ActionableViewModel {
+    typealias ViewData = [CameraType]
+    typealias ViewAction = CameraType
 }
 
 public protocol CameraTypeSelectionCoordinator: AnyObject {
@@ -20,14 +20,22 @@ public protocol CameraTypeSelectionCoordinator: AnyObject {
 
 @Observable
 public class CameraTypeListViewModelImp: CameraTypeListViewModel, CameraTypeSelectionCoordinator {
+    public func trigger(_ action: ViewAction) {
+            onSelect?(action)
+    }
+    
+    public var viewData: [CoreKit.CameraType] {
+        return cameraTypes
+    }
+    
     public init() {
         self.cameraTypes = CameraType.allCases
     }
-    public var cameraTypes: [CameraType]
+    private var cameraTypes: [CameraType]
     
     public var onSelect: ((CameraType) -> Void)?
     
-    public func didSelect(camera: CameraType) {
+    private func didSelect(camera: CameraType) {
         onSelect?(camera)
     }
     

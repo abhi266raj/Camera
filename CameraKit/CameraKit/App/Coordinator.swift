@@ -69,9 +69,15 @@ class AppCoordinator {
     
     @MainActor
     func showHomeView() ->  some View {
-        let viewModel = CameraTypeListViewModelImp()
-        let view = CameraTypeListView(viewModel: viewModel)
-        handleCameraTypeSelection(viewModel: viewModel)
+        let viewModelDep = HomeViewModelDependency()
+        let viewModel = viewModelDep.viewModel
+        let view = CameraTypeListView(viewData: viewModel.viewData) { cameraType in
+            viewModel.trigger(cameraType)
+        }
+        viewModelDep.selectionCooridator.onSelect = {[weak self] type in
+            self?.path.append(type)
+        }
+        
         return NavigationStack(path: Binding(
             get: { self.path },
             set: { self.path = $0 }
@@ -83,13 +89,18 @@ class AppCoordinator {
         
         }
     }
-    
-    private func handleCameraTypeSelection(viewModel: CameraTypeSelectionCoordinator) {
-        viewModel.onSelect = {type in
-            self.path.append(type)
-        }
+}
+
+struct HomeViewModelDependency {
+    var viewModel: any CameraTypeListViewModel {
+        return cameraViewModel
     }
-            
+    
+    var selectionCooridator: any CameraTypeSelectionCoordinator {
+        return cameraViewModel
+    }
+  
+    private var cameraViewModel: CameraTypeListViewModelImp =  CameraTypeListViewModelImp()
 }
 
 

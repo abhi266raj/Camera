@@ -22,7 +22,7 @@ public struct CameraView: View {
         VStack {
             switch viewModel.cameraPermissionState {
             case .unknown:
-                CameraLoadingView(viewModel: viewModel)
+                LoadingView()
             case .denied:
                 CameraDeniedView()
             case .authorized:

@@ -1,13 +1,11 @@
 import SwiftUI
 import AppViewModel
 
-struct CameraLoadingView: View {
-    let viewModel: CameraViewModel
-
+struct LoadingView: View {
+    
     var body: some View {
         VStack(spacing: 12) {
             ProgressView()
-            Text("Loading")
                 .font(.headline)
                 .foregroundStyle(.secondary)
         }
@@ -17,5 +15,5 @@ struct CameraLoadingView: View {
 }
 
 #Preview {
-    //CameraLoadingView(viewModel: CameraViewModel())
+    LoadingView()
 }

@@ -128,6 +128,7 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
     }
 }
 
+
 public extension CameraType {
     var title: String {
         switch self {
