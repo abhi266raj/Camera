@@ -67,14 +67,15 @@ class AppCoordinator {
          componentBuilder.makeCameraView(cameraType: cameraType)
     }
     
+    var rootDepedency = HomeViewModelDependency()
+    
     @MainActor
-    func showHomeView() ->  some View {
-        let viewModelDep = HomeViewModelDependency()
-        let viewModel = viewModelDep.viewModel
+    func start() ->  some View {
+        let viewModel = rootDepedency.viewModel
         let view = CameraTypeListView(viewData: viewModel.viewData) { cameraType in
             viewModel.trigger(cameraType)
         }
-        viewModelDep.selectionCooridator.onSelect = {[weak self] type in
+        rootDepedency.selectionCooridator.onSelect = {[weak self] type in
             self?.path.append(type)
         }
         
