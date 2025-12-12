@@ -48,6 +48,10 @@ public struct CameraInputConfig {
     public init(photoResolution:ImageCaptureConfig.PhotoResolution?) {
         self.dimensions = photoResolution?.maxDimension()
     }
+    
+    public init() {
+        
+    }
 }
 
 

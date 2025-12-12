@@ -35,26 +35,17 @@ public class BasicPhotoPipeline: NSObject, CameraPipelineService, @unchecked Sen
     
     public func setup() {
         Task{ @CameraInputSessionActor  in
-            await self.setupInput()
+            let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
+            return await input.setup(input: [], output: [photoOutput], config: config)
+            await input.start()
         }
     }
     
-    @CameraInputSessionActor
-    private func setupInput() async {
-        await self.setupInputAndOutput()
-        await input.start()
-    }
     
      public func toggleCamera() async -> Bool {
          await input.toggleCamera()
          let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
          return await input.update(config: config)
-    }
-    
-    @CameraInputSessionActor
-    private func setupInputAndOutput() async -> Bool {
-        let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
-        return await input.setup(input: [], output: [photoOutput], config: config)
     }
     
     func configureCamera() {
