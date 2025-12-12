@@ -12,6 +12,7 @@ import PlatformKit_api
 
 
 
+
 @CameraInputSessionActor
 public class ConfigurableCameraInputImp: CameraInput, MultiCameraInput {
     
@@ -59,27 +60,30 @@ public class ConfigurableCameraInputImp: CameraInput, MultiCameraInput {
         guard let deviceInput = currentUsedVideoDevice else {
             return false
         }
-        let device = deviceInput.device
-        let matched = device.formats.first {
-            $0.supportedMaxPhotoDimensions.contains { $0.width == config.dimensions.width &&
-                $0.height == config.dimensions.height }
-        }
         guard let session else {
             return false
         }
-        session.beginConfiguration()
-        defer {
-            session.commitConfiguration()
-        }
-        
-
-        guard let format = matched else { return false }
-        do {
-            try device.lockForConfiguration()
-            device.activeFormat = format
-            device.unlockForConfiguration()
-        } catch {
-            return false
+        if let dimension = config.dimensions {
+            let device = deviceInput.device
+            let matched = device.formats.first {
+                $0.supportedMaxPhotoDimensions.contains { $0.width == dimension.width &&
+                    $0.height == dimension.height }
+            }
+            
+            session.beginConfiguration()
+            defer {
+                session.commitConfiguration()
+            }
+            
+            
+            guard let format = matched else { return false }
+            do {
+                try device.lockForConfiguration()
+                device.activeFormat = format
+                device.unlockForConfiguration()
+            } catch {
+                return false
+            }
         }
         
         
@@ -131,3 +135,4 @@ public class ConfigurableCameraInputImp: CameraInput, MultiCameraInput {
     }
     
 }
+

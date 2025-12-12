@@ -19,7 +19,7 @@ public class BasicPhotoPipeline: NSObject, CameraPipelineService, @unchecked Sen
     
     private let captureSession: AVCaptureSession
     public let output: CameraPhotoOutputImp
-    public let input: ConfigurableCameraInputImp
+    public let input: CameraSessionHandlerImp
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
     public var processor = EmptyCameraProcessor()
     var imageCaptureConfig: ImageCaptureConfig {
@@ -30,7 +30,7 @@ public class BasicPhotoPipeline: NSObject, CameraPipelineService, @unchecked Sen
         let session = AVCaptureSession()
         self.captureSession = session
         self.output = CameraPhotoOutputImp(session: session, photoOutput: photoOutput)
-        self.input = ConfigurableCameraInputImp()
+        self.input = CameraSessionHandlerImp(session: session)
     }
     
     public func setup() {
@@ -41,75 +41,20 @@ public class BasicPhotoPipeline: NSObject, CameraPipelineService, @unchecked Sen
     
     @CameraInputSessionActor
     private func setupInput() async {
-        let r1  = self.setupInputAndOutput()
-        input.session = captureSession
-        let config = await CameraInputConfig(photoResolution: imageCaptureConfig.resolution, position: input.selectedPosition)
-        let r2 = input.configureDeviceFor(config:config)
-        if r1 && r2 {
-            input.startRunning()
-        }
-        
+        await self.setupInputAndOutput()
+        await input.start()
     }
     
      public func toggleCamera() async -> Bool {
          await input.toggleCamera()
-         let config = await CameraInputConfig(photoResolution: imageCaptureConfig.resolution, position: input.selectedPosition)
-         let value = await  input.configureDeviceFor(config: config)
-         if value == false {
-             await input.stopRunning()
-         }
-         return true
-        
+         let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
+         return await input.update(config: config)
     }
     
     @CameraInputSessionActor
-    private func setupInputAndOutput() -> Bool {
-        guard let videoDevice =  input.videoDevice else {return false}
-        guard let audioDevice =  input.audioDevice else {return false}
-        captureSession.beginConfiguration()
-        
-        defer {
-            captureSession.commitConfiguration()
-        }
-        
-      
-
-        if captureSession.canAddInput(videoDevice) {
-            captureSession.addInput(videoDevice)
-        }else{
-            return false
-        }
-        
-        if captureSession.canAddInput(audioDevice) {
-            captureSession.addInput(audioDevice)
-        }else{
-            return false
-        }
-        
-        if captureSession.canAddOutput(photoOutput) {
-            captureSession.addOutput(photoOutput)
-        }else {
-            return false
-        }
-        
-        let formats = videoDevice.device.formats
-        let dimensions = imageCaptureConfig.resolution.maxDimension()
-        let matched = formats.first {
-            $0.supportedMaxPhotoDimensions.contains { $0.width == dimensions.width &&
-                                                     $0.height == dimensions.height }
-        }
-
-        guard let format = matched else { return false }
-
-        do {
-            try videoDevice.device.lockForConfiguration()
-            videoDevice.device.activeFormat = format
-            videoDevice.device.unlockForConfiguration()
-        } catch {
-            return false
-        }
-        
-        return true
+    private func setupInputAndOutput() async -> Bool {
+        let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
+        return await input.setup(input: [], output: [photoOutput], config: config)
     }
     
     func configureCamera() {
