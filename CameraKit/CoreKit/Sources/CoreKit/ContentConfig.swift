@@ -5,9 +5,6 @@
 //  Created by Abhiraj on 12/12/25.
 //
 
-import AVFoundation
-
-
 public struct ImageCaptureConfig {
     
     public enum PhotoResolution {
@@ -25,19 +22,6 @@ public struct ImageCaptureConfig {
     
 }
 
-public extension ImageCaptureConfig.PhotoResolution {
-    public func maxDimension() -> CMVideoDimensions {
-        switch self {
-        case .hd1080:
-            return CMVideoDimensions(width: 1920, height: 1080)
-        case .hd720:
-            return CMVideoDimensions(width: 1280, height: 720)
-        case .vga640:
-            return CMVideoDimensions(width: 640, height: 480)
-        }
-    }
-}
-
 
 public struct VideoRecordingConfig {
     
@@ -46,16 +30,16 @@ public struct VideoRecordingConfig {
         case hd1080
         case vga640
         
-        func getCapturePreset() -> AVCaptureSession.Preset {
-            switch self {
-            case .hd1080:
-                return .hd1920x1080
-            case .hd720:
-                return .hd1280x720
-            case .vga640:
-                return .vga640x480
-            }
-        }
+//        func getCapturePreset() -> AVCaptureSession.Preset {
+//            switch self {
+//            case .hd1080:
+//                return .hd1920x1080
+//            case .hd720:
+//                return .hd1280x720
+//            case .vga640:
+//                return .vga640x480
+//            }
+//        }
     }
     
     public var resolution:VideoResolution

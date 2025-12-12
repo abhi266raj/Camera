@@ -43,10 +43,8 @@ public class BasicPhotoPipeline: NSObject, CameraPipelineService, @unchecked Sen
     private func setupInput() async {
         let r1  = self.setupInputAndOutput()
         input.session = captureSession
-        let config = CameraInputConfig(dimension: imageCaptureConfig.resolution.maxDimension(), position: input.selectedPosition)
-        let r2 = input.configureDeviceFor(config: CameraInputConfig(dimension: imageCaptureConfig.resolution.maxDimension(), position: input.selectedPosition))
-        
-        print(r1, r2)
+        let config = await CameraInputConfig(photoResolution: imageCaptureConfig.resolution, position: input.selectedPosition)
+        let r2 = input.configureDeviceFor(config:config)
         if r1 && r2 {
             input.startRunning()
         }
@@ -55,8 +53,8 @@ public class BasicPhotoPipeline: NSObject, CameraPipelineService, @unchecked Sen
     
      public func toggleCamera() async -> Bool {
          await input.toggleCamera()
-         let config = await CameraInputConfig(dimension: imageCaptureConfig.resolution.maxDimension(), position: input.selectedPosition)
-         let value = await  input.configureDeviceFor(config: CameraInputConfig(dimension: imageCaptureConfig.resolution.maxDimension(), position: input.selectedPosition))
+         let config = await CameraInputConfig(photoResolution: imageCaptureConfig.resolution, position: input.selectedPosition)
+         let value = await  input.configureDeviceFor(config: config)
          if value == false {
              await input.stopRunning()
          }

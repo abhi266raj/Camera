@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import CoreKit
 
 public protocol CameraInput {
     func startRunning() async
@@ -16,6 +17,19 @@ public protocol CameraInput {
     
     func toggleCamera() async -> Bool 
     
+}
+
+ private extension ImageCaptureConfig.PhotoResolution {
+    public func maxDimension() -> CMVideoDimensions {
+        switch self {
+        case .hd1080:
+            return CMVideoDimensions(width: 1920, height: 1080)
+        case .hd720:
+            return CMVideoDimensions(width: 1280, height: 720)
+        case .vga640:
+            return CMVideoDimensions(width: 640, height: 480)
+        }
+    }
 }
 
 
@@ -33,8 +47,8 @@ public struct CameraInputConfig {
         self.position = .back
     }
     
-    public init(dimension: CMVideoDimensions, position: AVCaptureDevice.Position) {
-        self.dimensions = dimension
+    public init(photoResolution:ImageCaptureConfig.PhotoResolution, position: AVCaptureDevice.Position ) {
+        self.dimensions = photoResolution.maxDimension()
         self.position = position
     }
 }
