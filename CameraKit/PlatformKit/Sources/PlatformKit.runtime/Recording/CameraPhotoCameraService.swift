@@ -16,6 +16,7 @@ public class CameraPhotoCameraService: NSObject, CameraContentRecordingService, 
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     
     var photoOutput:AVCapturePhotoOutput
+    public var imageCaptureConfig =  ImageCaptureConfig()
     
     public init(photoOutput: AVCapturePhotoOutput) {
         self.photoOutput = photoOutput
@@ -27,6 +28,7 @@ public class CameraPhotoCameraService: NSObject, CameraContentRecordingService, 
         }
         cameraModePublisher.send(.capture(.photo))
         let photoSettings = AVCapturePhotoSettings()
+        photoSettings.maxPhotoDimensions = imageCaptureConfig.resolution.maxDimension()
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
         
         

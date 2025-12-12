@@ -25,6 +25,7 @@ public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
     public let input: InputType
     let fileOutput = AVCaptureMovieFileOutput()
     public var processor = EmptyCameraProcessor()
+    var videoRecordingConfig =  VideoRecordingConfig()
     
     @MainActor
     public init(cameraOutputAction: CameraAction) {
