@@ -15,7 +15,7 @@ import PlatformKit_api
 import DomainKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
-public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked Sendable {
+public class BasicMetalPipeline: NSObject, CameraPipelineServiceLegacy, @unchecked Sendable {
             
     private let captureSession: AVCaptureSession
     public let recordOutput: SampleBufferCameraRecorderService
