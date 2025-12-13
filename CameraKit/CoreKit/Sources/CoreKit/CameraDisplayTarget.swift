@@ -24,17 +24,9 @@ public protocol CameraDisplayMetalTarget: CameraDisplayTarget {
     func render(frame: CVPixelBuffer) async
 }
 
-public protocol CameraDisplayCoordinator {
-    @MainActor
-    func attach(_ target: some CameraDisplayTarget) async throws
-}
 
 public enum DisplayAttachError: Error {
     case invalidInput
-}
-
-public class DeprecatedCameraDisplayTarget: CameraDisplayTarget {
-    
 }
 
 

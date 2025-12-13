@@ -8,8 +8,14 @@ struct CameraAuthorizedView: View {
 
     var body: some View {
         ZStack {
-            CameraPreview(cameraOutput: viewModel.getOutputView())
-                .ignoresSafeArea()
+            
+            if let cameraOutput = viewModel.getOutputView() {
+                CameraPreview(cameraOutput: cameraOutput)
+                    .ignoresSafeArea()
+            }else {
+                CameraFeedViewer(viewModel: viewModel)
+            }
+           
 
             VStack() {
                 // Top bar with switch at top-right

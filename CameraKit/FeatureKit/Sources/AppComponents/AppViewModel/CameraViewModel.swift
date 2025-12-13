@@ -40,6 +40,12 @@ import DomainKit_api
     public var cameraPermissionState: PermissionStatus = .unknown
     private let cameraService:CameraService
     
+    @MainActor
+    public func attachDisplay(_ target: CameraDisplayTarget) {
+        try? cameraService.attachDisplay(target)
+    }
+
+    
     public var showCamera: Bool {
         return cameraConfig.supportedTask == .capturePhoto
     }
@@ -65,8 +71,8 @@ import DomainKit_api
         }
     }
     
-    public func getOutputView() -> CameraDisplayOutput {
-        return cameraService.getOutputView()
+    public func getOutputView() -> CameraDisplayOutput? {
+        return nil
         
     }
     

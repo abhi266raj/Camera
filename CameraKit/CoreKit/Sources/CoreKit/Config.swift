@@ -45,8 +45,10 @@ public struct CameraAction: OptionSet, Sendable {
 }
 
 public enum CameraRenderMode {
-    case basic
+    case legacyBasic
     case metal
+    case basic
+    
 }
 
 public enum SupportedCameraTask {
@@ -91,11 +93,11 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
     private var renderMode: CameraRenderMode {
         switch self {
         case .multicam:
-            return .basic
+            return .legacyBasic
         case .basicPhoto:
             return .basic
         case .basicVideo:
-            return .basic
+            return .legacyBasic
         case .metal:
             return .metal
         }

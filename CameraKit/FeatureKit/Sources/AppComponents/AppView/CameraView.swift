@@ -53,3 +53,4 @@ struct CameraPreview: UIViewRepresentable {
         cameraOutput.updateFrame()
     }
 }
+

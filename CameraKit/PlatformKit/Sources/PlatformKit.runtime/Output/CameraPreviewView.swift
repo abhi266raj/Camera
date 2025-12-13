@@ -69,6 +69,10 @@ public class CameraLayerDisplayCoordinatorImp: CameraDisplayCoordinator {
     
     @MainActor
     public func attach<T:CameraDisplayTarget>(_ target: T) async throws  {
+        if let target = target as? CameraDisplayLayerTarget {
+            try await attach(target)
+            return 
+        }
         print("Error")
         throw DisplayAttachError.invalidInput
     }

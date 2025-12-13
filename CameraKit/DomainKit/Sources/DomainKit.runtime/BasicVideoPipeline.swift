@@ -5,13 +5,12 @@
 //  Created by Abhiraj on 08/10/23.
 //
 
-import Foundation
 import AVFoundation
 import UIKit
-import Photos
 import CoreKit
 import PlatformKit_runtime
 import DomainKit_api
+import PlatformKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
 public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
@@ -20,6 +19,7 @@ public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
     public typealias ProcessorType = EmptyCameraProcessor
     public typealias OutputType = CameraVideoOutputImp
  
+    private let cameraDisplayCoordinator: CameraLayerDisplayCoordinatorImp
     private let captureSession: AVCaptureSession
     public let output: CameraVideoOutputImp
     public let input: InputType
@@ -33,6 +33,7 @@ public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
         self.captureSession = session
         self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)
         self.input = CameraInputImp()
+        cameraDisplayCoordinator = CameraLayerDisplayCoordinatorImp(session:session)
     }
 
     public func setup() {
@@ -41,6 +42,17 @@ public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
                 input.session = captureSession
                 input.startRunning()
             }
+    }
+    
+    @MainActor
+    public func attachDisplay(_ target: some CameraDisplayTarget) throws {
+        Task {
+            await try cameraDisplayCoordinator.attach(target)
+        }
+    }
+    
+    public func getOutputView() -> CameraDisplayOutput? {
+        return nil
     }
     
     private func setupInputAndOutput() -> Bool {
