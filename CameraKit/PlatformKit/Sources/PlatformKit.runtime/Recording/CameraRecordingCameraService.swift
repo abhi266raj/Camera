@@ -11,7 +11,7 @@ import AVFoundation
 import CoreKit
 import PlatformKit_api
 
-public class CameraRecordingCameraService: CameraContentRecordingService {
+public class CameraRecordingCameraService: CameraDiskOutputService {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     let videoCaptureOutput:AVCaptureMovieFileOutput
     var fileRecorder: BasicFileRecorder?
@@ -19,6 +19,10 @@ public class CameraRecordingCameraService: CameraContentRecordingService {
     
     public init(videoCaptureOutput: AVCaptureMovieFileOutput) {
         self.videoCaptureOutput = videoCaptureOutput
+    }
+    
+    public var availableOutput: [AVCaptureOutput] {
+        return [videoCaptureOutput]
     }
     
     public func performAction(action: CameraAction) async throws -> Bool {

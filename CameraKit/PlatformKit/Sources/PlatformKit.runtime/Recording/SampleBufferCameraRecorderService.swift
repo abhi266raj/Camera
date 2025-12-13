@@ -14,7 +14,7 @@ import Combine
 import CoreKit
 import PlatformKit_api
 
-public class SampleBufferCameraRecorderService: CameraContentRecordingService {
+public class SampleBufferCameraRecorderService: CameraDiskOutputService {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     
     let videoOutput: VideoOutput
@@ -23,6 +23,10 @@ public class SampleBufferCameraRecorderService: CameraContentRecordingService {
     
     public init(videoOutput: VideoOutput) {
         self.videoOutput = videoOutput
+    }
+    
+    public var availableOutput: [AVCaptureOutput] {
+        return []
     }
     
     public func performAction(action: CameraAction) async throws -> Bool {

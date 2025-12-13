@@ -9,7 +9,7 @@
 public protocol CameraOutputService {
     
     associatedtype PreviewService: CameraContentPreviewService
-    associatedtype RecordingService: CameraContentRecordingService
+    associatedtype RecordingService: CameraDiskOutputService
     
     var previewService: PreviewService {get}
     var recordingService: RecordingService {get}

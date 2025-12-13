@@ -34,7 +34,7 @@ public protocol CameraPipelineService: CameraService {
 public protocol CameraPipelineServiceNew: CameraService {
     associatedtype PipelineInput: CameraInput
     associatedtype PipelinePreviewOutput: CameraContentPreviewService
-    associatedtype PipelineRecordingOutput: CameraContentRecordingService
+    associatedtype PipelineRecordingOutput: CameraDiskOutputService
     associatedtype PipelineProcessor: CameraProccessor
     
     var input: PipelineInput {get}

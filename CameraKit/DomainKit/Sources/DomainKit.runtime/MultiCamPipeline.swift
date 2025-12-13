@@ -28,7 +28,6 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
         let session = AVCaptureMultiCamSession()
         self.captureSession = session
         previewOutput = MultiCameraPreviewView(session: session)
-        
         recordOutput = CameraContentRecordingProxyService(supportedCameraTask: supportedCameraTask)
         self.input = CameraInputImp()
     }

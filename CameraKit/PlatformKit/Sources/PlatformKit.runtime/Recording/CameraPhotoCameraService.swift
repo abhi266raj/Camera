@@ -12,7 +12,7 @@ import Photos
 import CoreKit
 import PlatformKit_api
 
-public class CameraPhotoCameraService: NSObject, CameraContentRecordingService, @unchecked Sendable {
+public class CameraPhotoCameraService: NSObject, CameraDiskOutputService, @unchecked Sendable {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     
     var photoOutput:AVCapturePhotoOutput

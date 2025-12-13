@@ -1,5 +1,5 @@
 //
-//  CameraContentRecordingService.swift
+//  CameraDiskOutputService.swift
 //  CameraKit
 //
 //  Created by Abhiraj on 05/12/25.
@@ -10,9 +10,11 @@ import CoreKit
 import Foundation
 import AVFoundation
 
-public protocol CameraContentRecordingService {
+
+public protocol CameraDiskOutputService {
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
     func performAction( action: CameraAction) async throws -> Bool
+    var availableOutput: [AVCaptureOutput] {get}
 }
 
 public protocol VideoOutput {

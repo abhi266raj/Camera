@@ -12,13 +12,17 @@ import AVFoundation
 import CoreKit
 import PlatformKit_api
 
-public final class CameraContentRecordingProxyService: CameraContentRecordingService {
-    private let actualService: CameraContentRecordingService
+public final class CameraContentRecordingProxyService: CameraDiskOutputService {
+    public var availableOutput: [AVCaptureOutput] {
+        return actualService.availableOutput
+    }
+    
+    private let actualService: CameraDiskOutputService
     public var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
         actualService.cameraModePublisher
     }
 
-    public init(actualService: CameraContentRecordingService) {
+    public init(actualService: CameraDiskOutputService) {
         self.actualService = actualService
     }
     
@@ -39,4 +43,5 @@ public final class CameraContentRecordingProxyService: CameraContentRecordingSer
     public func performAction(action: CameraAction) async throws -> Bool {
         try await actualService.performAction(action: action)
     }
+    
 }
