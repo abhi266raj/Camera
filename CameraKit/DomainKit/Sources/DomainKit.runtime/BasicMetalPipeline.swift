@@ -18,7 +18,7 @@ import DomainKit_api
 public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked Sendable {
             
     private let captureSession: AVCaptureSession
-    public let previewOutput: MetalCameraPreviewView
+    public let previewOutput: CameraDisplayOutputImp
     public let recordOutput: SampleBufferCameraRecorderService
 
     public let input: CameraInputImp
@@ -36,7 +36,7 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked 
         recordOutput = SampleBufferCameraRecorderService(videoOutput: videoOutput)
         let metalView = PreviewMetalView(frame: .zero)
         self.metalDisplayCoordinator = CameraMetalDisplayCoordinatorImp(metalView: metalView)
-        previewOutput = MetalCameraPreviewView(metalView: metalView)
+        previewOutput = CameraDisplayOutputImp()
         self.input = CameraInputImp()
         super.init() 
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)

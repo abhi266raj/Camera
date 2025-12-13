@@ -13,51 +13,51 @@ import Combine
 import PlatformKit_api
 import CoreKit
 
-
-public final class CameraPreviewView: UIView, @preconcurrency CameraDisplayOutput, CameraDisplayLayerTarget {
-    public var previewLayer: CALayer?
-    public let displayCoordinator:CameraLayerDisplayCoordinatorImp
-    
-    @MainActor
-    public func addSublayer(_ layer: CALayer) async {
-        self.layer.addSublayer(layer)
-    }
-    
-    public var previewView: UIView {
-        return self
-    }
-    
-    public func updateFrame() {
-        setNeedsLayout()
-        setNeedsDisplay()
-    }
-    
-    public init(session: AVCaptureSession) {
-        displayCoordinator = CameraLayerDisplayCoordinatorImp(session: session)
-        super.init(frame:.zero)
-        self.commonSetup()
-    }
-    
-    public init(displayCoordinator: CameraLayerDisplayCoordinatorImp) {
-        self.displayCoordinator = displayCoordinator
-        super.init(frame:.zero)
-    }
-    
-    func commonSetup() {
-        Task { @MainActor in
-            await try? self.displayCoordinator.attach(self)
-        }
-    }
-
-    required init?(coder: NSCoder) {
-        return nil
-    }
-
-    override public func layoutSubviews() {
-        super.layoutSubviews()
-        previewLayer?.frame = bounds
-    }
-}
+//
+//public final class CameraPreviewView: UIView, @preconcurrency CameraDisplayOutput, CameraDisplayLayerTarget {
+//    public var previewLayer: CALayer?
+//    public let displayCoordinator:CameraLayerDisplayCoordinatorImp
+//    
+//    @MainActor
+//    public func addSublayer(_ layer: CALayer) async {
+//        self.layer.addSublayer(layer)
+//    }
+//    
+//    public var previewView: UIView {
+//        return self
+//    }
+//    
+//    public func updateFrame() {
+//        setNeedsLayout()
+//        setNeedsDisplay()
+//    }
+//    
+//    public init(session: AVCaptureSession) {
+//        displayCoordinator = CameraLayerDisplayCoordinatorImp(session: session)
+//        super.init(frame:.zero)
+//        self.commonSetup()
+//    }
+//    
+//    public init(displayCoordinator: CameraLayerDisplayCoordinatorImp) {
+//        self.displayCoordinator = displayCoordinator
+//        super.init(frame:.zero)
+//    }
+//    
+//    func commonSetup() {
+//        Task { @MainActor in
+//            await try? self.displayCoordinator.attach(self)
+//        }
+//    }
+//
+//    required init?(coder: NSCoder) {
+//        return nil
+//    }
+//
+//    override public func layoutSubviews() {
+//        super.layoutSubviews()
+//        previewLayer?.frame = bounds
+//    }
+//}
 
 public class CameraLayerDisplayCoordinatorImp: CameraDisplayCoordinator {
     var previewLayer: AVCaptureVideoPreviewLayer

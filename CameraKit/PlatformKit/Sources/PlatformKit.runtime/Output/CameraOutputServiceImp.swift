@@ -14,12 +14,12 @@ import PlatformKit_api
 
 
 public class CameraVideoOutputImp: CameraOutputService {
-    public let previewService: CameraPreviewView
+    public let previewService: CameraDisplayOutputImp
     public let recordingService: CameraRecordingCameraService
     
     @MainActor
     public init(session: AVCaptureSession, videoCaptureOutput: AVCaptureMovieFileOutput) {
-        previewService = CameraPreviewView(session: session)
+        previewService = CameraDisplayOutputImp()
         recordingService = CameraRecordingCameraService(videoCaptureOutput: videoCaptureOutput)
     }
 }
