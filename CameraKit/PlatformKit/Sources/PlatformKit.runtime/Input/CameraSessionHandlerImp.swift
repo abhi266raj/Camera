@@ -10,7 +10,7 @@ import AVFoundation
 import UIKit
 import PlatformKit_api
 
-public class CameraSessionHandlerImp: CameraSessionHandler, CameraInput{
+public class CameraSessionHandlerImp: CameraSessionHandler{
     
     let session: AVCaptureSession
     public init(session: AVCaptureSession) {
@@ -113,35 +113,14 @@ public class CameraSessionHandlerImp: CameraSessionHandler, CameraInput{
         
     }
     
-    var inputHandler = SingleCameraHandlerImp()
-}
-
-extension CameraSessionHandlerImp {
-    public func startRunning() async {
-        await start()
-    }
-    
-    public func stopRunning() async {
-        await stop()
-    }
-    
-    public var audioDevice: AVCaptureDeviceInput? {
-        self.inputHandler.audioDevice
-    }
-    
-    public var videoDevice: AVCaptureDeviceInput? {
-        self.inputHandler.selectedVideoDevice
-    }
-    
-    public func toggleCamera() async -> Bool {
+    public func toggle(config: CameraInputConfig) async -> Bool {
         if inputHandler.selectedPosition == .front {
             inputHandler.selectedPosition = .back
         }else {
             inputHandler.selectedPosition = .front
         }
-        return true
+        return await update(config: config)
     }
     
-    
+    var inputHandler = SingleCameraHandlerImp()
 }
-

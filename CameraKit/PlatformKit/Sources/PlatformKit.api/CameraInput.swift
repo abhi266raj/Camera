@@ -13,6 +13,7 @@ public protocol CameraSessionService {
     func stop() async
     func update(config: CameraInputConfig) async -> Bool
     func setup(input: [AVCaptureInput], output: [AVCaptureOutput], config: CameraInputConfig) async -> Bool
+    func toggle(config: CameraInputConfig) async -> Bool
 }
 
 
