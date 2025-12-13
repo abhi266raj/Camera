@@ -75,11 +75,6 @@ import DomainKit_api
         }
     }
     
-    public func getOutputView() -> CameraDisplayOutput? {
-        return cameraService.getOutputView()
-        
-    }
-    
     public func toggleCamera() async  -> Bool {
         cameraPhase = .switching
         let value =  await cameraService.toggleCamera()

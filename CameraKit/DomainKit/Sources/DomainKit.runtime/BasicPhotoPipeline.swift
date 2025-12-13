@@ -16,7 +16,7 @@ import Combine
 /// Basic Camera Pipeline Use UIView and record on camera
 public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
    
-    private let cameraDisplayCoordinator: CameraLayerDisplayCoordinatorImp
+    private let displayCoordinator: CameraLayerDisplayCoordinatorImp
     private let recordingService: CameraPhotoCameraService
     
     private let captureSession: AVCaptureSession
@@ -30,7 +30,7 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
     public init(supportedCameraTask: SupportedCameraTask) {
         let session = AVCaptureSession()
         self.captureSession = session
-        cameraDisplayCoordinator = CameraLayerDisplayCoordinatorImp(session:session)
+        displayCoordinator = CameraLayerDisplayCoordinatorImp(session:session)
         recordingService = CameraPhotoCameraService()
         self.sessionManager = CameraSessionHandlerImp(session: session)
         super.init()
@@ -56,16 +56,13 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
     @MainActor
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {
         Task {
-            await try cameraDisplayCoordinator.attach(target)
+            await try displayCoordinator.attach(target)
         }
     }
     
 }
 
 public extension BasicPhotoPipeline {
-    func getOutputView() -> CameraDisplayOutput? {
-        return nil
-    }
     
     func updateSelection(filter: (any FilterModel)?)  {
         processor.updateSelection(filter: filter)

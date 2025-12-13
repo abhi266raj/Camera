@@ -91,11 +91,6 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked 
             await try displayCoordinator.attach(target)
         }
     }
-    
-    public func getOutputView() -> CameraDisplayOutput? {
-        return nil
-    }
-
 }
 
 extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {

@@ -9,18 +9,14 @@ struct CameraAuthorizedView: View {
     var body: some View {
         ZStack {
             
-            if let cameraDisplayOutput = viewModel.getOutputView() {
-                CameraPreview(cameraOutput: cameraDisplayOutput)
-                    .ignoresSafeArea()
-            }else {
+           
                 if viewModel.showFilter {
                     CameraMetalViewer(viewModel: viewModel)
                 }else {
-                    CameraFeedViewer(viewModel: viewModel)
+                    DuaulCameraViewer(viewModel: viewModel)
+                    //CameraFeedViewer(viewModel: viewModel)
                 }
-            }
-           
-
+    
             VStack() {
                 // Top bar with switch at top-right
                 HStack {

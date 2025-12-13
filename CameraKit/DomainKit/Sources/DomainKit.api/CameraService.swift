@@ -12,8 +12,6 @@ import CoreKit
 import PlatformKit_api
 
 public protocol CameraService {
-    //associatedtype CameraDisplayTarget
-    func getOutputView() -> CameraDisplayOutput?
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
@@ -22,13 +20,6 @@ public protocol CameraService {
     @MainActor
     func attachDisplay(_ target: some CameraDisplayTarget) throws
 }
-
-//public extension CameraService {
-//    @MainActor
-//    func attachDisplay(_ target: some CameraDisplayTarget) throws {
-//        throw DisplayAttachError.invalidInput
-//    }
-//}
 
 public protocol CameraPipelineService: CameraService {
     associatedtype PipelineInput: CameraInput
@@ -54,9 +45,6 @@ public protocol CameraPipelineServiceNew: CameraService {
 }
 
 public extension CameraPipelineService {
-    func getOutputView() -> CameraDisplayOutput? {
-        return output.previewService
-    }
     
     func updateSelection(filter: (any FilterModel)?)  {
         processor.updateSelection(filter: filter)

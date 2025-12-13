@@ -51,10 +51,6 @@ public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
         }
     }
     
-    public func getOutputView() -> CameraDisplayOutput? {
-        return nil
-    }
-    
     private func setupInputAndOutput() -> Bool {
         guard let videoDevice =  input.videoDevice else {return false}
         guard let audioDevice =  input.audioDevice else {return false}

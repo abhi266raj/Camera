@@ -48,12 +48,7 @@ final class MetalDisplayMetalTargetImp: UIView, CameraDisplayMetalTarget{
         }
     }
     
-    public func updateFrame() {
-        setNeedsLayout()
-        setNeedsDisplay()
-    }
-    
-    
+   
 
     override public func layoutSubviews() {
         super.layoutSubviews()

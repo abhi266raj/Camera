@@ -18,20 +18,22 @@ import PlatformKit_api
 public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Sendable {
     
     public let input: CameraInputImp
-    public let previewOutput: MultiCameraPreviewView
     public let recordOutput: CameraContentRecordingProxyService
     public let processor: EmptyCameraProcessor = EmptyCameraProcessor()
-    public let displayCoordinator: CameraLayerDisplayCoordinatorImp
+    public let displayCoordinator: MultiCameraDisplayCoordinator
     private let captureSession: AVCaptureMultiCamSession
+    
    
     @MainActor
     public init(supportedCameraTask: SupportedCameraTask) {
         let session = AVCaptureMultiCamSession()
         self.captureSession = session
-        previewOutput = MultiCameraPreviewView(session: session)
         recordOutput = CameraContentRecordingProxyService(supportedCameraTask: supportedCameraTask)
-        displayCoordinator = CameraLayerDisplayCoordinatorImp(session: AVCaptureSession())
+        displayCoordinator = MultiCameraDisplayCoordinator(session: session)
         self.input = CameraInputImp()
+        super.init()
+        
+        
     }
     
     public func setup() {
@@ -71,8 +73,6 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
             return false
         }
         
-        
-        
         if captureSession.canAddInput(audioDevice) {
             captureSession.addInput(audioDevice)
         }else{
@@ -95,18 +95,21 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
     @MainActor
     public func updatePort(front:AVCaptureInput.Port, back: AVCaptureInput.Port) {
         captureSession.beginConfiguration()
-        let frontConnection = AVCaptureConnection(inputPort: front, videoPreviewLayer: previewOutput.frontPreviewLayer)
-        let backConnection = AVCaptureConnection(inputPort: back, videoPreviewLayer: previewOutput.backPreviewLayer)
-        captureSession.removeConnection(previewOutput.frontPreviewLayer.connection!)
-        captureSession.removeConnection(previewOutput.backPreviewLayer.connection!)
+        let frontConnection = AVCaptureConnection(inputPort: front, videoPreviewLayer: displayCoordinator.firstLayer)
+        let backConnection = AVCaptureConnection(inputPort: back, videoPreviewLayer: displayCoordinator.secondLayer)
+        captureSession.removeConnection(displayCoordinator.firstLayer.connection!)
+        captureSession.removeConnection(displayCoordinator.secondLayer.connection!)
         captureSession.addConnection(frontConnection)
         captureSession.addConnection(backConnection)
         captureSession.commitConfiguration()
     }
     
     
-    public func getOutputView() -> CameraDisplayOutput? {
-        return previewOutput
+    @MainActor
+    public func attachDisplay(_ target: some CameraDisplayTarget) throws {
+        Task {
+            await try displayCoordinator.attach(target)
+        }
     }
     
 }

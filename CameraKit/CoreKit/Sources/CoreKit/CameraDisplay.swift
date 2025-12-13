@@ -18,6 +18,17 @@ public protocol CameraDisplayLayerTarget: CameraDisplayTarget {
     func addSublayer(_ layer: CALayer) async
 }
 
+public protocol DualDisplayLayerTarget: CameraDisplayTarget {
+    @MainActor
+    var firstDisplayLayer: CALayer? {set get}
+    var secondDisplayLayer: CALayer? {set get}
+    @MainActor
+    func addFirstDisplaylayer(_ layer: CALayer) async
+    @MainActor
+    func addSecondDisplaylayer(_ layer: CALayer) async
+    
+}
+
 
 public protocol CameraDisplayMetalTarget: CameraDisplayTarget {
     @MainActor
