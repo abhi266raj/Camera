@@ -71,7 +71,7 @@ public class CameraLayerDisplayCoordinatorImp: CameraDisplayCoordinator {
     public func attach<T:CameraDisplayTarget>(_ target: T) async throws  {
         if let target = target as? CameraDisplayLayerTarget {
             try await attach(target)
-            return 
+            return
         }
         print("Error")
         throw DisplayAttachError.invalidInput
@@ -84,3 +84,28 @@ public class CameraLayerDisplayCoordinatorImp: CameraDisplayCoordinator {
         target.previewLayer = previewLayer
     }
 }
+
+public class CameraMetalDisplayCoordinatorImp: CameraDisplayCoordinator {
+    public let metalView: PreviewMetalView
+    
+    public init(metalView: PreviewMetalView) {
+        self.metalView = metalView
+    }
+    
+    @MainActor
+    public func attach<T:CameraDisplayTarget>(_ target: T) async throws  {
+        if let target = target as? CameraDisplayMetalTarget {
+            try await attach(target)
+            return
+        }
+        print("Error")
+        throw DisplayAttachError.invalidInput
+    }
+    
+    
+    @MainActor
+    public func attach(_ target:CameraDisplayMetalTarget) async throws {
+        await target.metalView = metalView
+    }
+}
+

@@ -15,12 +15,8 @@ import PlatformKit_api
 import DomainKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
-public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDelegate, @unchecked Sendable {
-    
-    public func sampleBufferRendered(_ buffer: CMSampleBuffer) {
-        recordOutput.appendSampleBuffer(buffer)
-    }
-        
+public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked Sendable {
+            
     private let captureSession: AVCaptureSession
     public let previewOutput: MetalCameraPreviewView
     public let recordOutput: SampleBufferCameraRecorderService
@@ -31,6 +27,7 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDe
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
     public var processor: EffectCameraProcessor = EffectCameraProcessor()
+    private let metalDisplayCoordinator: CameraMetalDisplayCoordinatorImp
     
     public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
@@ -38,12 +35,13 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDe
         let videoOutput = VideoOutputImp()
         recordOutput = SampleBufferCameraRecorderService(videoOutput: videoOutput)
         let metalView = PreviewMetalView(frame: .zero)
+        self.metalDisplayCoordinator = CameraMetalDisplayCoordinatorImp(metalView: metalView)
         previewOutput = MetalCameraPreviewView(metalView: metalView)
         self.input = CameraInputImp()
         super.init() 
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
-        previewOutput.metalView.renderingDelegate = self
+        metalView.renderingDelegate = self
     }
     
     public func setup() {
@@ -88,6 +86,17 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, RenderingDe
         
         return true
     }
+    
+    @MainActor
+    public func attachDisplay(_ target: some CameraDisplayTarget) throws {
+        Task {
+            await try metalDisplayCoordinator.attach(target)
+        }
+    }
+    
+    public func getOutputView() -> CameraDisplayOutput? {
+        return nil
+    }
 
 }
 
@@ -98,7 +107,7 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
         let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
             // Image render it than use via delegate to record
-            self.previewOutput.metalView.sampleBuffer = sampleBuffer
+            metalDisplayCoordinator.metalView.sampleBuffer = sampleBuffer
         }else{
             // Audio delegate record it
             self.recordOutput.appendSampleBuffer(sampleBuffer)
@@ -106,6 +115,13 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
       
     }
     
+}
+
+
+extension BasicMetalPipeline: MetalRenderingDelegate {
+    public func sampleBufferRendered(_ buffer: CMSampleBuffer) {
+        recordOutput.appendSampleBuffer(buffer)
+    }
 }
 
 

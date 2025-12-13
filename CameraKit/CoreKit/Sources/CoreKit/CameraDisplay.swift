@@ -21,7 +21,7 @@ public protocol CameraDisplayLayerTarget: CameraDisplayTarget {
 
 public protocol CameraDisplayMetalTarget: CameraDisplayTarget {
     @MainActor
-    func render(frame: CVPixelBuffer) async
+    var metalView: UIView? {set get}
 }
 
 

@@ -13,7 +13,11 @@ struct CameraAuthorizedView: View {
                 CameraPreview(cameraOutput: cameraDisplayOutput)
                     .ignoresSafeArea()
             }else {
-                CameraFeedViewer(viewModel: viewModel)
+                if viewModel.showFilter {
+                    CameraMetalViewer(viewModel: viewModel)
+                }else {
+                    CameraFeedViewer(viewModel: viewModel)
+                }
             }
            
 

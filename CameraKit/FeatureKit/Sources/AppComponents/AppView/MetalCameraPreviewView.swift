@@ -1,16 +1,39 @@
 //
-//  MetalOutput.swift
-//  CameraKit
+//  MetalCameraPreviewView.swift
+//  FeatureKit
 //
-//  Created by Abhiraj on 10/10/23.
+//  Created by Abhiraj on 14/12/25.
 //
+
 
 import Foundation
 import UIKit
 import PlatformKit_api
 import CoreKit
+import SwiftUI
+import AppViewModel
 
-public final class MetalCameraPreviewView: UIView, CameraDisplayMetalTarget,  @preconcurrency CameraDisplayOutput {
+struct CameraMetalViewer: UIViewRepresentable {
+    private let previewView =  MetalDisplayMetalTargetImp()
+    let viewModel: CameraViewModel
+    
+    init(viewModel: CameraViewModel) {
+        self.viewModel = viewModel
+        
+    }
+
+    func makeUIView(context: Context) -> UIView {
+        viewModel.attachDisplay(previewView)
+        return previewView
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+       
+    }
+}
+
+
+final class MetalDisplayMetalTargetImp: UIView, CameraDisplayMetalTarget{
     public var metalView: UIView? {
         didSet {
             guard let metalView else {return}
@@ -25,25 +48,12 @@ public final class MetalCameraPreviewView: UIView, CameraDisplayMetalTarget,  @p
         }
     }
     
-    public var previewView: UIView {
-        return self
-    }
-    
     public func updateFrame() {
         setNeedsLayout()
         setNeedsDisplay()
     }
     
-    //public let metalView: PreviewMetalView
-
-    public init(metalView: PreviewMetalView) {
-        self.metalView = metalView
-        super.init(frame: .zero)
-    }
-
-    required init?(coder: NSCoder) {
-        return nil
-    }
+    
 
     override public func layoutSubviews() {
         super.layoutSubviews()

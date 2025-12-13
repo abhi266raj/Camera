@@ -9,10 +9,16 @@
 import CoreMedia
 import Metal
 import MetalKit
+import CoreKit
+
+public protocol MetalRenderingDelegate: class  {
+    func sampleBufferRendered(_ buffer: CMSampleBuffer)
+}
+
 
 public class PreviewMetalView: MTKView {
     
-    public var renderingDelegate:RenderingDelegate?
+    weak public var renderingDelegate:MetalRenderingDelegate?
     
     enum Rotation: Int {
         case rotate0Degrees
@@ -458,14 +464,6 @@ public class PreviewMetalView: MTKView {
 }
 
 @MainActor var counter1  = 0
-
-
-public protocol RenderingDelegate  {
-    func sampleBufferRendered(_ buffer: CMSampleBuffer)
-}
-
-
-
 
 
 func convertMetalTextureToPixelBuffer(_ metalTexture: MTLTexture, samplePixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
