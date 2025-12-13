@@ -12,7 +12,7 @@ import Photos
 import Combine
 import PlatformKit_api
 
-public final class MultiCameraPreviewView: UIView, @preconcurrency CameraContentPreviewService {
+public final class MultiCameraPreviewView: UIView, @preconcurrency CameraDisplayOutput {
 
     public enum Quadrant: CaseIterable {
         case topLeft, topRight, bottomLeft, bottomRight, center

@@ -65,7 +65,7 @@ import DomainKit_api
         }
     }
     
-    public func getOutputView() -> CameraContentPreviewService {
+    public func getOutputView() -> CameraDisplayOutput {
         return cameraService.getOutputView()
         
     }

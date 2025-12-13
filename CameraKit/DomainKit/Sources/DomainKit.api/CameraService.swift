@@ -12,7 +12,7 @@ import CoreKit
 import PlatformKit_api
 
 public protocol CameraService {
-    func getOutputView() -> CameraContentPreviewService
+    func getOutputView() -> CameraDisplayOutput
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
@@ -33,7 +33,7 @@ public protocol CameraPipelineService: CameraService {
 
 public protocol CameraPipelineServiceNew: CameraService {
     associatedtype PipelineInput: CameraInput
-    associatedtype PipelinePreviewOutput: CameraContentPreviewService
+    associatedtype PipelinePreviewOutput: CameraDisplayOutput
     associatedtype PipelineRecordingOutput: CameraDiskOutputService
     associatedtype PipelineProcessor: CameraProccessor
     
@@ -44,7 +44,7 @@ public protocol CameraPipelineServiceNew: CameraService {
 }
 
 public extension CameraPipelineService {
-    func getOutputView() -> CameraContentPreviewService {
+    func getOutputView() -> CameraDisplayOutput {
         return output.previewService
     }
     
@@ -67,7 +67,7 @@ public extension CameraPipelineService {
 }
 
 public extension CameraPipelineServiceNew {
-    func getOutputView() -> CameraContentPreviewService {
+    func getOutputView() -> CameraDisplayOutput {
         return previewOutput
     }
     

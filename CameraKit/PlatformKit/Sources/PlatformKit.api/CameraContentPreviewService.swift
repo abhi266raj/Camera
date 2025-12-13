@@ -7,7 +7,10 @@
 
 import UIKit
 
-public protocol CameraContentPreviewService {
+
+public protocol CameraDisplayOutput {
     var previewView: UIView {get}
     func updateFrame()
 }
+
+

@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import PlatformKit_api
 
-public final class MetalCameraPreviewView: UIView, @preconcurrency CameraContentPreviewService {
+public final class MetalCameraPreviewView: UIView, @preconcurrency CameraDisplayOutput {
     public var previewView: UIView {
         return self
     }
