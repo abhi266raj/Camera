@@ -12,6 +12,7 @@ import Photos
 import CoreKit
 import PlatformKit_runtime
 import DomainKit_api
+import PlatformKit_api
 
 /// Multi Camera Pipeline Use UIView and record on camera
 public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Sendable {
@@ -20,7 +21,7 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
     public let previewOutput: MultiCameraPreviewView
     public let recordOutput: CameraContentRecordingProxyService
     public let processor: EmptyCameraProcessor = EmptyCameraProcessor()
-    
+    public let displayCoordinator: CameraLayerDisplayCoordinatorImp
     private let captureSession: AVCaptureMultiCamSession
    
     @MainActor
@@ -29,6 +30,7 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
         self.captureSession = session
         previewOutput = MultiCameraPreviewView(session: session)
         recordOutput = CameraContentRecordingProxyService(supportedCameraTask: supportedCameraTask)
+        displayCoordinator = CameraLayerDisplayCoordinatorImp(session: AVCaptureSession())
         self.input = CameraInputImp()
     }
     
@@ -101,5 +103,11 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceNew, @unchecked Se
         captureSession.addConnection(backConnection)
         captureSession.commitConfiguration()
     }
+    
+    
+    public func getOutputView() -> CameraDisplayOutput? {
+        return previewOutput
+    }
+    
 }
 

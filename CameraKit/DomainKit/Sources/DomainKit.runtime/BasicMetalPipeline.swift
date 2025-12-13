@@ -18,7 +18,6 @@ import DomainKit_api
 public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked Sendable {
             
     private let captureSession: AVCaptureSession
-    public let previewOutput: CameraDisplayOutputImp
     public let recordOutput: SampleBufferCameraRecorderService
 
     public let input: CameraInputImp
@@ -27,7 +26,7 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked 
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
     public var processor: EffectCameraProcessor = EffectCameraProcessor()
-    private let metalDisplayCoordinator: CameraMetalDisplayCoordinatorImp
+    public  let displayCoordinator: CameraMetalDisplayCoordinatorImp
     
     public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
@@ -35,8 +34,7 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked 
         let videoOutput = VideoOutputImp()
         recordOutput = SampleBufferCameraRecorderService(videoOutput: videoOutput)
         let metalView = PreviewMetalView(frame: .zero)
-        self.metalDisplayCoordinator = CameraMetalDisplayCoordinatorImp(metalView: metalView)
-        previewOutput = CameraDisplayOutputImp()
+        displayCoordinator = CameraMetalDisplayCoordinatorImp(metalView: metalView)
         self.input = CameraInputImp()
         super.init() 
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
@@ -90,7 +88,7 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceNew, @unchecked 
     @MainActor
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {
         Task {
-            await try metalDisplayCoordinator.attach(target)
+            await try displayCoordinator.attach(target)
         }
     }
     
@@ -107,7 +105,7 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
         let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
             // Image render it than use via delegate to record
-            metalDisplayCoordinator.metalView.sampleBuffer = sampleBuffer
+            displayCoordinator.metalView.sampleBuffer = sampleBuffer
         }else{
             // Audio delegate record it
             self.recordOutput.appendSampleBuffer(sampleBuffer)

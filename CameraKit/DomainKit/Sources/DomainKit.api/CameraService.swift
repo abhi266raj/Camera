@@ -43,12 +43,12 @@ public protocol CameraPipelineService: CameraService {
 
 public protocol CameraPipelineServiceNew: CameraService {
     associatedtype PipelineInput: CameraInput
-    associatedtype PipelinePreviewOutput: CameraDisplayOutput
+    associatedtype PipelineDisplayCoordinator: CameraDisplayCoordinator
     associatedtype PipelineRecordingOutput: CameraDiskOutputService
     associatedtype PipelineProcessor: CameraProccessor
     
     var input: PipelineInput {get}
-    var previewOutput: PipelinePreviewOutput {get}
+    var displayCoordinator: PipelineDisplayCoordinator {get}
     var recordOutput: PipelineRecordingOutput {get }
     var processor: PipelineProcessor {get}
 }
@@ -81,9 +81,6 @@ public extension CameraPipelineService {
 }
 
 public extension CameraPipelineServiceNew {
-    func getOutputView() -> CameraDisplayOutput? {
-        return previewOutput
-    }
     
     func updateSelection(filter: (any FilterModel)?)  {
         processor.updateSelection(filter: filter)
