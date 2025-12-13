@@ -9,8 +9,8 @@ struct CameraAuthorizedView: View {
     var body: some View {
         ZStack {
             
-            if let cameraOutput = viewModel.getOutputView() {
-                CameraPreview(cameraOutput: cameraOutput)
+            if let cameraDisplayOutput = viewModel.getOutputView() {
+                CameraPreview(cameraOutput: cameraDisplayOutput)
                     .ignoresSafeArea()
             }else {
                 CameraFeedViewer(viewModel: viewModel)

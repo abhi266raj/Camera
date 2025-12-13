@@ -44,6 +44,10 @@ import DomainKit_api
     public func attachDisplay(_ target: CameraDisplayTarget) {
         try? cameraService.attachDisplay(target)
     }
+    
+//    public var showCustomView: Bool {
+//        return cameraConfig.renderMode != .basic
+//    }
 
     
     public var showCamera: Bool {
@@ -72,7 +76,7 @@ import DomainKit_api
     }
     
     public func getOutputView() -> CameraDisplayOutput? {
-        return nil
+        return cameraService.getOutputView()
         
     }
     
