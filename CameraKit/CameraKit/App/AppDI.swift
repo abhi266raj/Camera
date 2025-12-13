@@ -54,7 +54,7 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
             case .multicam:
                 return MultiCamPipeline(supportedCameraTask: resolvedConfig.supportedTask)
             case .basicPhoto:
-                return  BasicPhotoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
+                return  BasicPhotoPipeline(supportedCameraTask: resolvedConfig.supportedTask)
             case .basicVideo:
                 return  BasicVideoPipeline(cameraOutputAction: resolvedConfig.cameraOutputAction)
             case .metal:

@@ -27,7 +27,7 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
         return output.recordingService.imageCaptureConfig
     }
     @MainActor
-    public init(cameraOutputAction: CameraAction) {
+    public init(supportedCameraTask: SupportedCameraTask) {
         let session = AVCaptureSession()
         self.captureSession = session
         self.output = CameraPhotoOutputImp(session: session, photoOutput: photoOutput)
@@ -37,7 +37,7 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
     public func setup() {
         Task{ @CameraInputSessionActor  in
             let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
-            return await sessionManager.setup(input: [], output: [photoOutput], config: config)
+            await sessionManager.setup(input: [], output: [photoOutput], config: config)
             await sessionManager.start()
         }
     }
