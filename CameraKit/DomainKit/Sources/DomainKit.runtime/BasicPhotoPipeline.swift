@@ -34,6 +34,9 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
         previewService = CameraPreviewView(displayCoordinator: cameraDisplayCoordinator)
         recordingService = CameraPhotoCameraService()
         self.sessionManager = CameraSessionHandlerImp(session: session)
+        super.init()
+        try? self.attachDisplay(previewService)
+        
     }
     
     public func setup() {
@@ -51,8 +54,12 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
          return await sessionManager.toggle(config: config)
     }
     
-    func configureCamera() {
-        
+   
+    @MainActor
+    public func attachDisplay(_ target: CameraPreviewView) throws {
+        Task {
+            await try cameraDisplayCoordinator.attach(target)
+        }
     }
     
 }

@@ -41,12 +41,11 @@ public final class CameraPreviewView: UIView, @preconcurrency CameraDisplayOutpu
     public init(displayCoordinator: CameraLayerDisplayCoordinatorImp) {
         self.displayCoordinator = displayCoordinator
         super.init(frame:.zero)
-        self.commonSetup()
     }
     
     func commonSetup() {
         Task { @MainActor in
-            await try? self.displayCoordinator.attach(to: self)
+            await try? self.displayCoordinator.attach(self)
         }
     }
 
@@ -69,12 +68,14 @@ public class CameraLayerDisplayCoordinatorImp: CameraDisplayCoordinator {
     }
     
     @MainActor
-    public func attach<T:CameraDisplayTarget>(to target: T) async throws  {
+    public func attach<T:CameraDisplayTarget>(_ target: T) async throws  {
+        print("Error")
         throw DisplayAttachError.invalidInput
     }
     
+    
     @MainActor
-    public func attach(to target:CameraPreviewView) async throws {
+    public func attach(_ target:CameraDisplayLayerTarget) async throws {
         await target.addSublayer(previewLayer)
         target.previewLayer = previewLayer
     }

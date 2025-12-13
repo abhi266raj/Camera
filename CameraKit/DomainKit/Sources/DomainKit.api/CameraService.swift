@@ -12,12 +12,22 @@ import CoreKit
 import PlatformKit_api
 
 public protocol CameraService {
+    associatedtype CameraDisplayTarget
     func getOutputView() -> CameraDisplayOutput
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
     func performAction( action: CameraAction) async throws -> Bool
     func setup() async
+    @MainActor
+    func attachDisplay(_ target: CameraDisplayTarget) throws
+}
+
+public extension CameraService {
+    @MainActor
+    func attachDisplay(_ target: CameraDisplayTarget) throws {
+        throw DisplayAttachError.invalidInput
+    }
 }
 
 public protocol CameraPipelineService: CameraService {
@@ -64,6 +74,10 @@ public extension CameraPipelineService {
         return try await output.recordingService.performAction(action:action)
     }
     
+    func attachDisplay(_ target: DeprecatedCameraDisplayTarget) throws {
+        throw DisplayAttachError.invalidInput
+    }
+    
 }
 
 public extension CameraPipelineServiceNew {
@@ -85,6 +99,10 @@ public extension CameraPipelineServiceNew {
     
     func performAction( action: CameraAction) async throws -> Bool {
         return try await recordOutput.performAction(action:action)
+    }
+    
+    func attachDisplay(_ target: DeprecatedCameraDisplayTarget) throws {
+        throw DisplayAttachError.invalidInput
     }
     
 }

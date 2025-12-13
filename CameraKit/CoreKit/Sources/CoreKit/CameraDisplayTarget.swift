@@ -26,11 +26,15 @@ public protocol CameraDisplayMetalTarget: CameraDisplayTarget {
 
 public protocol CameraDisplayCoordinator {
     @MainActor
-    func attach<T: CameraDisplayTarget>(to target: T) async throws
+    func attach(_ target: some CameraDisplayTarget) async throws
 }
 
 public enum DisplayAttachError: Error {
     case invalidInput
+}
+
+public class DeprecatedCameraDisplayTarget: CameraDisplayTarget {
+    
 }
 
 
