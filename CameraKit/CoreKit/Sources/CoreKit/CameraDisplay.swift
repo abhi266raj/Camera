@@ -21,6 +21,7 @@ public protocol CameraDisplayLayerTarget: CameraDisplayTarget {
 public protocol DualDisplayLayerTarget: CameraDisplayTarget {
     @MainActor
     var firstDisplayLayer: CALayer? {set get}
+    @MainActor
     var secondDisplayLayer: CALayer? {set get}
     @MainActor
     func addFirstDisplaylayer(_ layer: CALayer) async

@@ -45,9 +45,9 @@ import DomainKit_api
         try? cameraService.attachDisplay(target)
     }
     
-//    public var showCustomView: Bool {
-//        return cameraConfig.renderMode != .basic
-//    }
+    public var showMultiCam: Bool {
+        return cameraConfig.renderMode == .mutliCam
+    }
 
     
     public var showCamera: Bool {

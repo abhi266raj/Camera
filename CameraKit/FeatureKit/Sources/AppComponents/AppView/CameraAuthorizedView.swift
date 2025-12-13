@@ -9,16 +9,15 @@ struct CameraAuthorizedView: View {
     var body: some View {
         ZStack {
             
-           
                 if viewModel.showFilter {
                     CameraMetalViewer(viewModel: viewModel)
+                }else if viewModel.showMultiCam {
+                    DualCameraViewer(viewModel: viewModel)
                 }else {
-                    DuaulCameraViewer(viewModel: viewModel)
-                    //CameraFeedViewer(viewModel: viewModel)
+                    CameraFeedViewer(viewModel: viewModel)
                 }
     
             VStack() {
-                // Top bar with switch at top-right
                 HStack {
                     Spacer()
                     CameraActionBar(viewModel: viewModel)

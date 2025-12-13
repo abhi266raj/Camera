@@ -12,7 +12,7 @@ import CoreKit
 import SwiftUI
 import AppViewModel
 
-struct DuaulCameraViewer: UIViewRepresentable {
+struct DualCameraViewer: UIViewRepresentable {
     private let previewView =  DualDisplayPreviewView()
     let viewModel: CameraViewModel
     
