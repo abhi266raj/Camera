@@ -21,15 +21,15 @@ public protocol CameraService {
     func attachDisplay(_ target: some CameraDisplayTarget) throws
 }
 
-public protocol CameraPipelineService: CameraService {
-    associatedtype PipelineInput: CameraInput
-    associatedtype PipelineOutput: CameraOutputService
-    associatedtype PipelineProcessor: CameraProccessor
-    
-    var input: PipelineInput {get}
-    var output: PipelineOutput {get}
-    var processor: PipelineProcessor {get}    
-}
+//public protocol CameraPipelineService: CameraService {
+//    associatedtype PipelineInput: CameraInput
+//    associatedtype PipelineOutput: CameraOutputService
+//    associatedtype PipelineProcessor: CameraProccessor
+//    
+//    var input: PipelineInput {get}
+//    var output: PipelineOutput {get}
+//    var processor: PipelineProcessor {get}    
+//}
 
 
 public protocol CameraPipelineServiceNew: CameraService {
@@ -44,29 +44,29 @@ public protocol CameraPipelineServiceNew: CameraService {
     var processor: PipelineProcessor {get}
 }
 
-public extension CameraPipelineService {
-    
-    func updateSelection(filter: (any FilterModel)?)  {
-        processor.updateSelection(filter: filter)
-    }
-    
-    func toggleCamera() async  -> Bool {
-        return await input.toggleCamera()
-    }
-    
-    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
-        return output.recordingService.cameraModePublisher
-    }
-    
-    func performAction( action: CameraAction) async throws -> Bool {
-        return try await output.recordingService.performAction(action:action)
-    }
-    
-    func attachDisplay(_ target: some CameraDisplayTarget) throws {
-        throw DisplayAttachError.invalidInput
-    }
-    
-}
+//public extension CameraPipelineService {
+//    
+//    func updateSelection(filter: (any FilterModel)?)  {
+//        processor.updateSelection(filter: filter)
+//    }
+//    
+//    func toggleCamera() async  -> Bool {
+//        return await input.toggleCamera()
+//    }
+//    
+//    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
+//        return output.recordingService.cameraModePublisher
+//    }
+//    
+//    func performAction( action: CameraAction) async throws -> Bool {
+//        return try await output.recordingService.performAction(action:action)
+//    }
+//    
+//    func attachDisplay(_ target: some CameraDisplayTarget) throws {
+//        throw DisplayAttachError.invalidInput
+//    }
+//    
+//}
 
 public extension CameraPipelineServiceNew {
     

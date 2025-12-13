@@ -40,17 +40,4 @@ public struct CameraView: View {
 }
 
 
-struct CameraPreview: UIViewRepresentable {
-    let cameraOutput: any CameraDisplayOutput
-
-    func makeUIView(context: Context) -> UIView {
-        let view =  cameraOutput.previewView
-        view.backgroundColor = .gray
-        return view
-    }
-
-    func updateUIView(_ uiView: UIView, context: Context) {
-        cameraOutput.updateFrame()
-    }
-}
 

@@ -6,11 +6,11 @@
 //
 
 
-public protocol CameraOutputService {
-    
-    associatedtype PreviewService: CameraDisplayOutput
-    associatedtype RecordingService: CameraDiskOutputService
-    
-    var previewService: PreviewService {get}
-    var recordingService: RecordingService {get}
-}
+//public protocol CameraOutputService {
+//    
+//    associatedtype PreviewService: CameraDisplayOutput
+//    associatedtype RecordingService: CameraDiskOutputService
+//    
+//    var previewService: PreviewService {get}
+//    var recordingService: RecordingService {get}
+//}

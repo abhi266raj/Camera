@@ -13,27 +13,29 @@ import DomainKit_api
 import PlatformKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
-public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
+public class BasicVideoPipeline:  CameraPipelineServiceNew, @unchecked Sendable {
     
-    public typealias InputType = CameraInputImp
-    public typealias ProcessorType = EmptyCameraProcessor
-    public typealias OutputType = CameraVideoOutputImp
+   // public typealias InputType = CameraInputImp
+   // public typealias ProcessorType = EmptyCameraProcessor
+   // public typealias OutputType = CameraVideoOutputImp
  
-    private let cameraDisplayCoordinator: CameraLayerDisplayCoordinatorImp
+    public let displayCoordinator: CameraLayerDisplayCoordinatorImp
     private let captureSession: AVCaptureSession
-    public let output: CameraVideoOutputImp
-    public let input: InputType
+    //public let output: CameraVideoOutputImp
+    public let input: CameraInputImp
     let fileOutput = AVCaptureMovieFileOutput()
     public var processor = EmptyCameraProcessor()
     var videoRecordingConfig =  VideoRecordingConfig()
+    public let recordOutput: CameraRecordingCameraService
     
     @MainActor
     public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)
+       // self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)
+        recordOutput = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
         self.input = CameraInputImp()
-        cameraDisplayCoordinator = CameraLayerDisplayCoordinatorImp(session:session)
+        displayCoordinator = CameraLayerDisplayCoordinatorImp(session:session)
     }
 
     public func setup() {
@@ -47,7 +49,7 @@ public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
     @MainActor
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {
         Task {
-            await try cameraDisplayCoordinator.attach(target)
+            await try displayCoordinator.attach(target)
         }
     }
     
@@ -77,17 +79,6 @@ public class BasicVideoPipeline:  CameraPipelineService, @unchecked Sendable {
         }
        
         return true
-    }
-    
-    var basicFileRecorder: BasicFileRecorder?
-    func start(_ record: Bool) {
-        if basicFileRecorder == nil {
-                basicFileRecorder = BasicFileRecorder(fileOutput: fileOutput)
-        }
-        Task {
-            await basicFileRecorder?.start(record)
-        }
-        
     }
     
 }
