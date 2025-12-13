@@ -7,8 +7,6 @@
 
 import Foundation
 import AVFoundation
-import UIKit
-import Photos
 import CoreKit
 import PlatformKit_runtime
 import DomainKit_api
@@ -17,27 +15,29 @@ import Combine
 
 /// Basic Camera Pipeline Use UIView and record on camera
 public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
+    private let previewService: CameraPreviewView
+    private let recordingService: CameraPhotoCameraService
     
     private let captureSession: AVCaptureSession
-    public let output: CameraPhotoOutputImp
     public let sessionManager: CameraSessionHandlerImp
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
     private let processor = EmptyCameraProcessor()
     var imageCaptureConfig: ImageCaptureConfig {
-        return output.recordingService.imageCaptureConfig
+        return recordingService.imageCaptureConfig
     }
     @MainActor
     public init(supportedCameraTask: SupportedCameraTask) {
         let session = AVCaptureSession()
         self.captureSession = session
-        self.output = CameraPhotoOutputImp(session: session, photoOutput: photoOutput)
+        previewService = CameraPreviewView(session: session)
+        recordingService = CameraPhotoCameraService()
         self.sessionManager = CameraSessionHandlerImp(session: session)
     }
     
     public func setup() {
         Task{ @CameraInputSessionActor  in
             let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
-            await sessionManager.setup(input: [], output: [photoOutput], config: config)
+            await sessionManager.setup(input: [], output: recordingService.availableOutput, config: config)
             await sessionManager.start()
         }
     }
@@ -56,7 +56,7 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraService {
 
 public extension BasicPhotoPipeline {
     func getOutputView() -> CameraContentPreviewService {
-        return output.previewService
+        return previewService
     }
     
     func updateSelection(filter: (any FilterModel)?)  {
@@ -64,11 +64,11 @@ public extension BasicPhotoPipeline {
     }
     
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
-        return output.recordingService.cameraModePublisher
+        return recordingService.cameraModePublisher
     }
     
     func performAction( action: CameraAction) async throws -> Bool {
-        return try await output.recordingService.performAction(action:action)
+        return try await recordingService.performAction(action:action)
     }
     
 }

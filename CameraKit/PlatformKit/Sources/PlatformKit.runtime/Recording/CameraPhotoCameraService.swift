@@ -18,8 +18,8 @@ public class CameraPhotoCameraService: NSObject, CameraContentRecordingService, 
     var photoOutput:AVCapturePhotoOutput
     public var imageCaptureConfig =  ImageCaptureConfig()
     
-    public init(photoOutput: AVCapturePhotoOutput) {
-        self.photoOutput = photoOutput
+    override public init() {
+        self.photoOutput = AVCapturePhotoOutput()
     }
     
     public func performAction(action: CameraAction) throws -> Bool {
@@ -34,6 +34,10 @@ public class CameraPhotoCameraService: NSObject, CameraContentRecordingService, 
         
         throw CameraAction.ActionError.unsupported
        
+    }
+    
+    public var availableOutput: [AVCaptureOutput] {
+        return [photoOutput]
     }
 }
 
