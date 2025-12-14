@@ -42,12 +42,11 @@ public class BasicMetalPipeline: NSObject, CameraPipelineServiceLegacy, @uncheck
         metalView.renderingDelegate = self
     }
     
-    public func setup() {
-        Task{ @CameraInputSessionActor in
-            let _  = setupInputAndOutput()
-            input.session = captureSession
-            input.startRunning()
-        }
+    @CameraInputSessionActor
+    public func setup() async {
+            let _  = self.setupInputAndOutput()
+            self.input.session = self.captureSession
+            await self.input.startRunning()
     }
     
     private func setupInputAndOutput() -> Bool {

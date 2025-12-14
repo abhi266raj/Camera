@@ -13,4 +13,17 @@ import Photos
 @globalActor
 public actor CameraInputSessionActor {
     public static let shared =  CameraInputSessionActor()
+    static let sharedMyActorsExecutor = UtiltyExecutor()
+    nonisolated public var unownedExecutor: UnownedSerialExecutor {
+      Self.sharedMyActorsExecutor.asUnownedSerialExecutor()
+    }
+}
+
+public final class UtiltyExecutor: SerialExecutor {
+    let serialQueue = DispatchQueue(label: "com.example.serialQueue", qos: .utility) // medium priority
+    public func enqueue(_ job: UnownedJob) {
+        serialQueue.async {
+            job.runSynchronously(on: self.asUnownedSerialExecutor())
+        }
+    }
 }

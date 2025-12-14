@@ -36,17 +36,18 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceLegacy, @unchecked
         
     }
     
-    public func setup() {
-        Task{ @CameraInputSessionActor  in
+    @CameraInputSessionActor
+    public func setup() async {
+       // Task{ @CameraInputSessionActor  in
             await self.setupInput()
-        }
+        //}
     }
     
     @CameraInputSessionActor
     private func setupInput() async {
         let _  = self.setupInputAndOutput()
         input.session = captureSession
-        input.startRunning()
+        await input.startRunning()
         
     }
     

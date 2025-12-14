@@ -14,14 +14,14 @@ public enum CameraPhase {
 }
 
 // Camera operation mode
-public enum CameraMode {
+public enum CameraMode: Sendable {
     case preview
     case initiatingCapture
     case capture(CaptureType)
 }
 
 // Specific capture type
-public enum CaptureType {
+public enum CaptureType: Sendable {
     case photo
     case video
 }

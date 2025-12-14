@@ -9,11 +9,6 @@ import Foundation
 import Photos
 import PlatformKit_api
 
-
-//protocol VideoSaver {
-//    func save(outputFileURL: URL, error: Error?)
-//}
-
 class VideoSaverImp: VideoSaver {
     
     

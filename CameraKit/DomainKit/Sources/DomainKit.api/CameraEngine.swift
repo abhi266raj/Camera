@@ -11,7 +11,7 @@ import Combine
 import CoreKit
 import PlatformKit_api
 
-public protocol CameraService {
+public protocol CameraEngine {
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }

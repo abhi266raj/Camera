@@ -10,7 +10,7 @@ import PlatformKit_api
 import DomainKit_api
 import Combine
 
-public protocol CameraPipelineServiceLegacy: CameraService {
+public protocol CameraPipelineServiceLegacy: CameraEngine {
     associatedtype PipelineInput: CameraInput
     associatedtype PipelineDisplayCoordinator: CameraDisplayCoordinator
     associatedtype PipelineRecordingOutput: CameraDiskOutputService

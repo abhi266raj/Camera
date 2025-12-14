@@ -14,10 +14,7 @@ import PlatformKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
 public class BasicVideoPipeline:  CameraPipelineServiceLegacy, @unchecked Sendable {
-    
-   // public typealias InputType = CameraInputImp
-   // public typealias ProcessorType = EmptyCameraProcessor
-   // public typealias OutputType = CameraVideoOutputImp
+   
  
     public let displayCoordinator: CameraLayerDisplayCoordinatorImp
     private let captureSession: AVCaptureSession
@@ -26,24 +23,22 @@ public class BasicVideoPipeline:  CameraPipelineServiceLegacy, @unchecked Sendab
     let fileOutput = AVCaptureMovieFileOutput()
     public var processor = EmptyCameraProcessor()
     var videoRecordingConfig =  VideoRecordingConfig()
-    public let recordOutput: CameraRecordingCameraService
+    public lazy var recordOutput: CameraRecordingCameraService = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
     
     @MainActor
     public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
-       // self.output = CameraVideoOutputImp(session: session, videoCaptureOutput: fileOutput)
-        recordOutput = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
+        // recordOutput = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
         self.input = CameraInputImp()
         displayCoordinator = CameraLayerDisplayCoordinatorImp(session:session)
     }
 
-    public func setup() {
-            Task{ @CameraInputSessionActor in
+    @CameraInputSessionActor
+    public func setup() async {
                 let _  = setupInputAndOutput()
                 input.session = captureSession
-                input.startRunning()
-            }
+                await input.startRunning()
     }
     
     @MainActor
@@ -53,6 +48,7 @@ public class BasicVideoPipeline:  CameraPipelineServiceLegacy, @unchecked Sendab
         }
     }
     
+    @CameraInputSessionActor
     private func setupInputAndOutput() -> Bool {
         guard let videoDevice =  input.videoDevice else {return false}
         guard let audioDevice =  input.audioDevice else {return false}

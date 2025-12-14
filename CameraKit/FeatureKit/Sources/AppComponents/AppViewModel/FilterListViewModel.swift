@@ -38,7 +38,7 @@ public protocol FilterListViewModel: ActionableViewModel {
 @Observable
 final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, @unchecked Sendable {
     
-    private let cameraService: CameraService
+    private let cameraService: CameraEngine
     private let repository: FilterRepository
 
     public private(set) var items: [FilterEntity] = []
@@ -47,7 +47,7 @@ final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, 
     public var viewData: FilterListViewData = FilterListViewData()
 
     public init(
-        cameraService: CameraService,
+        cameraService: CameraEngine,
         repository: FilterRepository
     ) {
         self.cameraService = cameraService

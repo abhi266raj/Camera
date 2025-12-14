@@ -15,30 +15,33 @@ import DomainKit_api
 
 @Observable public class CameraViewModel: @unchecked Sendable {
     
-    public init(permissionService: PermissionService, cameraConfig: CameraConfig , cameraService: CameraService) {
+    public init(permissionService: PermissionService, cameraConfig: CameraConfig , cameraService: CameraEngine) {
         self.permissionService = permissionService
         self.cameraConfig = cameraConfig
         self.cameraService = cameraService
-        setup()
+        commonInit()
     }
     
-    func setup() {
-        cameraService.cameraModePublisher.sink { [weak self] mode in
+    func commonInit() {
+        cameraService.cameraModePublisher
+            .sink {  [weak self] mode in
             guard let self else {return }
-            self.cameraMode = mode
-            if case .active(_) = self.cameraPhase {
-                self.cameraPhase = .active(mode)
-            }
+                Task { @MainActor in
+                    self.cameraMode = mode
+                    if case .active(_) = self.cameraPhase {
+                        self.cameraPhase = .active(mode)
+                    }
+                }
         }.store(in: &cancellables)
     }
     
-    private var cameraMode: CameraMode = .preview
-    public var cameraPhase: CameraPhase = .inactive
+    @MainActor private var cameraMode: CameraMode = .preview
+    @MainActor public var cameraPhase: CameraPhase = .inactive
     private var cancellables = Set<AnyCancellable>()
     private let cameraConfig: CameraConfig
     private let permissionService: PermissionService
     public var cameraPermissionState: PermissionStatus = .unknown
-    private let cameraService:CameraService
+    private let cameraService:CameraEngine
     
     @MainActor
     public func attachDisplay(_ target: CameraDisplayTarget) {
@@ -62,19 +65,26 @@ import DomainKit_api
         return cameraConfig.supportedTask == .recordVideo
     }
     
-    @MainActor public func setup() async {
+    @MainActor public func permissionSetup() async {
         if cameraPermissionState == .unknown {
             let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()
             if permission == false {
                 cameraPermissionState = .denied
             }else {
-                await cameraService.setup()
                 cameraPermissionState = .authorized
-                cameraPhase = .active(cameraMode)
             }
         }
+        
     }
     
+     public func setup() async  {
+         await self.cameraService.setup()
+          Task { @MainActor in
+               self.cameraPhase = .active(self.cameraMode)
+          }
+    }
+    
+    @MainActor
     public func toggleCamera() async  -> Bool {
         cameraPhase = .switching
         let value =  await cameraService.toggleCamera()
