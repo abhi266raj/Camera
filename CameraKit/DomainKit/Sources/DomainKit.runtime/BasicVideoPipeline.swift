@@ -21,7 +21,6 @@ public class BasicVideoPipeline:  CameraPipelineServiceLegacy, @unchecked Sendab
     //public let output: CameraVideoOutputImp
     public let input: CameraInputImp
     let fileOutput = AVCaptureMovieFileOutput()
-    public var processor = EmptyCameraProcessor()
     var videoRecordingConfig =  VideoRecordingConfig()
     public lazy var recordOutput: CameraRecordingCameraService = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
     

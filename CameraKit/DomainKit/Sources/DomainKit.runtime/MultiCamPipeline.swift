@@ -19,7 +19,6 @@ public class MultiCamPipeline: NSObject, CameraPipelineServiceLegacy, @unchecked
     
     public let input: CameraInputImp
     public let recordOutput: CameraContentRecordingProxyService
-    public let processor: EmptyCameraProcessor = EmptyCameraProcessor()
     public let displayCoordinator: MultiCameraDisplayCoordinator
     private let captureSession: AVCaptureMultiCamSession
     

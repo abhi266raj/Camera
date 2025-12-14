@@ -14,8 +14,8 @@ public protocol CameraProccessor {
     func updateSelection(filter: (any FilterModel)?)
 }
 
-public extension CameraProccessor {
-    func updateSelection(filter: (any FilterModel)?) {
-    }
-}
+//public extension CameraProccessor {
+//    func updateSelection(filter: (any FilterModel)?) {
+//    }
+//}
 

@@ -10,15 +10,15 @@ import CoreMedia
 import PlatformKit_api
 
 
-public class EmptyCameraProcessor: CameraProccessor {
-    
-    public init () {
-        
-    }
-    
-    public func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
-        return sampleBuffer
-    }
-    
-    
-}
+//public class EmptyCameraProcessor: CameraProccessor {
+//    
+//    public init () {
+//        
+//    }
+//    
+//    public func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
+//        return sampleBuffer
+//    }
+//    
+//    
+//}
