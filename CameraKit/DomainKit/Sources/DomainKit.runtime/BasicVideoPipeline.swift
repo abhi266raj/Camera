@@ -13,7 +13,7 @@ import DomainKit_api
 import PlatformKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
-public class BasicVideoPipeline:  CameraPipelineServiceLegacy, @unchecked Sendable {
+public class BasicVideoPipeline:  CameraSubSystem, @unchecked Sendable {
    
  
     public let displayCoordinator: CameraLayerDisplayCoordinatorImp

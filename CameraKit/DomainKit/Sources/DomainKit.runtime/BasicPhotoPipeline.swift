@@ -14,7 +14,7 @@ import PlatformKit_api
 import Combine
 
 /// Basic Camera Pipeline Use UIView and record on camera
-public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraEngine, CameraPipelineServiceLegacy {
+public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraEngine, CameraSubSystem {
    
     public  let displayCoordinator: CameraLayerDisplayCoordinatorImp
     public  let recordingService: CameraPhotoCameraService
@@ -30,7 +30,6 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraEngine, Ca
     private let captureSession: AVCaptureSession
     public let sessionManager: CameraSessionHandlerImp
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
-    //private let processor = EmptyCameraProcessor()
     var imageCaptureConfig: ImageCaptureConfig {
         return recordingService.imageCaptureConfig
     }
@@ -47,12 +46,9 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraEngine, Ca
     
     @CameraInputSessionActor
     public func setup() async {
-//        Task{
-//            @CameraInputSessionActor  in
             let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
             await sessionManager.setup(input: [], output: recordingService.availableOutput, config: config)
             await sessionManager.start()
-      //  }
     }
     
     @CameraInputSessionActor

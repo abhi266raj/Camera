@@ -12,19 +12,19 @@ import Combine
 import CoreMedia
 import PlatformKit_runtime
 
-public protocol CameraPipelineServiceLegacy: CameraEngine {
-    associatedtype PipelineInput
-    associatedtype PipelineDisplayCoordinator: CameraDisplayCoordinator
-    associatedtype PipelineRecordingOutput: CameraDiskOutputService
-    associatedtype PipelineProcessor =  Void
+public protocol CameraSubSystem: CameraEngine {
+    associatedtype Input
+    associatedtype DisplayCoordinator: CameraDisplayCoordinator
+    associatedtype DiskOutput: CameraDiskOutputService
+    associatedtype Processor =  Void
     
-    var input: PipelineInput {get}
-    var displayCoordinator: PipelineDisplayCoordinator {get}
-    var recordOutput: PipelineRecordingOutput {get }
-    var processor: PipelineProcessor {get}
+    var input: Input {get}
+    var displayCoordinator: DisplayCoordinator {get}
+    var recordOutput: DiskOutput {get }
+    var processor: Processor {get}
 }
 
-public extension CameraPipelineServiceLegacy where PipelineProcessor == Void {
+public extension CameraSubSystem where Processor == Void {
     
     var processor: Void {
         ()
@@ -36,19 +36,19 @@ public extension CameraPipelineServiceLegacy where PipelineProcessor == Void {
 
 
 
-public extension CameraPipelineServiceLegacy where PipelineProcessor: CameraProccessor {
+public extension CameraSubSystem where Processor: CameraProccessor {
     func updateSelection(filter: (any FilterModel)?)  {
         processor.updateSelection(filter: filter)
     }
 }
 
-public extension CameraPipelineServiceLegacy where PipelineInput: CameraInput {
+public extension CameraSubSystem where Input: CameraInput {
     func toggleCamera() async  -> Bool {
         return await input.toggleCamera()
     }
 }
 
-public extension CameraPipelineServiceLegacy {
+public extension CameraSubSystem {
     
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
         return recordOutput.cameraModePublisher
