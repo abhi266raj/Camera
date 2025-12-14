@@ -24,10 +24,10 @@ public class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
    
     @MainActor
-    public init(supportedCameraTask: SupportedCameraTask) {
+    override public init() {
         let session = AVCaptureMultiCamSession()
         self.captureSession = session
-        recordOutput = CameraContentRecordingProxyService(supportedCameraTask: supportedCameraTask)
+        recordOutput = CameraContentRecordingProxyService(supportedCameraTask: .none)
         displayCoordinator = MultiCameraDisplayCoordinator(session: session)
         self.input = CameraInputImp()
         super.init()

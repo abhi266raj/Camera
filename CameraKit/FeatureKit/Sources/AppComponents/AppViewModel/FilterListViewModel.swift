@@ -38,7 +38,7 @@ public protocol FilterListViewModel: ActionableViewModel {
 @Observable
 final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, @unchecked Sendable {
     
-    private let cameraService: CameraEngine
+    private let cameraService: CameraEngineNew
     private let repository: FilterRepository
 
     public private(set) var items: [FilterEntity] = []
@@ -47,7 +47,7 @@ final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, 
     public var viewData: FilterListViewData = FilterListViewData()
 
     public init(
-        cameraService: CameraEngine,
+        cameraService: CameraEngineNew,
         repository: FilterRepository
     ) {
         self.cameraService = cameraService
@@ -66,7 +66,10 @@ final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, 
 
     public func selectItem(at index: Int) {
         guard items.indices.contains(index) else { return }
-        cameraService.updateSelection(filter: items[index].model)
+        Task {
+            await try? cameraService.perform(.updateFilter(items[index].model))
+        }
+        //cameraService.updateSelection(filter: items[index].model)
     }
     
     public func trigger(_ action: FilterAction) {

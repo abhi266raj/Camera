@@ -15,7 +15,7 @@ import DomainKit_api
 
 @Observable public class CameraViewModel: @unchecked Sendable {
     
-    public init(permissionService: PermissionService, cameraConfig: CameraConfig , cameraService: CameraEngine) {
+    public init(permissionService: PermissionService, cameraConfig: CameraConfig , cameraService: CameraEngineNew) {
         self.permissionService = permissionService
         self.cameraConfig = cameraConfig
         self.cameraService = cameraService
@@ -41,7 +41,7 @@ import DomainKit_api
     private let cameraConfig: CameraConfig
     private let permissionService: PermissionService
     public var cameraPermissionState: PermissionStatus = .unknown
-    private let cameraService:CameraEngine
+    private let cameraService:CameraEngineNew
     
     @MainActor
     public func attachDisplay(_ target: CameraDisplayTarget) {
@@ -49,20 +49,23 @@ import DomainKit_api
     }
     
     public var showMultiCam: Bool {
-        return cameraConfig.renderMode == .mutliCam
+        return cameraService.activeConfig.display == .multicam
+        //cameraConfig.renderMode == .mutliCam
     }
 
     
     public var showCamera: Bool {
-        return cameraConfig.supportedTask == .capturePhoto
+        return cameraService.activeConfig.storage == .photo
+        //cameraConfig.supportedTask == .capturePhoto
     }
     
     public var showFilter: Bool {
-        return cameraConfig.renderMode == .metal
+        cameraService.activeConfig.inputOutput.contains(.ciFilter) || cameraService.activeConfig.inputOutput.contains(.metalFilter)
     }
     
     public var showRecording: Bool {
-        return cameraConfig.supportedTask == .recordVideo
+        cameraService.activeConfig.storage == .video
+        //return cameraConfig.supportedTask == .recordVideo
     }
     
     @MainActor public func permissionSetup() async {
@@ -78,7 +81,8 @@ import DomainKit_api
     }
     
      public func setup() async  {
-         await self.cameraService.setup()
+         //await self.cameraService.setup()
+         await try? self.cameraService.perform(.setup)
           Task { @MainActor in
                self.cameraPhase = .active(self.cameraMode)
           }
@@ -87,14 +91,31 @@ import DomainKit_api
     @MainActor
     public func toggleCamera() async  -> Bool {
         cameraPhase = .switching
-        let value =  await cameraService.toggleCamera()
+        await try? self.cameraService.perform(.toggle)
+        //let value =  await cameraService.toggleCamera()
         cameraPhase = .active(cameraMode)
-        return value
+        return true
     }
     
     public func performAction( action: CameraAction) async throws -> Bool {
-        return try await cameraService.performAction(action:action)
+        let map = action.toEngineAction()
+        try? await cameraService.perform(map)
+        return true
     }
     
+}
+
+extension CameraAction {
+    func toEngineAction() -> EngineAction {
+        if self == .photo {
+            return .takePicture
+        }
+        
+        if self == .startRecord {
+            return .startRecording
+        }
+        
+        return .stopRecording
+    }
 }
 

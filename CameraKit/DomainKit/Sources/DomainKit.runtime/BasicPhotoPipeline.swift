@@ -14,7 +14,7 @@ import PlatformKit_api
 import Combine
 
 /// Basic Camera Pipeline Use UIView and record on camera
-public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraEngine, CameraSubSystem {
+public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
    
     public  let displayCoordinator: CameraLayerDisplayCoordinatorImp
     public  let recordingService: CameraPhotoCameraService
@@ -34,7 +34,7 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraEngine, Ca
         return recordingService.imageCaptureConfig
     }
     @MainActor
-    public init(supportedCameraTask: SupportedCameraTask) {
+    override public init() {
         let session = AVCaptureSession()
         self.captureSession = session
         displayCoordinator = CameraLayerDisplayCoordinatorImp(session:session)

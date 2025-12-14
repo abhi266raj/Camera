@@ -12,7 +12,7 @@ import Combine
 import CoreMedia
 import PlatformKit_runtime
 
-public protocol CameraSubSystem: CameraEngine {
+public protocol CameraSubSystem {
     associatedtype Input
     associatedtype DisplayCoordinator: CameraDisplayCoordinator
     associatedtype DiskOutput: CameraDiskOutputService
@@ -22,7 +22,16 @@ public protocol CameraSubSystem: CameraEngine {
     var displayCoordinator: DisplayCoordinator {get}
     var recordOutput: DiskOutput {get }
     var processor: Processor {get}
+    
+    func updateSelection(filter: (any FilterModel)?)
+    func toggleCamera() async  -> Bool
+    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
+    func performAction( action: CameraAction) async throws -> Bool
+    func setup() async
+    @MainActor
+    func attachDisplay(_ target: some CameraDisplayTarget) throws
 }
+
 
 public extension CameraSubSystem where Processor == Void {
     
@@ -63,3 +72,4 @@ public extension CameraSubSystem {
     }
     
 }
+

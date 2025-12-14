@@ -6,6 +6,16 @@
 //
 
 // Top-level camera state
+
+
+public enum CameraProfile: Hashable, Sendable {
+       case multiCam
+       case simplephoto
+       case filter
+       case video
+}
+
+
 public enum CameraPhase {
     case inactive
     case paused
