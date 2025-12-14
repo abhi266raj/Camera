@@ -15,7 +15,7 @@ import DomainKit_api
 
 @Observable public class CameraViewModel: @unchecked Sendable {
     
-    public init(permissionService: PermissionService, cameraConfig: CameraConfig , cameraService: CameraEngineNew) {
+    public init(permissionService: PermissionService, cameraConfig: CameraConfig , cameraService: CameraEngine) {
         self.permissionService = permissionService
         self.cameraConfig = cameraConfig
         self.cameraService = cameraService
@@ -41,7 +41,7 @@ import DomainKit_api
     private let cameraConfig: CameraConfig
     private let permissionService: PermissionService
     public var cameraPermissionState: PermissionStatus = .unknown
-    private let cameraService:CameraEngineNew
+    private let cameraService:CameraEngine
     
     @MainActor
     public func attachDisplay(_ target: CameraDisplayTarget) {

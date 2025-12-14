@@ -17,7 +17,7 @@ class CoreDependenciesImpl: CoreDependencies {
 }
 
 protocol CameraDependencies {
-    var cameraService: CameraEngineNew { get }
+    var cameraService: CameraEngine { get }
     var filterRepository: FilterRepository { get }
     var permissionService: CameraPermissionService { get }
 }
@@ -25,7 +25,7 @@ protocol CameraDependencies {
 struct CameraDependenciesImpl: CameraDependencies {
     
     let coreDependencies:CoreDependencies
-    let cameraService: CameraEngineNew
+    let cameraService: CameraEngine
     var filterRepository: FilterRepository {
         return coreDependencies.filterRepository
     }
@@ -49,7 +49,7 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
     func dependencies(for cameraType: CameraType, config: CameraConfig?) async -> CameraDependencies {
         let resolvedConfig = config ?? cameraType.getCameraConfig()
 
-        let cameraService: CameraEngineNew = await MainActor.run {
+        let cameraService: CameraEngine = await MainActor.run {
             switch cameraType {
             case .multicam:
                 return BaseEngine(profile: .multiCam)

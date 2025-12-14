@@ -26,17 +26,7 @@ public final class CameraContentRecordingProxyService: CameraDiskOutputService {
         self.actualService = actualService
     }
     
-    public convenience init(supportedCameraTask: SupportedCameraTask) {
-        switch supportedCameraTask {
-        case .capturePhoto:
-            break
-        case .none:
-            self.init(actualService: PreviewOnlyService())
-            return
-        case .recordVideo:
-            break
-        }
-        
+    public convenience init() {        
         self.init(actualService: PreviewOnlyService())
     }
 

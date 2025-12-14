@@ -142,7 +142,7 @@ extension EngineOption.Config {
 
 
 
-public class BaseEngine: EngineInternal, CameraEngineNew {
+public class BaseEngine: EngineInternal, CameraEngine {
     public func perform(_ action: EngineAction) async throws {
         switch action {
         case .setup:
@@ -197,26 +197,12 @@ public class BaseEngine: EngineInternal, CameraEngineNew {
 
 
 extension BaseEngine {
-//    public func updateSelection(filter: (any CoreKit.FilterModel)?) {
-//        subSystem.updateSelection(filter: filter)
-//    }
-//    
-//    public func toggleCamera() async -> Bool {
-//        await subSystem.toggleCamera()
-//    }
+
     
     public var cameraModePublisher: CurrentValueSubject<CoreKit.CameraMode, Never> {
         return subSystem.cameraModePublisher
     }
-    
-//    public func performAction(action: CoreKit.CameraAction) async throws -> Bool {
-//        return try await subSystem.performAction(action: action)
-//    }
-//    
-//    public func setup() async {
-//        await subSystem.setup()
-//    }
-    
+        
     @MainActor
     public func attachDisplay(_ target: some CoreKit.CameraDisplayTarget) throws {
         try subSystem.attachDisplay(target)

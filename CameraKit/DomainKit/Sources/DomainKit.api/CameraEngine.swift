@@ -27,7 +27,7 @@ public enum EngineAction {
     case stopRecording
 }
 
-public protocol CameraEngineNew {
+public protocol CameraEngine {
     var activeConfig: EngineOption.Config {get}
     func perform(_ action: EngineAction) async throws
     @MainActor

@@ -62,22 +62,16 @@ public enum CameraRenderMode {
     
 }
 
-public enum SupportedCameraTask {
-    case capturePhoto
-    case recordVideo
-    case none
-}
+
 
 public protocol BaseConfig {
     var cameraOutputAction:CameraAction {get}
     var renderMode: CameraRenderMode {get}
-    var supportedTask: SupportedCameraTask {get}
 }
 
 public struct CameraConfig: BaseConfig {
     public let cameraOutputAction: CameraAction
     public let renderMode: CameraRenderMode
-    public let supportedTask: SupportedCameraTask
 }
 
 public enum CameraType: CaseIterable, Identifiable, Sendable {
@@ -91,13 +85,13 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
     public func getCameraConfig() -> CameraConfig {
         switch self {
         case .multicam:
-            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
+            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode)
         case .basicPhoto:
-            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
+            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode)
         case .basicVideo:
-            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
+            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode)
         case .metal:
-            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode, supportedTask: supportedTask)
+            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode)
         }
     }
     
@@ -114,18 +108,7 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
         }
     }
     
-    private var supportedTask: SupportedCameraTask {
-        switch self {
-        case .multicam:
-            return .none
-        case .basicPhoto:
-            return .capturePhoto
-        case .basicVideo:
-            return .recordVideo
-        case .metal:
-            return .recordVideo
-        }
-    }
+   
     
     private var cameraOutputAction:CameraAction {
         switch self {
