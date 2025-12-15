@@ -9,13 +9,17 @@ import Foundation
 import Observation
 import Combine
 import CoreKit
-import PlatformKit_api
 import DomainKit_api
-// import DomainKit_runtime
+
+
+public enum PermissionStatus {
+    case unknown
+    case authorized
+    case denied
+}
+
 
 @Observable public class CameraViewModel: @unchecked Sendable {
-    
-
     
     @MainActor private var cameraMode: CameraMode = .preview
     @MainActor public var cameraPhase: CameraPhase = .inactive

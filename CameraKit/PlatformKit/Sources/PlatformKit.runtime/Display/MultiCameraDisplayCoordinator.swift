@@ -7,20 +7,17 @@
 
 import Foundation
 import AVFoundation
-import UIKit
-import Photos
-import Combine
 import PlatformKit_api
 import CoreKit
 
-public class MultiCameraDisplayCoordinator: CameraDisplayCoordinator {
+class MultiCameraDisplayCoordinator: CameraDisplayCoordinator {
     
     public let firstLayer: AVCaptureVideoPreviewLayer
     public let secondLayer: AVCaptureVideoPreviewLayer
     public let session: AVCaptureSession
     
     
-    public init(session: AVCaptureMultiCamSession) {
+    init(session: AVCaptureMultiCamSession) {
         self.session = session
         self.firstLayer = AVCaptureVideoPreviewLayer(sessionWithNoConnection: session)
         self.secondLayer = AVCaptureVideoPreviewLayer(sessionWithNoConnection: session)
@@ -29,7 +26,7 @@ public class MultiCameraDisplayCoordinator: CameraDisplayCoordinator {
     }
     
     @MainActor
-    public func attach<T:CameraDisplayTarget>(_ target: T) async throws  {
+    func attach<T:CameraDisplayTarget>(_ target: T) async throws  {
         if let target = target as? DualDisplayLayerTarget {
             try await attach(target)
             return

@@ -16,7 +16,7 @@ import PlatformKit_api
 public class BasicVideoPipeline:  CameraSubSystem, @unchecked Sendable {
    
  
-    public let displayCoordinator: CameraLayerDisplayCoordinatorImp
+    public let displayCoordinator: any CameraDisplayCoordinator
     private let captureSession: AVCaptureSession
     //public let output: CameraVideoOutputImp
     public let input: CameraInputImp
@@ -29,7 +29,7 @@ public class BasicVideoPipeline:  CameraSubSystem, @unchecked Sendable {
         self.captureSession = session
         // recordOutput = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
         self.input = CameraInputImp()
-        displayCoordinator = CameraLayerDisplayCoordinatorImp(session:session)
+        displayCoordinator = PlatformFactoryImp().makeVideoLayerDisplayCoordinator(avcaptureSession: session)
     }
 
     @CameraInputSessionActor

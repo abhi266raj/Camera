@@ -10,11 +10,6 @@ import Foundation
 import AVFoundation
 import Photos
 
-public enum PermissionStatus {
-    case unknown
-    case authorized
-    case denied
-}
 
 public protocol PermissionService {
     func requestCameraAndMicrophoneIfNeeded() async -> Bool

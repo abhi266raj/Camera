@@ -26,15 +26,19 @@ public class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable 
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
     public var processor: EffectCameraProcessor = EffectCameraProcessor()
-    public  let displayCoordinator: CameraMetalDisplayCoordinatorImp
+    public  let displayCoordinator: any CameraDisplayCoordinator
+    private let metalView: PreviewMetalView
     
+    @MainActor
+    // Metal view need main actor. Shoule be added via somewhere else
     public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session
         let videoOutput = VideoOutputImp()
         recordOutput = SampleBufferCameraRecorderService(videoOutput: videoOutput)
         let metalView = PreviewMetalView(frame: .zero)
-        displayCoordinator = CameraMetalDisplayCoordinatorImp(metalView: metalView)
+        displayCoordinator = PlatformFactoryImp().makeMetalDisplayCoordinator(metalView: metalView)
+        self.metalView = metalView
         self.input = CameraInputImp()
         super.init() 
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
@@ -99,7 +103,7 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
         let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
             // Image render it than use via delegate to record
-            displayCoordinator.metalView.sampleBuffer = sampleBuffer
+            self.metalView.sampleBuffer = sampleBuffer
         }else{
             // Audio delegate record it
             self.recordOutput.appendSampleBuffer(sampleBuffer)

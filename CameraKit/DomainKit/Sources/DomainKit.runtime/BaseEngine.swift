@@ -84,6 +84,11 @@ struct BaseConfigBuilder {
         
     }
     
+    func baseIO() -> Self {
+        let standardIO:Set<EngineOption.IO> = [.start]
+        return copy(inputOutput: standardIO)
+    }
+    
     func standardPlusFilter() -> Self {
         let io:Set<EngineOption.IO> = [.start, .toggle, .ciFilter, .metalFilter]
         return copy(inputOutput: io)
@@ -109,7 +114,7 @@ extension EngineSpecsImp {
     
     static func multiCamEngineSpecs() -> Self {
        let builder = BaseConfigBuilder()
-        let config = builder.multiDisplay().noRecording().standardIO().buildConfig()!
+        let config = builder.multiDisplay().noRecording().baseIO().buildConfig()!
         let capabilty = config.asCapabilty()
         let profile: [CameraProfile:EngineOption.Config] = [.simplephoto:config]
         return EngineSpecsImp(capabilty: capabilty, allConfig: [config], availableProfile: profile)
@@ -165,6 +170,7 @@ public class BaseEngine: EngineInternal, CameraEngine {
     public let activeConfig: EngineOption.Config
     let subSystem: CameraSubSystem
         
+    @MainActor
     public init (profile: CameraProfile) {
         switch profile {
         case .simplephoto:

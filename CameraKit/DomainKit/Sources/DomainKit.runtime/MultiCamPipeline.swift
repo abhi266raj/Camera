@@ -19,14 +19,14 @@ public class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
     public let input: CameraInputImp
     public let recordOutput: CameraContentRecordingProxyService
-    public let displayCoordinator: MultiCameraDisplayCoordinator
+    public let displayCoordinator: any CameraDisplayCoordinator
     private let captureSession: AVCaptureMultiCamSession
     
     override public init() {
         let session = AVCaptureMultiCamSession()
         self.captureSession = session
         recordOutput = CameraContentRecordingProxyService()
-        displayCoordinator = MultiCameraDisplayCoordinator(session: session)
+        displayCoordinator = PlatformFactoryImp().makeMultiCameraDisplayCoordinator(avcaptureSession: session)
         self.input = CameraInputImp()
         super.init()
         
@@ -93,12 +93,12 @@ public class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     @MainActor
     public func updatePort(front:AVCaptureInput.Port, back: AVCaptureInput.Port) {
         captureSession.beginConfiguration()
-        let frontConnection = AVCaptureConnection(inputPort: front, videoPreviewLayer: displayCoordinator.firstLayer)
-        let backConnection = AVCaptureConnection(inputPort: back, videoPreviewLayer: displayCoordinator.secondLayer)
-        captureSession.removeConnection(displayCoordinator.firstLayer.connection!)
-        captureSession.removeConnection(displayCoordinator.secondLayer.connection!)
-        captureSession.addConnection(frontConnection)
-        captureSession.addConnection(backConnection)
+//        let frontConnection = AVCaptureConnection(inputPort: front, videoPreviewLayer: displayCoordinator.firstLayer)
+//        let backConnection = AVCaptureConnection(inputPort: back, videoPreviewLayer: displayCoordinator.secondLayer)
+//        captureSession.removeConnection(displayCoordinator.firstLayer.connection!)
+//        captureSession.removeConnection(displayCoordinator.secondLayer.connection!)
+//        captureSession.addConnection(frontConnection)
+//        captureSession.addConnection(backConnection)
         captureSession.commitConfiguration()
     }
     

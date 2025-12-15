@@ -14,12 +14,11 @@ import PlatformKit_runtime
 
 public protocol CameraSubSystem {
     associatedtype Input
-    associatedtype DisplayCoordinator: CameraDisplayCoordinator
     associatedtype DiskOutput: CameraDiskOutputService
     associatedtype Processor =  Void
     
     var input: Input {get}
-    var displayCoordinator: DisplayCoordinator {get}
+    var displayCoordinator: any CameraDisplayCoordinator {get}
     var recordOutput: DiskOutput {get }
     var processor: Processor {get}
     

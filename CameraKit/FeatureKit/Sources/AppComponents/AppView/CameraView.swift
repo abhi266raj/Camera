@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import PlatformKit_api
 import AppViewModel
 
 public struct CameraView: View {
