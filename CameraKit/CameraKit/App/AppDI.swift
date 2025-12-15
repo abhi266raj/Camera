@@ -48,7 +48,7 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
     
     func dependencies(for cameraType: CameraType) async -> CameraDependencies {
         
-        let cameraService: CameraEngine = await MainActor.run {
+        let cameraService: CameraEngine =  {
             switch cameraType {
             case .multicam:
                 return BaseEngine(profile: .multiCam)
@@ -59,7 +59,7 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
             case .metal:
                 return BaseEngine(profile: .filter)
             }
-        }
+        }()
 
         return CameraDependenciesImpl(
             coreDependencies: core, cameraService: cameraService

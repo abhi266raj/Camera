@@ -24,7 +24,6 @@ public class BasicVideoPipeline:  CameraSubSystem, @unchecked Sendable {
     var videoRecordingConfig =  VideoRecordingConfig()
     public lazy var recordOutput: CameraRecordingCameraService = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
     
-    @MainActor
     public init(cameraOutputAction: CameraAction) {
         let session = AVCaptureSession()
         self.captureSession = session

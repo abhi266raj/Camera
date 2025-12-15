@@ -165,7 +165,6 @@ public class BaseEngine: EngineInternal, CameraEngine {
     public let activeConfig: EngineOption.Config
     let subSystem: CameraSubSystem
         
-    @MainActor
     public init (profile: CameraProfile) {
         switch profile {
         case .simplephoto:

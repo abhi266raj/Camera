@@ -22,8 +22,6 @@ public class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     public let displayCoordinator: MultiCameraDisplayCoordinator
     private let captureSession: AVCaptureMultiCamSession
     
-   
-    @MainActor
     override public init() {
         let session = AVCaptureMultiCamSession()
         self.captureSession = session

@@ -54,14 +54,6 @@ public struct CameraAction: OptionSet, Sendable {
     public static let photo = CameraAction(rawValue: 1 << 3)
 }
 
-public enum CameraRenderMode {
-    case legacy
-    case metal
-    case basic
-    case mutliCam
-    
-}
-
 public enum CameraType: CaseIterable, Identifiable, Sendable {
     case basicPhoto
     case basicVideo
@@ -69,35 +61,6 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
     case multicam
 
     public var id: Self { self }
-    
-   
-    private var renderMode: CameraRenderMode {
-        switch self {
-        case .multicam:
-            return .mutliCam
-        case .basicPhoto:
-            return .basic
-        case .basicVideo:
-            return .basic
-        case .metal:
-            return .metal
-        }
-    }
-    
-   
-    
-    private var cameraOutputAction:CameraAction {
-        switch self {
-        case .multicam:
-            []
-        case .basicPhoto:
-            [.photo]
-        case .basicVideo:
-            [.startRecord, .stopRecord]
-        case .metal:
-            [.startRecord, .stopRecord]
-        }
-    }
 }
 
 
