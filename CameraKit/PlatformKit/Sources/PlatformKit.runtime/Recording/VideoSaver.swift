@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Photos
+internal import Photos
 import PlatformKit_api
 
 class VideoSaverImp: VideoSaver {

@@ -8,7 +8,6 @@
 import Foundation
 import AVFoundation
 import UIKit
-import Photos
 import CoreMedia
 import PlatformKit_api
 

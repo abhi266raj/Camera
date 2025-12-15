@@ -8,7 +8,7 @@
 import Combine
 import Foundation
 import AVFoundation
-import Photos
+internal import Photos
 import CoreKit
 import PlatformKit_api
 

@@ -7,8 +7,8 @@
 
 import Foundation
 import AVFoundation
-import Photos
 import PlatformKit_api
+internal import Photos
 
 public class BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
     
