@@ -15,9 +15,19 @@ import DomainKit_api
 
 @Observable public class CameraViewModel: @unchecked Sendable {
     
-    public init(permissionService: PermissionService, cameraConfig: CameraConfig , cameraService: CameraEngine) {
+
+    
+    @MainActor private var cameraMode: CameraMode = .preview
+    @MainActor public var cameraPhase: CameraPhase = .inactive
+    private var cancellables = Set<AnyCancellable>()
+    // private let cameraConfig: CameraConfig
+    private let permissionService: PermissionService
+    public var cameraPermissionState: PermissionStatus = .unknown
+    private let cameraService:CameraEngine
+    
+    public init(permissionService: PermissionService, cameraService: CameraEngine) {
         self.permissionService = permissionService
-        self.cameraConfig = cameraConfig
+       // self.cameraConfig = cameraConfig
         self.cameraService = cameraService
         commonInit()
     }
@@ -35,14 +45,6 @@ import DomainKit_api
         }.store(in: &cancellables)
     }
     
-    @MainActor private var cameraMode: CameraMode = .preview
-    @MainActor public var cameraPhase: CameraPhase = .inactive
-    private var cancellables = Set<AnyCancellable>()
-    private let cameraConfig: CameraConfig
-    private let permissionService: PermissionService
-    public var cameraPermissionState: PermissionStatus = .unknown
-    private let cameraService:CameraEngine
-    
     @MainActor
     public func attachDisplay(_ target: CameraDisplayTarget) {
         try? cameraService.attachDisplay(target)
@@ -50,13 +52,11 @@ import DomainKit_api
     
     public var showMultiCam: Bool {
         return cameraService.activeConfig.display == .multicam
-        //cameraConfig.renderMode == .mutliCam
     }
 
     
     public var showCamera: Bool {
         return cameraService.activeConfig.storage == .photo
-        //cameraConfig.supportedTask == .capturePhoto
     }
     
     public var showFilter: Bool {
@@ -65,7 +65,6 @@ import DomainKit_api
     
     public var showRecording: Bool {
         cameraService.activeConfig.storage == .video
-        //return cameraConfig.supportedTask == .recordVideo
     }
     
     @MainActor public func permissionSetup() async {

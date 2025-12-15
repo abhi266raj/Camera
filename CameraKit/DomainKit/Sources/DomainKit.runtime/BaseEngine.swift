@@ -19,7 +19,7 @@ protocol EngineInternal {
     var subSystem: CameraSubSystem {get}
 }
 
-public struct EngineSpecsImp: Sendable, Specs {
+struct EngineSpecsImp: Sendable, Specs {
     public var capabilty: EngineOption.Capabilty
     public var allConfig: [EngineOption.Config]
     public var availableProfile: [CameraProfile:EngineOption.Config]

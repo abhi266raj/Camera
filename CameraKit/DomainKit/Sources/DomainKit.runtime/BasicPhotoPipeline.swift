@@ -33,7 +33,8 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem 
     var imageCaptureConfig: ImageCaptureConfig {
         return recordingService.imageCaptureConfig
     }
-    @MainActor
+   
+    
     override public init() {
         let session = AVCaptureSession()
         self.captureSession = session

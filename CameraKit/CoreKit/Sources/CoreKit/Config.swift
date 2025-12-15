@@ -62,18 +62,6 @@ public enum CameraRenderMode {
     
 }
 
-
-
-public protocol BaseConfig {
-    var cameraOutputAction:CameraAction {get}
-    var renderMode: CameraRenderMode {get}
-}
-
-public struct CameraConfig: BaseConfig {
-    public let cameraOutputAction: CameraAction
-    public let renderMode: CameraRenderMode
-}
-
 public enum CameraType: CaseIterable, Identifiable, Sendable {
     case basicPhoto
     case basicVideo
@@ -82,19 +70,7 @@ public enum CameraType: CaseIterable, Identifiable, Sendable {
 
     public var id: Self { self }
     
-    public func getCameraConfig() -> CameraConfig {
-        switch self {
-        case .multicam:
-            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode)
-        case .basicPhoto:
-            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode)
-        case .basicVideo:
-            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode)
-        case .metal:
-            return CameraConfig(cameraOutputAction: cameraOutputAction, renderMode: renderMode)
-        }
-    }
-    
+   
     private var renderMode: CameraRenderMode {
         switch self {
         case .multicam:

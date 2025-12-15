@@ -35,7 +35,7 @@ struct CameraDependenciesImpl: CameraDependencies {
 }
 
 protocol CameraDependenciesProvider {
-    func dependencies(for cameraType: CameraType, config: CameraConfig?) async -> CameraDependencies
+    func dependencies(for cameraType: CameraType) async -> CameraDependencies
 }
 
 final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
@@ -46,9 +46,8 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
         self.core = core
     }
     
-    func dependencies(for cameraType: CameraType, config: CameraConfig?) async -> CameraDependencies {
-        let resolvedConfig = config ?? cameraType.getCameraConfig()
-
+    func dependencies(for cameraType: CameraType) async -> CameraDependencies {
+        
         let cameraService: CameraEngine = await MainActor.run {
             switch cameraType {
             case .multicam:
@@ -88,11 +87,10 @@ struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
     let services: CameraDependenciesProvider
 
     func viewModels(for cameraType: CameraType) async -> ViewModelDependencies {
-        let deps = await services.dependencies(for: cameraType, config: nil)
+        let deps = await services.dependencies(for: cameraType)
 
         let cameraVM = CameraViewModel(
             permissionService: deps.permissionService,
-            cameraConfig: cameraType.getCameraConfig(),
             cameraService: deps.cameraService
         )
 

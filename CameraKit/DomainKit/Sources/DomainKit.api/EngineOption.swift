@@ -8,8 +8,6 @@
 
 public enum EngineOption: Sendable {
     
-   
-    
     public enum Display: Sendable, CaseIterable {
         case metal
         case multicam
