@@ -17,7 +17,6 @@ public enum PermissionStatus {
 }
 
 public protocol PermissionService {
-    @MainActor
     func requestCameraAndMicrophoneIfNeeded() async -> Bool
     
     func requestPhotoAddAccess() async -> Bool

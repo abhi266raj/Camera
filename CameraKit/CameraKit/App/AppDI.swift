@@ -8,18 +8,18 @@ import AppView
 
 protocol CoreDependencies {
     var filterRepository: FilterRepository { get }
-    var permissionService: CameraPermissionService { get }
+    var permissionService: PermissionService { get }
 }
 
 class CoreDependenciesImpl: CoreDependencies {
     lazy var filterRepository: FilterRepository = FilterRepositoryImpl()
-    lazy var permissionService: CameraPermissionService = CameraPermissionService()
+    lazy var permissionService: PermissionService = PermissionServiceImp()
 }
 
 protocol CameraDependencies {
     var cameraService: CameraEngine { get }
     var filterRepository: FilterRepository { get }
-    var permissionService: CameraPermissionService { get }
+    var permissionService: PermissionService { get }
 }
 
 struct CameraDependenciesImpl: CameraDependencies {
@@ -29,7 +29,7 @@ struct CameraDependenciesImpl: CameraDependencies {
     var filterRepository: FilterRepository {
         return coreDependencies.filterRepository
     }
-    var permissionService: CameraPermissionService {
+    var permissionService: PermissionService {
         return coreDependencies.permissionService
     }
 }
