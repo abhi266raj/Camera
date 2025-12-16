@@ -8,10 +8,6 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "PlatformKit",           // Umbrella
-            targets: ["PlatformKit.api", "PlatformKit.runtime"]
-        ),
-        .library(
             name: "PlatformKit.api",       // API-only
             targets: ["PlatformKit.api"]
         ),
