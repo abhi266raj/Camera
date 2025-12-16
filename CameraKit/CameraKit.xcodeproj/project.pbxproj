@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		6B4B149F2EF13D6B0038405E /* AppViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B149E2EF13D6B0038405E /* AppViewModel */; };
-		6B4B14A22EF13D8A0038405E /* DomainKit.runtime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14A12EF13D8A0038405E /* DomainKit.runtime */; };
 		6B4B14AB2EF148270038405E /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14AA2EF148270038405E /* AppView */; };
+		6B4B14B22EF14CD30038405E /* DomainRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14B12EF14CD30038405E /* DomainRuntime */; };
 		6B6D7DEF2EE6D9FA00B59C01 /* AppDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DED2EE6D9FA00B59C01 /* AppDI.swift */; };
 		6B6D7DF02EE6D9FA00B59C01 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DEE2EE6D9FA00B59C01 /* Coordinator.swift */; };
 		6BB394B32EE3E95300A45141 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6BB394B22EE3E95300A45141 /* README.md */; };
@@ -71,7 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B4B14A22EF13D8A0038405E /* DomainKit.runtime in Frameworks */,
+				6B4B14B22EF14CD30038405E /* DomainRuntime in Frameworks */,
 				6B4B149F2EF13D6B0038405E /* AppViewModel in Frameworks */,
 				6B4B14AB2EF148270038405E /* AppView in Frameworks */,
 			);
@@ -663,13 +663,14 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = AppViewModel;
 		};
-		6B4B14A12EF13D8A0038405E /* DomainKit.runtime */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = DomainKit.runtime;
-		};
 		6B4B14AA2EF148270038405E /* AppView */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppView;
+		};
+		6B4B14B12EF14CD30038405E /* DomainRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B4B14AE2EF148360038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */;
+			productName = DomainRuntime;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

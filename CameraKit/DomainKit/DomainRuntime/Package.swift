@@ -8,7 +8,7 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "DomainKit.runtime",        // Runtime only
+            name: "DomainRuntime",        // Runtime only
             targets: ["DomainKit.runtime"]
         )
     ],
