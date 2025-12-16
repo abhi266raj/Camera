@@ -2,7 +2,7 @@
 
 import CoreKit
 import DomainApi
-import DomainKit_runtime
+import DomainRuntime
 import AppViewModel
 import AppView
 import PlatformKit_runtime

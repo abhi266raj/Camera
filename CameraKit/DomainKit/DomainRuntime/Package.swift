@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "DomainRuntime",        // Runtime only
-            targets: ["DomainKit.runtime"]
+            targets: ["DomainRuntime"]
         )
     ],
     dependencies: [
@@ -19,18 +19,18 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "DomainKit.runtime",
+            name: "DomainRuntime",
             dependencies: [
                 .product(name: "DomainKit.api", package: "DomainApi"),
                 "CoreKit",
                 .product(name: "PlatformKit.api", package: "PlatformKit"),
                  .product(name: "PlatformKit.runtime", package: "PlatformKit")
             ],
-            path: "Sources/DomainKit.runtime"
+            path: "Sources/DomainRuntime"
         ),
         .testTarget(
             name: "DomainKitRuntimeTests",
-            dependencies: ["DomainKit.runtime"]
+            dependencies: ["DomainRuntime"]
         )
     ]
 )
