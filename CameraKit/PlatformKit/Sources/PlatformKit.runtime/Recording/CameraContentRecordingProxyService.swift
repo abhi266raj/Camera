@@ -12,7 +12,7 @@ import AVFoundation
 import CoreKit
 import PlatformKit_api
 
-public final class CameraContentRecordingProxyService: CameraDiskOutputService {
+final class CameraContentRecordingProxyService: CameraDiskOutputService {
     public var availableOutput: [AVCaptureOutput] {
         return actualService.availableOutput
     }

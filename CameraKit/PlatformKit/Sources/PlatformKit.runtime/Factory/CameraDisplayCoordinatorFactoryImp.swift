@@ -12,6 +12,22 @@ import UIKit
 
 
 public class PlatformFactoryImp: PlatformFactory {
+    public func makeSampleBufferOutputService() -> any CameraDiskOutputService {
+        SampleBufferCameraRecorderService()
+    }
+    
+    public func makePreviewMetalTarget() -> any PreviewMetalTarget {
+        PreviewMetalView(frame: .zero)
+    }
+    
+    public func makePhotoOutputService(imageCaptureConfig:ImageCaptureConfig) -> any CameraDiskOutputService {
+        CameraPhotoCameraService(imageCaptureConfig: imageCaptureConfig)
+    }
+    
+    public func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> any CameraDiskOutputService {
+        CameraRecordingCameraService(videoCaptureOutput: videoCaptureOutput)
+    }
+    
     public func makeEffectProcessor() -> any CameraProccessor {
         EffectCameraProcessor()
     }

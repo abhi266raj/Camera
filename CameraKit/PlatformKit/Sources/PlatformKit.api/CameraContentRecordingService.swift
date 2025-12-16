@@ -15,6 +15,12 @@ public protocol CameraDiskOutputService {
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
     func performAction( action: CameraAction) async throws -> Bool
     var availableOutput: [AVCaptureOutput] {get}
+    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)
+}
+
+extension CameraDiskOutputService {
+    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    }
 }
 
 public protocol VideoOutput {

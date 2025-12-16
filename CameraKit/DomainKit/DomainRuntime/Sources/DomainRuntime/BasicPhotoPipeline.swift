@@ -8,7 +8,6 @@
 import Foundation
 import AVFoundation
 import CoreKit
-import PlatformKit_runtime
 import DomainApi
 import PlatformKit_api
 import Combine
@@ -17,26 +16,21 @@ import Combine
 class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
    
     public  let displayCoordinator: any CameraDisplayCoordinator
-    public  let recordingService: CameraPhotoCameraService
     
-    
-    public var recordOutput: CameraPhotoCameraService {
-        recordingService
-    }
+    public var recordOutput: CameraDiskOutputService
     
     private let captureSession: AVCaptureSession
     public let sessionManager: CameraSessionService
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
-    var imageCaptureConfig: ImageCaptureConfig {
-        return recordingService.imageCaptureConfig
-    }
+    var imageCaptureConfig: ImageCaptureConfig  = ImageCaptureConfig()
    
     
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
         displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
-        recordingService = CameraPhotoCameraService()
+        
+        recordOutput = platformFactory.makePhotoOutputService(imageCaptureConfig: imageCaptureConfig)
         self.sessionManager = platformFactory.makeSessionService(session: session)
         super.init()
         
@@ -45,7 +39,7 @@ class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
     //@CameraInputSessionActor
     public func setup() async {
             let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
-            await sessionManager.setup(input: [], output: recordingService.availableOutput, config: config)
+            await sessionManager.setup(input: [], output: recordOutput.availableOutput, config: config)
             await sessionManager.start()
     }
     
@@ -71,11 +65,11 @@ extension BasicPhotoPipeline {
     }
     
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
-        return recordingService.cameraModePublisher
+        return recordOutput.cameraModePublisher
     }
     
     func performAction( action: CameraAction) async throws -> Bool {
-        return try await recordingService.performAction(action:action)
+        return try await recordOutput.performAction(action:action)
     }
     
 }

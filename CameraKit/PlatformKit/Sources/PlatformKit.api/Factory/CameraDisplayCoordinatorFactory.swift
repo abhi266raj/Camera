@@ -7,6 +7,7 @@
 
 import AVFoundation
 import UIKit
+import CoreKit
 
 public protocol PlatformFactory {
     
@@ -15,10 +16,15 @@ public protocol PlatformFactory {
     func makeVideoLayerDisplayCoordinator(avcaptureSession: AVCaptureSession) -> CameraDisplayCoordinator
     
     func makePassThroughDiskRecordingService() -> CameraDiskOutputService
+    func makePhotoOutputService(imageCaptureConfig:ImageCaptureConfig) -> CameraDiskOutputService
+    func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> CameraDiskOutputService
+    func makeSampleBufferOutputService() -> CameraDiskOutputService
     
     func makeCameraInput() -> CameraInput
     
     func makeSessionService(session: AVCaptureSession) -> CameraSessionService
     
     func makeEffectProcessor() -> CameraProccessor
+    
+    func makePreviewMetalTarget() -> PreviewMetalTarget
 }

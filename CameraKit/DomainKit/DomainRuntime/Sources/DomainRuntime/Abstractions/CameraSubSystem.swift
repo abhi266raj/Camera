@@ -20,13 +20,17 @@ protocol CameraEffectSubSystem {
     var processor: CameraProccessor {get}
 }
 
+protocol CameraRecordingSubSystem {
+    var recordOutput: CameraDiskOutputService {get}
+}
+
 
 protocol CameraSubSystem {
-    associatedtype DiskOutput: CameraDiskOutputService
-    associatedtype Processor =  Void
+  //   associatedtype DiskOutput: CameraDiskOutputService
+   //  associatedtype Processor =  Void
     
     var displayCoordinator: any CameraDisplayCoordinator {get}
-    var recordOutput: DiskOutput {get }
+    //var recordOutput: DiskOutput {get }
     //var processor: Processor {get}
     
     func updateSelection(filter: (any FilterModel)?)
@@ -53,16 +57,20 @@ extension CameraInputSubSystem  {
 
 extension CameraSubSystem {
     
+    func attachDisplay(_ target: some CameraDisplayTarget) throws {
+        throw DisplayAttachError.invalidInput
+    }
+    
+}
+
+extension CameraRecordingSubSystem {
+    
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
         return recordOutput.cameraModePublisher
     }
     
     func performAction( action: CameraAction) async throws -> Bool {
         return try await recordOutput.performAction(action:action)
-    }
-    
-    func attachDisplay(_ target: some CameraDisplayTarget) throws {
-        throw DisplayAttachError.invalidInput
     }
     
 }

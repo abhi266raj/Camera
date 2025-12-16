@@ -12,13 +12,14 @@ internal import Photos
 import CoreKit
 import PlatformKit_api
 
-public class CameraPhotoCameraService: NSObject, CameraDiskOutputService, @unchecked Sendable {
+class CameraPhotoCameraService: NSObject, CameraDiskOutputService, @unchecked Sendable {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     
     var photoOutput:AVCapturePhotoOutput
-    public var imageCaptureConfig =  ImageCaptureConfig()
+    public let imageCaptureConfig: ImageCaptureConfig
     
-    override public init() {
+     public init(imageCaptureConfig:ImageCaptureConfig) {
+        self.imageCaptureConfig = imageCaptureConfig
         self.photoOutput = AVCapturePhotoOutput()
     }
     

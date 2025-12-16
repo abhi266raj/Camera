@@ -12,7 +12,7 @@ import AVFoundation
 import CoreKit
 import PlatformKit_api
 
-public class PreviewOnlyService: CameraDiskOutputService {
+class PreviewOnlyService: CameraDiskOutputService {
     public let cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     public let supportedOutput: CameraAction = []
     

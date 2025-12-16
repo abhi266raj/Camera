@@ -9,8 +9,8 @@
 import Foundation
 import CoreImage
 import CoreKit
-import PlatformKit_runtime
 import DomainApi
+import PlatformKit_api
 
 // MARK: - DataSource
 
@@ -44,3 +44,4 @@ final public class FilterRepositoryImpl: FilterRepository {
         await dataSource.loadFilters()
     }
 }
+

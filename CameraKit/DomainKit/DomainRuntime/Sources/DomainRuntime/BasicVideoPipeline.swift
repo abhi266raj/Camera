@@ -8,12 +8,11 @@
 import AVFoundation
 import UIKit
 import CoreKit
-import PlatformKit_runtime
 import DomainApi
 import PlatformKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sendable {
+class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sendable, CameraRecordingSubSystem {
    
  
     public let displayCoordinator: any CameraDisplayCoordinator
@@ -22,7 +21,7 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
     public var input: CameraInput
     let fileOutput = AVCaptureMovieFileOutput()
     var videoRecordingConfig =  VideoRecordingConfig()
-    public lazy var recordOutput: CameraRecordingCameraService = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
+    var recordOutput: CameraDiskOutputService
     
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
@@ -30,6 +29,7 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
         // recordOutput = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
         self.input = platformFactory.makeCameraInput()
         displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
+        recordOutput = platformFactory.makeVideoOutputService(videoCaptureOutput: fileOutput)
     }
 
     // @CameraInputSessionActor

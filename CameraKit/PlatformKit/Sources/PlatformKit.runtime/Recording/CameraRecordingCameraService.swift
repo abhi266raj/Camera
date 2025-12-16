@@ -11,7 +11,7 @@ import AVFoundation
 import CoreKit
 import PlatformKit_api
 
-public class CameraRecordingCameraService: CameraDiskOutputService {
+class CameraRecordingCameraService: CameraDiskOutputService {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     let videoCaptureOutput:AVCaptureMovieFileOutput
     var fileRecorder: BasicFileRecorder?

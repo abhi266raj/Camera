@@ -10,13 +10,10 @@ import CoreMedia
 import Metal
 import MetalKit
 import CoreKit
-
-public protocol MetalRenderingDelegate: class  {
-    func sampleBufferRendered(_ buffer: CMSampleBuffer)
-}
+import PlatformKit_api
 
 
-public class PreviewMetalView: MTKView {
+public class PreviewMetalView: MTKView, PreviewMetalTarget {
     
     weak public var renderingDelegate:MetalRenderingDelegate?
     

@@ -13,7 +13,7 @@ import Combine
 import CoreKit
 import PlatformKit_api
 
-public class SampleBufferCameraRecorderService: CameraDiskOutputService {
+class SampleBufferCameraRecorderService: CameraDiskOutputService {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     
     let videoOutput: VideoOutput
