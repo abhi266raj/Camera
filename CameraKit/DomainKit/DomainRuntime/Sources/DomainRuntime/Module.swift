@@ -15,8 +15,8 @@ public struct DomainFactory: Factory {
     var builder: (() -> PlatformFactory)
     @MainActor
     public func makeCameraEngine(profile: CameraProfile) -> any CameraEngine {
-        let platfomrFactory = builder()
-        return BaseEngine(profile: profile, platfomFactory:platfomrFactory )
+        let platformFactory = builder()
+        return BaseEngine(profile: profile, platfomFactory:platformFactory )
     }
     
     

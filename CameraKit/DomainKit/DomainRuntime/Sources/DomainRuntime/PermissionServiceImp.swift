@@ -4,7 +4,7 @@
 
 import Foundation
 import AVFoundation
-import Photos
+internal import Photos
 import DomainApi
 
 struct PermissionServiceImp: PermissionService {
