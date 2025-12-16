@@ -23,8 +23,7 @@ let package = Package(
             dependencies: [
                 .product(name: "DomainKit.api", package: "DomainApi"),
                 "CoreKit",
-                .product(name: "PlatformKit.api", package: "PlatformKit"),
-                 .product(name: "PlatformKit.runtime", package: "PlatformKit")
+                .product(name: "PlatformKit.api", package: "PlatformKit")
             ],
         ),
         .testTarget(

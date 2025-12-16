@@ -10,6 +10,8 @@
 		6B4B149F2EF13D6B0038405E /* AppViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B149E2EF13D6B0038405E /* AppViewModel */; };
 		6B4B14AB2EF148270038405E /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14AA2EF148270038405E /* AppView */; };
 		6B4B14B22EF14CD30038405E /* DomainRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14B12EF14CD30038405E /* DomainRuntime */; };
+		6B4B14B52EF17F310038405E /* PlatformKit.api in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14B42EF17F310038405E /* PlatformKit.api */; };
+		6B4B14B72EF17F310038405E /* PlatformKit.runtime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14B62EF17F310038405E /* PlatformKit.runtime */; };
 		6B6D7DEF2EE6D9FA00B59C01 /* AppDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DED2EE6D9FA00B59C01 /* AppDI.swift */; };
 		6B6D7DF02EE6D9FA00B59C01 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DEE2EE6D9FA00B59C01 /* Coordinator.swift */; };
 		6BB394B32EE3E95300A45141 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6BB394B22EE3E95300A45141 /* README.md */; };
@@ -71,8 +73,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B4B14B52EF17F310038405E /* PlatformKit.api in Frameworks */,
 				6B4B14B22EF14CD30038405E /* DomainRuntime in Frameworks */,
 				6B4B149F2EF13D6B0038405E /* AppViewModel in Frameworks */,
+				6B4B14B72EF17F310038405E /* PlatformKit.runtime in Frameworks */,
 				6B4B14AB2EF148270038405E /* AppView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -269,6 +273,7 @@
 			packageReferences = (
 				6B4B14A92EF148270038405E /* XCLocalSwiftPackageReference "FeatureKit" */,
 				6B4B14AE2EF148360038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */,
+				6B4B14B32EF17F310038405E /* XCLocalSwiftPackageReference "PlatformKit" */,
 			);
 			productRefGroup = 6BE804D72AB738E800DAF8B4 /* Products */;
 			projectDirPath = "";
@@ -656,6 +661,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = DomainKit/DomainRuntime;
 		};
+		6B4B14B32EF17F310038405E /* XCLocalSwiftPackageReference "PlatformKit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = PlatformKit;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -671,6 +680,14 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6B4B14AE2EF148360038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */;
 			productName = DomainRuntime;
+		};
+		6B4B14B42EF17F310038405E /* PlatformKit.api */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PlatformKit.api;
+		};
+		6B4B14B62EF17F310038405E /* PlatformKit.runtime */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PlatformKit.runtime;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
