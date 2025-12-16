@@ -18,14 +18,14 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../CoreKit"),
-        .package(path: "../DomainKit")
+        .package(path: "../DomainKit/DomainApi"),
     ],
     targets: [
         // ViewModel target depends on DomainKit.api & DomainKit.runtime
         .target(
             name: "AppViewModel",
             dependencies: [
-                .product(name: "DomainKit.api", package: "DomainKit"),
+                .product(name: "DomainKit.api", package: "DomainApi"),
             ],
             path: "Sources/AppComponents/AppViewModel"
         ),

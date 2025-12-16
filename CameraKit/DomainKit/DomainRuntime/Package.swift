@@ -2,41 +2,26 @@
 import PackageDescription
 
 let package = Package(
-    name: "DomainKit",
+    name: "DomainRuntime",
     platforms: [
         .iOS(.v18)
     ],
     products: [
-        .library(
-            name: "DomainKit",                // Umbrella
-            targets: ["DomainKit.api", "DomainKit.runtime"]
-        ),
-        .library(
-            name: "DomainKit.api",            // API only
-            targets: ["DomainKit.api"]
-        ),
         .library(
             name: "DomainKit.runtime",        // Runtime only
             targets: ["DomainKit.runtime"]
         )
     ],
     dependencies: [
-        .package(path: "../CoreKit"),
-        .package(path: "../PlatformKit")
+        .package(path: "../../CoreKit"),
+        .package(path: "../../PlatformKit"),
+        .package(path: "../DomainApi")
     ],
     targets: [
         .target(
-            name: "DomainKit.api",
-            dependencies: [
-                "CoreKit",
-                .product(name: "PlatformKit.api", package: "PlatformKit")
-            ],
-            path: "Sources/DomainKit.api"
-        ),
-        .target(
             name: "DomainKit.runtime",
             dependencies: [
-                "DomainKit.api",
+                .product(name: "DomainKit.api", package: "DomainApi"),
                 "CoreKit",
                 .product(name: "PlatformKit.api", package: "PlatformKit"),
                  .product(name: "PlatformKit.runtime", package: "PlatformKit")
@@ -44,7 +29,7 @@ let package = Package(
             path: "Sources/DomainKit.runtime"
         ),
         .testTarget(
-            name: "DomainKitTests",
+            name: "DomainKitRuntimeTests",
             dependencies: ["DomainKit.runtime"]
         )
     ]
