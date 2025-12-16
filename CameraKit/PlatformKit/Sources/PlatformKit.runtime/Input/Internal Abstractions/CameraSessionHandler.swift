@@ -9,7 +9,7 @@ import AVFoundation
 import CoreKit
 import PlatformKit_api
 
-protocol CameraSessionHandler: CameraSessionService {
+protocol CameraSessionHandler {
     associatedtype InputHandler: CameraHardwareHandler
     var inputHandler: InputHandler {get}
 }
@@ -17,7 +17,7 @@ protocol CameraSessionHandler: CameraSessionService {
 protocol CameraHardwareHandler {
     
 }
-
+ 
 protocol SingleCameraHandler: CameraHardwareHandler {
     var selectedPosition: AVCaptureDevice.Position {set get}
     var audioDevice: AVCaptureDeviceInput? {get}

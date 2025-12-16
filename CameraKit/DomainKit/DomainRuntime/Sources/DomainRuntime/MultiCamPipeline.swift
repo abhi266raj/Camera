@@ -17,7 +17,7 @@ import PlatformKit_api
 /// Multi Camera Pipeline Use UIView and record on camera
 class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
-    public let input: CameraInputImp
+    public var input: CameraInput
     public let recordOutput: CameraContentRecordingProxyService
     public let displayCoordinator: any CameraDisplayCoordinator
     private let captureSession: AVCaptureMultiCamSession
@@ -27,7 +27,7 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         self.captureSession = session
         recordOutput = CameraContentRecordingProxyService()
         displayCoordinator = platformFactory.makeMultiCameraDisplayCoordinator(avcaptureSession: session)
-        self.input = CameraInputImp()
+        self.input = platformFactory.makeCameraInput()
         super.init()
         
         

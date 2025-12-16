@@ -18,6 +18,7 @@ public protocol CameraSessionService {
 
 
 public protocol CameraInput {
+    var session: AVCaptureSession? {get set}
     func startRunning() async
     func stopRunning() async
     
@@ -25,6 +26,11 @@ public protocol CameraInput {
     var videoDevice: AVCaptureDeviceInput? {get}
     
     func toggleCamera() async -> Bool 
+    var frontCamera: AVCaptureDeviceInput? {get}
+    var backCamera: AVCaptureDeviceInput? {get}
+}
+
+public protocol MultiCameraInput: CameraInput {
     
 }
 
@@ -56,7 +62,4 @@ public struct CameraInputConfig {
 }
 
 
-public protocol MultiCameraInput: CameraInput {
-    var frontCamera: AVCaptureDeviceInput? {get}
-    var backCamera: AVCaptureDeviceInput? {get}
-}
+

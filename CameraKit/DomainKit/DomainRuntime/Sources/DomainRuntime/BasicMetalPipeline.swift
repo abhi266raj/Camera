@@ -15,12 +15,12 @@ import PlatformKit_api
 import DomainApi
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
+class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraInputSubSystem {
             
     private let captureSession: AVCaptureSession
     public let recordOutput: SampleBufferCameraRecorderService
 
-    public let input: CameraInputImp
+    private(set) var input: CameraInput
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let videoQueue = DispatchQueue(label: "videoQueue")
@@ -39,8 +39,8 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         let metalView = PreviewMetalView(frame: .zero)
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator(metalView: metalView)
         self.metalView = metalView
-        self.input = CameraInputImp()
-        super.init() 
+        self.input = platformFactory.makeCameraInput()
+        super.init()
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
         metalView.renderingDelegate = self

@@ -15,4 +15,6 @@ public protocol PlatformFactory {
     func makeVideoLayerDisplayCoordinator(avcaptureSession: AVCaptureSession) -> CameraDisplayCoordinator
     
     func makePassThroughDiskRecordingService() -> CameraDiskOutputService
+    
+    func makeCameraInput() -> CameraInput
 }

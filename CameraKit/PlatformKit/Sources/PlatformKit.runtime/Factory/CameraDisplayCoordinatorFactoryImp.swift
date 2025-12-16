@@ -30,4 +30,8 @@ public class PlatformFactoryImp: PlatformFactory {
     public func makePassThroughDiskRecordingService() -> any CameraDiskOutputService {
         PreviewOnlyService()
     }
+    
+    public func makeCameraInput() -> any CameraInput {
+        CameraInputImp()
+    }
 }

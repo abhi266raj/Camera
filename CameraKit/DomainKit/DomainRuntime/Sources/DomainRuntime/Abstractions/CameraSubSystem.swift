@@ -12,12 +12,16 @@ import Combine
 import CoreMedia
 import PlatformKit_runtime
 
+public protocol CameraInputSubSystem {
+    var input:CameraInput {get}
+}
+
+
 public protocol CameraSubSystem {
-    associatedtype Input
     associatedtype DiskOutput: CameraDiskOutputService
     associatedtype Processor =  Void
     
-    var input: Input {get}
+    //var input: Input {get}
     var displayCoordinator: any CameraDisplayCoordinator {get}
     var recordOutput: DiskOutput {get }
     var processor: Processor {get}
@@ -50,7 +54,7 @@ public extension CameraSubSystem where Processor: CameraProccessor {
     }
 }
 
-public extension CameraSubSystem where Input: CameraInput {
+public extension CameraInputSubSystem  {
     func toggleCamera() async  -> Bool {
         return await input.toggleCamera()
     }

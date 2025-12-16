@@ -13,13 +13,13 @@ import DomainApi
 import PlatformKit_api
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicVideoPipeline:  CameraSubSystem, @unchecked Sendable {
+class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sendable {
    
  
     public let displayCoordinator: any CameraDisplayCoordinator
     private let captureSession: AVCaptureSession
     //public let output: CameraVideoOutputImp
-    public let input: CameraInputImp
+    public var input: CameraInput
     let fileOutput = AVCaptureMovieFileOutput()
     var videoRecordingConfig =  VideoRecordingConfig()
     public lazy var recordOutput: CameraRecordingCameraService = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
@@ -28,7 +28,7 @@ class BasicVideoPipeline:  CameraSubSystem, @unchecked Sendable {
         let session = AVCaptureSession()
         self.captureSession = session
         // recordOutput = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
-        self.input = CameraInputImp()
+        self.input = platformFactory.makeCameraInput()
         displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
     }
 

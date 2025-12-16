@@ -11,20 +11,19 @@ import UIKit
 import PlatformKit_api
 
 
-
-
-@CameraInputSessionActor
-public class ConfigurableCameraInputImp: CameraInput, MultiCameraInput {
+private class ConfigurableCameraInputImp: CameraInput, MultiCameraInput {
     
     public var session: AVCaptureSession?
     
     nonisolated public  init() {
     }
     
+    @CameraInputSessionActor
     public func startRunning() {
         session?.startRunning()
     }
     
+    @CameraInputSessionActor
     public func stopRunning() {
         session?.stopRunning()
     }
@@ -123,7 +122,7 @@ public class ConfigurableCameraInputImp: CameraInput, MultiCameraInput {
     }
     
     
-    
+    @CameraInputSessionActor
     public func toggleCamera()  async -> Bool {
         
         if selectedPosition == .front {

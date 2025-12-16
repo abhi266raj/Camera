@@ -10,24 +10,26 @@ import AVFoundation
 import UIKit
 import PlatformKit_api
 
-@CameraInputSessionActor
-public class CameraInputImp: CameraInput, MultiCameraInput {
+
+internal class CameraInputImp: CameraInput, MultiCameraInput {
     
     public var session: AVCaptureSession?
     
-    nonisolated public  init() {
+    public  init() {
         
     }
     
+    @CameraInputSessionActor
     public func startRunning() {
         session?.startRunning()
     }
     
+    @CameraInputSessionActor
     public func stopRunning() {
         session?.stopRunning()
     }
     
-    nonisolated public var audioDevice: AVCaptureDeviceInput? {
+    public var audioDevice: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(for: .audio)
         guard let device else {return nil}
         do {
@@ -41,11 +43,11 @@ public class CameraInputImp: CameraInput, MultiCameraInput {
     
     var selectedPosition: AVCaptureDevice.Position = .front
     
-    nonisolated public var videoDevice:  AVCaptureDeviceInput? {
+    public var videoDevice:  AVCaptureDeviceInput? {
         frontCamera
     }
     
-    nonisolated public var frontCamera: AVCaptureDeviceInput? {
+    public var frontCamera: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         guard let device else {return nil}
         do {
@@ -56,7 +58,7 @@ public class CameraInputImp: CameraInput, MultiCameraInput {
         }
     }
     
-    nonisolated public var backCamera: AVCaptureDeviceInput? {
+    public var backCamera: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
         guard let device else {return nil}
         do {
@@ -68,7 +70,7 @@ public class CameraInputImp: CameraInput, MultiCameraInput {
     }
     
     
-    
+    @CameraInputSessionActor
     public func toggleCamera()  async -> Bool {
        
         var camera = frontCamera
