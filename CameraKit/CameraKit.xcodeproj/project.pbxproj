@@ -7,14 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6B4B14912EF137110038405E /* DomainKit.runtime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14902EF137110038405E /* DomainKit.runtime */; };
+		6B4B14962EF138FE0038405E /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14952EF138FE0038405E /* AppView */; };
+		6B4B149A2EF139A30038405E /* DomainKit.runtime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14992EF139A30038405E /* DomainKit.runtime */; };
 		6B6D7DEF2EE6D9FA00B59C01 /* AppDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DED2EE6D9FA00B59C01 /* AppDI.swift */; };
 		6B6D7DF02EE6D9FA00B59C01 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DEE2EE6D9FA00B59C01 /* Coordinator.swift */; };
-		6B6D7DF42EE6DAE600B59C01 /* AppViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6D7DF32EE6DAE600B59C01 /* AppViewModel */; };
-		6B6D7DF92EE6DB0200B59C01 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B6D7DF82EE6DB0200B59C01 /* AppView */; };
 		6BB394B32EE3E95300A45141 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6BB394B22EE3E95300A45141 /* README.md */; };
-		6BB394C32EE402FE00A45141 /* CoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6BB394C22EE402FE00A45141 /* CoreKit */; settings = {ATTRIBUTES = (Required, ); }; };
-		6BB394C62EE40B1C00A45141 /* PlatformKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6BB394C52EE40B1C00A45141 /* PlatformKit */; settings = {ATTRIBUTES = (Required, ); }; };
 		6BE804DA2AB738E800DAF8B4 /* CameraKitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804D92AB738E800DAF8B4 /* CameraKitApp.swift */; };
 		6BE804DE2AB738EB00DAF8B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BE804DD2AB738EB00DAF8B4 /* Assets.xcassets */; };
 		6BE804E12AB738EB00DAF8B4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BE804E02AB738EB00DAF8B4 /* Preview Assets.xcassets */; };
@@ -73,11 +70,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B6D7DF92EE6DB0200B59C01 /* AppView in Frameworks */,
-				6B4B14912EF137110038405E /* DomainKit.runtime in Frameworks */,
-				6BB394C62EE40B1C00A45141 /* PlatformKit in Frameworks */,
-				6B6D7DF42EE6DAE600B59C01 /* AppViewModel in Frameworks */,
-				6BB394C32EE402FE00A45141 /* CoreKit in Frameworks */,
+				6B4B14962EF138FE0038405E /* AppView in Frameworks */,
+				6B4B149A2EF139A30038405E /* DomainKit.runtime in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +92,13 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6B4B14922EF138F90038405E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		6B4BC29D2AE3C17D00A70B3D /* SupportFile */ = {
 			isa = PBXGroup;
 			children = (
@@ -121,6 +122,7 @@
 				6BE804D82AB738E800DAF8B4 /* CameraKit */,
 				6BE804E92AB738EB00DAF8B4 /* CameraKitTests */,
 				6BE804F32AB738EB00DAF8B4 /* CameraKitUITests */,
+				6B4B14922EF138F90038405E /* Frameworks */,
 				6BE804D72AB738E800DAF8B4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -264,7 +266,6 @@
 			mainGroup = 6BE804CD2AB738E800DAF8B4;
 			packageReferences = (
 				6BB394C12EE402FE00A45141 /* XCLocalSwiftPackageReference "CoreKit" */,
-				6BB394C42EE40B1C00A45141 /* XCLocalSwiftPackageReference "PlatformKit" */,
 				6B6D7DF72EE6DB0200B59C01 /* XCLocalSwiftPackageReference "FeatureKit" */,
 				6B4B148F2EF137110038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */,
 			);
@@ -658,32 +659,18 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = CoreKit;
 		};
-		6BB394C42EE40B1C00A45141 /* XCLocalSwiftPackageReference "PlatformKit" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = PlatformKit;
-		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6B4B14902EF137110038405E /* DomainKit.runtime */ = {
+		6B4B14952EF138FE0038405E /* AppView */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = DomainKit.runtime;
-		};
-		6B6D7DF32EE6DAE600B59C01 /* AppViewModel */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = AppViewModel;
-		};
-		6B6D7DF82EE6DB0200B59C01 /* AppView */ = {
-			isa = XCSwiftPackageProductDependency;
+			package = 6B6D7DF72EE6DB0200B59C01 /* XCLocalSwiftPackageReference "FeatureKit" */;
 			productName = AppView;
 		};
-		6BB394C22EE402FE00A45141 /* CoreKit */ = {
+		6B4B14992EF139A30038405E /* DomainKit.runtime */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = CoreKit;
-		};
-		6BB394C52EE40B1C00A45141 /* PlatformKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = PlatformKit;
+			package = 6B4B148F2EF137110038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */;
+			productName = DomainKit.runtime;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
