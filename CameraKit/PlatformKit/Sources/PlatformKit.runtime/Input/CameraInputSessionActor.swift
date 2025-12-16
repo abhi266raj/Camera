@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 @globalActor
-public actor CameraInputSessionActor {
+actor CameraInputSessionActor {
     public static let shared =  CameraInputSessionActor()
     static let sharedMyActorsExecutor = CameraUtiltyExecutor()
     nonisolated public var unownedExecutor: UnownedSerialExecutor {

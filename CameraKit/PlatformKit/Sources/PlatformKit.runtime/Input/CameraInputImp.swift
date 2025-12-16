@@ -11,7 +11,7 @@ import UIKit
 import PlatformKit_api
 
 
-internal class CameraInputImp: CameraInput, MultiCameraInput {
+class CameraInputImp: CameraInput {
     
     public var session: AVCaptureSession?
     

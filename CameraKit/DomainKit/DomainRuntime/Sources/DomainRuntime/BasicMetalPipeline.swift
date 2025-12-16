@@ -46,7 +46,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         metalView.renderingDelegate = self
     }
     
-    @CameraInputSessionActor
+    //@CameraInputSessionActor
     public func setup() async {
             let _  = self.setupInputAndOutput()
             self.input.session = self.captureSession

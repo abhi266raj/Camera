@@ -45,14 +45,14 @@ class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
         
     }
     
-    @CameraInputSessionActor
+    //@CameraInputSessionActor
     public func setup() async {
             let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
             await sessionManager.setup(input: [], output: recordingService.availableOutput, config: config)
             await sessionManager.start()
     }
     
-    @CameraInputSessionActor
+    //@CameraInputSessionActor
      public func toggleCamera() async -> Bool {
          let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
          return await sessionManager.toggle(config: config)

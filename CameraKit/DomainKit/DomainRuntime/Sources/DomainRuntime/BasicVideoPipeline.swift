@@ -32,7 +32,7 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
         displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
     }
 
-    @CameraInputSessionActor
+    // @CameraInputSessionActor
     public func setup() async {
                 let _  = setupInputAndOutput()
                 input.session = captureSession
@@ -46,7 +46,7 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
         }
     }
     
-    @CameraInputSessionActor
+    //@CameraInputSessionActor
     private func setupInputAndOutput() -> Bool {
         guard let videoDevice =  input.videoDevice else {return false}
         guard let audioDevice =  input.audioDevice else {return false}

@@ -30,10 +30,6 @@ public protocol CameraInput {
     var backCamera: AVCaptureDeviceInput? {get}
 }
 
-public protocol MultiCameraInput: CameraInput {
-    
-}
-
 
  private extension ImageCaptureConfig.PhotoResolution {
     public func maxDimension() -> CMVideoDimensions {

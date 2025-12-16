@@ -33,14 +33,14 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         
     }
     
-    @CameraInputSessionActor
+    // @CameraInputSessionActor
     public func setup() async {
        // Task{ @CameraInputSessionActor  in
             await self.setupInput()
         //}
     }
     
-    @CameraInputSessionActor
+    //@CameraInputSessionActor
     private func setupInput() async {
         let _  = self.setupInputAndOutput()
         input.session = captureSession
