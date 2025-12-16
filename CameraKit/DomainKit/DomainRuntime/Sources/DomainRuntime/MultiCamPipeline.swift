@@ -11,7 +11,7 @@ import UIKit
 import Photos
 import CoreKit
 import DomainApi
-import PlatformKit_api
+import PlatformApi
 
 /// Multi Camera Pipeline Use UIView and record on camera
 class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraRecordingSubSystem {

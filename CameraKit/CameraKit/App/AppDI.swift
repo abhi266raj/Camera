@@ -5,8 +5,8 @@ import DomainApi
 import DomainRuntime
 import AppViewModel
 import AppView
-import PlatformKit_runtime
-import PlatformKit_api
+import PlatformApi
+import PlatformRuntime
 
 protocol CoreDependencies {
     var filterRepository: FilterRepository { get }

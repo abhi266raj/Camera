@@ -14,7 +14,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../../CoreKit"),
-        .package(path: "../../PlatformKit"),
+        .package(path: "../../PlatformKit/PlatformApi"),
         .package(path: "../DomainApi")
     ],
     targets: [
@@ -23,7 +23,7 @@ let package = Package(
             dependencies: [
                 .product(name: "DomainKit.api", package: "DomainApi"),
                 "CoreKit",
-                .product(name: "PlatformKit.api", package: "PlatformKit")
+                .product(name: "PlatformKit.api", package: "PlatformApi")
             ],
         ),
         .testTarget(

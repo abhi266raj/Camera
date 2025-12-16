@@ -6,7 +6,7 @@
 //
 
 import CoreKit
-import PlatformKit_api
+import PlatformApi
 import DomainApi
 import Combine
 import CoreMedia

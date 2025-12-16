@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-import PlatformKit_api
+import PlatformApi
 import CoreKit
 import SwiftUI
 import AppViewModel

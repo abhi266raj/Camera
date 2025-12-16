@@ -10,7 +10,7 @@ import Foundation
 import Observation
 import Combine
 import CoreKit
-import PlatformKit_api
+import PlatformApi
 import DomainApi
 
 protocol EngineInternal {

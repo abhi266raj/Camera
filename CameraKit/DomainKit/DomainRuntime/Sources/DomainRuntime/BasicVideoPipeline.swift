@@ -9,7 +9,7 @@ import AVFoundation
 import UIKit
 import CoreKit
 import DomainApi
-import PlatformKit_api
+import PlatformApi
 
 /// Basic Camera Pipeline Use UIView and record on camera
 class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sendable, CameraRecordingSubSystem {
