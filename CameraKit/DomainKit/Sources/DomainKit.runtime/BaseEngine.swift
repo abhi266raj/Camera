@@ -171,30 +171,30 @@ public class BaseEngine: EngineInternal, CameraEngine {
     let subSystem: CameraSubSystem
         
     @MainActor
-    public init (profile: CameraProfile) {
+    public init (profile: CameraProfile, platfomFactory: PlatformFactory) {
         switch profile {
         case .simplephoto:
             let specification = EngineSpecsImp.photoEngineSpecs()
             self.activeConfig = specification.allConfig[0]
             self.specs = specification
-            self.subSystem = BasicPhotoPipeline()
+            self.subSystem = BasicPhotoPipeline(platformFactory: platfomFactory)
         case .multiCam:
             let specification = EngineSpecsImp.multiCamEngineSpecs()
             self.activeConfig = specification.allConfig[0]
             self.specs = specification
-            self.subSystem = MultiCamPipeline()
+            self.subSystem = MultiCamPipeline(platformFactory: platfomFactory)
         case .video:
             let specification = EngineSpecsImp.videoCamEngineSpecs()
             self.activeConfig = specification.allConfig[0]
             self.specs = specification
-            self.subSystem = BasicVideoPipeline(cameraOutputAction: .photo)
+            self.subSystem = BasicVideoPipeline(platformFactory: platfomFactory)
             
             
         case .filter:
             let specification = EngineSpecsImp.filterCamEngineSpecs()
             self.activeConfig = specification.allConfig[0]
             self.specs = specification
-            self.subSystem = BasicMetalPipeline(cameraOutputAction: .photo)
+            self.subSystem = BasicMetalPipeline(platformFactory: platfomFactory)
         }
     }
 }

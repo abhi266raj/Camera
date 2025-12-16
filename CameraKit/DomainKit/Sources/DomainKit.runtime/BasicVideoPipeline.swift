@@ -24,12 +24,12 @@ public class BasicVideoPipeline:  CameraSubSystem, @unchecked Sendable {
     var videoRecordingConfig =  VideoRecordingConfig()
     public lazy var recordOutput: CameraRecordingCameraService = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
     
-    public init(cameraOutputAction: CameraAction) {
+    public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
         // recordOutput = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
         self.input = CameraInputImp()
-        displayCoordinator = PlatformFactoryImp().makeVideoLayerDisplayCoordinator(avcaptureSession: session)
+        displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
     }
 
     @CameraInputSessionActor

@@ -31,13 +31,13 @@ public class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable 
     
     @MainActor
     // Metal view need main actor. Shoule be added via somewhere else
-    public init(cameraOutputAction: CameraAction) {
+    public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
         let videoOutput = VideoOutputImp()
         recordOutput = SampleBufferCameraRecorderService(videoOutput: videoOutput)
         let metalView = PreviewMetalView(frame: .zero)
-        displayCoordinator = PlatformFactoryImp().makeMetalDisplayCoordinator(metalView: metalView)
+        displayCoordinator = platformFactory.makeMetalDisplayCoordinator(metalView: metalView)
         self.metalView = metalView
         self.input = CameraInputImp()
         super.init() 

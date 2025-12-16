@@ -5,6 +5,8 @@ import DomainKit_api
 import DomainKit_runtime
 import AppViewModel
 import AppView
+import PlatformKit_runtime
+import PlatformKit_api
 
 protocol CoreDependencies {
     var filterRepository: FilterRepository { get }
@@ -48,16 +50,17 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
     
     func dependencies(for cameraType: CameraType) async -> CameraDependencies {
         
+        let plattformFactory:PlatformFactory = PlatformFactoryImp()
         let cameraService: CameraEngine =  await MainActor.run {
             switch cameraType {
             case .multicam:
-                return BaseEngine(profile: .multiCam)
+                return BaseEngine(profile: .multiCam, platfomFactory: plattformFactory)
             case .basicPhoto:
-                return  BaseEngine(profile: .simplephoto)
+                return  BaseEngine(profile: .simplephoto, platfomFactory: plattformFactory)
             case .basicVideo:
-                return  BaseEngine(profile: .video)
+                return  BaseEngine(profile: .video, platfomFactory: plattformFactory)
             case .metal:
-                return BaseEngine(profile: .filter)
+                return BaseEngine(profile: .filter, platfomFactory: plattformFactory)
             }
         }
 

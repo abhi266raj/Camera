@@ -35,10 +35,10 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem 
     }
    
     
-    override public init() {
+    public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
-        displayCoordinator = PlatformFactoryImp().makeVideoLayerDisplayCoordinator(avcaptureSession: session)
+        displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
         recordingService = CameraPhotoCameraService()
         self.sessionManager = CameraSessionHandlerImp(session: session)
         super.init()
