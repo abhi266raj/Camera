@@ -15,7 +15,7 @@ import DomainKit_api
 import PlatformKit_api
 
 /// Multi Camera Pipeline Use UIView and record on camera
-public class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
+class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
     public let input: CameraInputImp
     public let recordOutput: CameraContentRecordingProxyService

@@ -26,4 +26,8 @@ public class PlatformFactoryImp: PlatformFactory {
     public func makeVideoLayerDisplayCoordinator(avcaptureSession: AVCaptureSession) -> CameraDisplayCoordinator {
         CameraLayerDisplayCoordinatorImp(session: avcaptureSession)
     }
+    
+    public func makePassThroughDiskRecordingService() -> any CameraDiskOutputService {
+        PreviewOnlyService()
+    }
 }

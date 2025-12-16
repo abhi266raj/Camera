@@ -1,5 +1,4 @@
 import SwiftUI
-import PlatformKit_runtime
 import AppViewModel
 
 struct CameraAuthorizedView: View {

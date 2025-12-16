@@ -7,9 +7,9 @@
 
 import Foundation
 import Observation
-import Combine
 import CoreKit
 import DomainKit_api
+internal import Combine
 
 
 public enum PermissionStatus {

@@ -14,7 +14,7 @@ import PlatformKit_api
 import Combine
 
 /// Basic Camera Pipeline Use UIView and record on camera
-public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
+class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
    
     public  let displayCoordinator: any CameraDisplayCoordinator
     public  let recordingService: CameraPhotoCameraService
@@ -68,7 +68,7 @@ public class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem 
     
 }
 
-public extension BasicPhotoPipeline {
+extension BasicPhotoPipeline {
     
     func updateSelection(filter: (any FilterModel)?)  {
     }
