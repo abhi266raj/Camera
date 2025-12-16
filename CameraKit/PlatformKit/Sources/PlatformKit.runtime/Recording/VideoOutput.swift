@@ -9,7 +9,7 @@ import Foundation
 import PlatformKit_api
 
 
-public class VideoOutputImp {
+class VideoOutputImp {
     public var videoRecorder: VideoRecorder?
     public let videoSaver: VideoSaver  = VideoSaverImp()
     public init() {

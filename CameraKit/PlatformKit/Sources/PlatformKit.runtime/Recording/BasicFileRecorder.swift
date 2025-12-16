@@ -10,7 +10,7 @@ import AVFoundation
 import PlatformKit_api
 internal import Photos
 
-public class BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
+class BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
     
     var fileOutput: AVCaptureMovieFileOutput
     var isRecording: Bool {

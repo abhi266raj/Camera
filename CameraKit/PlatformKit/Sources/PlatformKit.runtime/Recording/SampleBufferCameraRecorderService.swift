@@ -20,8 +20,8 @@ public class SampleBufferCameraRecorderService: CameraDiskOutputService {
     
     public let supportedOutput: CameraAction = [.startRecord, .stopRecord]
     
-    public init(videoOutput: VideoOutput) {
-        self.videoOutput = videoOutput
+    public init() {
+        self.videoOutput = VideoOutputImp()
     }
     
     public var availableOutput: [AVCaptureOutput] {

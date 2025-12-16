@@ -34,8 +34,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
-        let videoOutput = VideoOutputImp()
-        recordOutput = SampleBufferCameraRecorderService(videoOutput: videoOutput)
+        recordOutput = SampleBufferCameraRecorderService()
         let metalView = PreviewMetalView(frame: .zero)
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator(metalView: metalView)
         self.metalView = metalView
