@@ -26,7 +26,6 @@ let package = Package(
                 .product(name: "PlatformKit.api", package: "PlatformKit"),
                  .product(name: "PlatformKit.runtime", package: "PlatformKit")
             ],
-            path: "Sources/DomainRuntime"
         ),
         .testTarget(
             name: "DomainKitRuntimeTests",

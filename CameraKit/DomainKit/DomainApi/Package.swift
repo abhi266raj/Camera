@@ -14,16 +14,13 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../../CoreKit"),
-        .package(path: "../../PlatformKit")
     ],
     targets: [
         .target(
             name: "DomainApi",
             dependencies: [
                 "CoreKit",
-                .product(name: "PlatformKit.api", package: "PlatformKit")
             ],
-            path: "Sources/DomainApi"
         ),
         .testTarget(
             name: "DomainKitApiTests",
