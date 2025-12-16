@@ -11,11 +11,18 @@ import PlatformRuntime
 protocol CoreDependencies {
     var filterRepository: FilterRepository { get }
     var permissionService: PermissionService { get }
+    var factory: DomainApi.Factory {get}
 }
 
 class CoreDependenciesImpl: CoreDependencies {
-    lazy var filterRepository: FilterRepository = FilterRepositoryImpl()
-    lazy var permissionService: PermissionService = PermissionServiceImp()
+    let factory:Factory
+    init(factory: DomainApi.Factory) {
+        self.factory = factory
+    }
+    lazy var filterRepository: FilterRepository = factory.makeFilterRepository()
+    //FilterRepositoryImpl()
+    lazy var permissionService: PermissionService = factory.makePermissionService()
+    //PermissionServiceImp()
 }
 
 protocol CameraDependencies {
@@ -50,17 +57,21 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
     
     func dependencies(for cameraType: CameraType) async -> CameraDependencies {
         
+        
         let plattformFactory:PlatformFactory = PlatformFactoryImp()
         let cameraService: CameraEngine =  await MainActor.run {
             switch cameraType {
             case .multicam:
-                return BaseEngine(profile: .multiCam, platfomFactory: plattformFactory)
+                return core.factory.makeCameraEngine(profile: .multiCam)
             case .basicPhoto:
-                return  BaseEngine(profile: .simplephoto, platfomFactory: plattformFactory)
+                return core.factory.makeCameraEngine(profile: .simplephoto)
+                //BaseEngine(profile: .simplephoto, platfomFactory: plattformFactory)
             case .basicVideo:
-                return  BaseEngine(profile: .video, platfomFactory: plattformFactory)
+                return core.factory.makeCameraEngine(profile: .video)
+                //BaseEngine(profile: .video, platfomFactory: plattformFactory)
             case .metal:
-                return BaseEngine(profile: .filter, platfomFactory: plattformFactory)
+                return core.factory.makeCameraEngine(profile: .filter)
+                //BaseEngine(profile: .filter, platfomFactory: plattformFactory)
             }
         }
 
@@ -119,7 +130,7 @@ final class AppDependencies {
     let viewModels: ViewModelDependenciesProvider
 
     private init() {
-        let core = CoreDependenciesImpl()
+        let core = CoreDependenciesImpl(factory: DomainFactory {PlatformFactoryImp()} )
         self.core = core
         let serviceProvider = CameraDependenciesProviderImpl(core:core)
         self.services = serviceProvider

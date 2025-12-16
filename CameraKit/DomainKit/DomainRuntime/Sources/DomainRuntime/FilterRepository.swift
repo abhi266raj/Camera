@@ -9,8 +9,8 @@
 import Foundation
 import CoreImage
 import CoreKit
-import DomainApi
 import PlatformApi
+import DomainApi
 
 // MARK: - DataSource
 
@@ -33,7 +33,7 @@ final public class StaticFilterDataSource {
 
 // MARK: - Repository Implementation
 
-final public class FilterRepositoryImpl: FilterRepository {
+final class FilterRepositoryImpl: FilterRepository {
     private let dataSource: StaticFilterDataSource
 
     public init(dataSource: StaticFilterDataSource = StaticFilterDataSource()) {

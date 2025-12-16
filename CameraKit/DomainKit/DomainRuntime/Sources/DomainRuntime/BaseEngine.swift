@@ -147,8 +147,8 @@ extension EngineOption.Config {
 
 
 
-public class BaseEngine: EngineInternal, CameraEngine {
-    public func perform(_ action: EngineAction) async throws {
+class BaseEngine {
+     public func perform(_ action: EngineAction) async throws {
         switch action {
         case .setup:
             await try subSystem.setup()
@@ -200,8 +200,11 @@ public class BaseEngine: EngineInternal, CameraEngine {
 }
 
 
+extension BaseEngine: CameraEngine {
+    
+}
 
-extension BaseEngine {
+extension BaseEngine: EngineInternal  {
 
     
     public var cameraModePublisher: CurrentValueSubject<CoreKit.CameraMode, Never> {

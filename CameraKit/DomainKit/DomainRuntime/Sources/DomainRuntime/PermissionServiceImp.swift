@@ -7,7 +7,7 @@ import AVFoundation
 import Photos
 import DomainApi
 
-public struct PermissionServiceImp: PermissionService {
+struct PermissionServiceImp: PermissionService {
     public init() {}
     
     @MainActor
