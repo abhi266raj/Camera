@@ -12,6 +12,14 @@ import UIKit
 
 
 public class PlatformFactoryImp: PlatformFactory {
+    public func makeEffectProcessor() -> any CameraProccessor {
+        EffectCameraProcessor()
+    }
+    
+    public func makeSessionService(session: AVCaptureSession) -> any CameraSessionService {
+        CameraSessionHandlerImp(session: session)
+    }
+    
     public init() {}
     
     public func makeMetalDisplayCoordinator(metalView: UIView) -> CameraDisplayCoordinator {

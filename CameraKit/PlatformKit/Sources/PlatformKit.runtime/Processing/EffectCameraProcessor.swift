@@ -12,7 +12,7 @@ import CoreMedia
 import CoreKit
 import PlatformKit_api
 
-public class EffectCameraProcessor : CameraProccessor {
+class EffectCameraProcessor : CameraProccessor {
     
     var filterRender1: CIFilterRenderer = CIFilterRenderer()
     var filterRender2: MetalFilterRenderer = MetalFilterRenderer()
@@ -77,9 +77,10 @@ public class EffectCameraProcessor : CameraProccessor {
         return sampleBuffer
     }
     
-    public func updateSelection(filter: (any FilterModel)?)  {
+    func updateSelection(filter: (any FilterModel)?)  {
         self.selectedFilter = filter
     }
+    
     
 }
 

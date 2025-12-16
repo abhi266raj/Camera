@@ -17,4 +17,8 @@ public protocol PlatformFactory {
     func makePassThroughDiskRecordingService() -> CameraDiskOutputService
     
     func makeCameraInput() -> CameraInput
+    
+    func makeSessionService(session: AVCaptureSession) -> CameraSessionService
+    
+    func makeEffectProcessor() -> CameraProccessor
 }

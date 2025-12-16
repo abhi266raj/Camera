@@ -12,19 +12,22 @@ import Combine
 import CoreMedia
 import PlatformKit_runtime
 
-public protocol CameraInputSubSystem {
+protocol CameraInputSubSystem {
     var input:CameraInput {get}
 }
 
+protocol CameraEffectSubSystem {
+    var processor: CameraProccessor {get}
+}
 
-public protocol CameraSubSystem {
+
+protocol CameraSubSystem {
     associatedtype DiskOutput: CameraDiskOutputService
     associatedtype Processor =  Void
     
-    //var input: Input {get}
     var displayCoordinator: any CameraDisplayCoordinator {get}
     var recordOutput: DiskOutput {get }
-    var processor: Processor {get}
+    //var processor: Processor {get}
     
     func updateSelection(filter: (any FilterModel)?)
     func toggleCamera() async  -> Bool
@@ -36,31 +39,19 @@ public protocol CameraSubSystem {
 }
 
 
-public extension CameraSubSystem where Processor == Void {
-    
-    var processor: Void {
-        ()
-    }
-    
+extension CameraSubSystem  {
+        
     func updateSelection(filter: (any FilterModel)?)  {
     }
 }
 
-
-
-public extension CameraSubSystem where Processor: CameraProccessor {
-    func updateSelection(filter: (any FilterModel)?)  {
-        processor.updateSelection(filter: filter)
-    }
-}
-
-public extension CameraInputSubSystem  {
+extension CameraInputSubSystem  {
     func toggleCamera() async  -> Bool {
         return await input.toggleCamera()
     }
 }
 
-public extension CameraSubSystem {
+extension CameraSubSystem {
     
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
         return recordOutput.cameraModePublisher

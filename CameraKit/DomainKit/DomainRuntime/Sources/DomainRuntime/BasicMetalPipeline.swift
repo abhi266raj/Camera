@@ -15,7 +15,7 @@ import PlatformKit_api
 import DomainApi
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraInputSubSystem {
+class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraInputSubSystem, CameraEffectSubSystem {
             
     private let captureSession: AVCaptureSession
     public let recordOutput: SampleBufferCameraRecorderService
@@ -25,7 +25,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
-    public var processor: EffectCameraProcessor = EffectCameraProcessor()
+    let processor: CameraProccessor
     public  let displayCoordinator: any CameraDisplayCoordinator
     private let metalView: PreviewMetalView
     
@@ -40,6 +40,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator(metalView: metalView)
         self.metalView = metalView
         self.input = platformFactory.makeCameraInput()
+        self.processor = platformFactory.makeEffectProcessor()
         super.init()
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
@@ -117,6 +118,10 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
 extension BasicMetalPipeline: MetalRenderingDelegate {
     public func sampleBufferRendered(_ buffer: CMSampleBuffer) {
         recordOutput.appendSampleBuffer(buffer)
+    }
+    
+    func updateSelection(filter: (any FilterModel)?)  {
+        processor.updateSelection(filter: filter)
     }
 }
 

@@ -19,16 +19,13 @@ class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
     public  let displayCoordinator: any CameraDisplayCoordinator
     public  let recordingService: CameraPhotoCameraService
     
-    public var input: CameraSessionHandlerImp {
-        sessionManager
-    }
     
     public var recordOutput: CameraPhotoCameraService {
         recordingService
     }
     
     private let captureSession: AVCaptureSession
-    public let sessionManager: CameraSessionHandlerImp
+    public let sessionManager: CameraSessionService
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
     var imageCaptureConfig: ImageCaptureConfig {
         return recordingService.imageCaptureConfig
@@ -40,7 +37,7 @@ class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
         self.captureSession = session
         displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
         recordingService = CameraPhotoCameraService()
-        self.sessionManager = CameraSessionHandlerImp(session: session)
+        self.sessionManager = platformFactory.makeSessionService(session: session)
         super.init()
         
     }

@@ -10,7 +10,7 @@ import AVFoundation
 import UIKit
 import PlatformKit_api
 
-public class CameraSessionHandlerImp: CameraSessionHandler, CameraSessionService{
+class CameraSessionHandlerImp: CameraSessionHandler, CameraSessionService{
     
     let session: AVCaptureSession
     public init(session: AVCaptureSession) {
