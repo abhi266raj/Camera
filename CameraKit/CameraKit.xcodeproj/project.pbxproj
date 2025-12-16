@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6B4B14962EF138FE0038405E /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14952EF138FE0038405E /* AppView */; };
-		6B4B149A2EF139A30038405E /* DomainKit.runtime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14992EF139A30038405E /* DomainKit.runtime */; };
+		6B4B149F2EF13D6B0038405E /* AppViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B149E2EF13D6B0038405E /* AppViewModel */; };
+		6B4B14A22EF13D8A0038405E /* DomainKit.runtime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14A12EF13D8A0038405E /* DomainKit.runtime */; };
+		6B4B14AB2EF148270038405E /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B4B14AA2EF148270038405E /* AppView */; };
 		6B6D7DEF2EE6D9FA00B59C01 /* AppDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DED2EE6D9FA00B59C01 /* AppDI.swift */; };
 		6B6D7DF02EE6D9FA00B59C01 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DEE2EE6D9FA00B59C01 /* Coordinator.swift */; };
 		6BB394B32EE3E95300A45141 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6BB394B22EE3E95300A45141 /* README.md */; };
@@ -70,8 +71,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B4B14962EF138FE0038405E /* AppView in Frameworks */,
-				6B4B149A2EF139A30038405E /* DomainKit.runtime in Frameworks */,
+				6B4B14A22EF13D8A0038405E /* DomainKit.runtime in Frameworks */,
+				6B4B149F2EF13D6B0038405E /* AppViewModel in Frameworks */,
+				6B4B14AB2EF148270038405E /* AppView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,9 +267,8 @@
 			);
 			mainGroup = 6BE804CD2AB738E800DAF8B4;
 			packageReferences = (
-				6BB394C12EE402FE00A45141 /* XCLocalSwiftPackageReference "CoreKit" */,
-				6B6D7DF72EE6DB0200B59C01 /* XCLocalSwiftPackageReference "FeatureKit" */,
-				6B4B148F2EF137110038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */,
+				6B4B14A92EF148270038405E /* XCLocalSwiftPackageReference "FeatureKit" */,
+				6B4B14AE2EF148360038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */,
 			);
 			productRefGroup = 6BE804D72AB738E800DAF8B4 /* Products */;
 			projectDirPath = "";
@@ -647,30 +648,28 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		6B4B148F2EF137110038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = DomainKit/DomainRuntime;
-		};
-		6B6D7DF72EE6DB0200B59C01 /* XCLocalSwiftPackageReference "FeatureKit" */ = {
+		6B4B14A92EF148270038405E /* XCLocalSwiftPackageReference "FeatureKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = FeatureKit;
 		};
-		6BB394C12EE402FE00A45141 /* XCLocalSwiftPackageReference "CoreKit" */ = {
+		6B4B14AE2EF148360038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = CoreKit;
+			relativePath = DomainKit/DomainRuntime;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6B4B14952EF138FE0038405E /* AppView */ = {
+		6B4B149E2EF13D6B0038405E /* AppViewModel */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6B6D7DF72EE6DB0200B59C01 /* XCLocalSwiftPackageReference "FeatureKit" */;
-			productName = AppView;
+			productName = AppViewModel;
 		};
-		6B4B14992EF139A30038405E /* DomainKit.runtime */ = {
+		6B4B14A12EF13D8A0038405E /* DomainKit.runtime */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 6B4B148F2EF137110038405E /* XCLocalSwiftPackageReference "DomainKit/DomainRuntime" */;
 			productName = DomainKit.runtime;
+		};
+		6B4B14AA2EF148270038405E /* AppView */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AppView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
