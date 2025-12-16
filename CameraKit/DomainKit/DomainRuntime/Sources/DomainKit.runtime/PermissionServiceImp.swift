@@ -5,7 +5,7 @@
 import Foundation
 import AVFoundation
 import Photos
-import DomainKit_api
+import DomainApi
 
 public struct PermissionServiceImp: PermissionService {
     public init() {}

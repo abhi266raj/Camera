@@ -1,7 +1,7 @@
 // MARK: - SERVICE LAYER
 
 import CoreKit
-import DomainKit_api
+import DomainApi
 import DomainKit_runtime
 import AppViewModel
 import AppView

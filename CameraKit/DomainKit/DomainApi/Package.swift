@@ -9,7 +9,7 @@ let package = Package(
     products: [
         .library(
             name: "DomainKit.api",            // API only
-            targets: ["DomainKit.api"]
+            targets: ["DomainApi"]
         ),
     ],
     dependencies: [
@@ -18,16 +18,16 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "DomainKit.api",
+            name: "DomainApi",
             dependencies: [
                 "CoreKit",
                 .product(name: "PlatformKit.api", package: "PlatformKit")
             ],
-            path: "Sources/DomainKit.api"
+            path: "Sources/DomainApi"
         ),
         .testTarget(
             name: "DomainKitApiTests",
-            dependencies: ["DomainKit.api"]
+            dependencies: ["DomainApi"]
         )
     ]
 )

@@ -11,7 +11,7 @@ import Observation
 import Combine
 import CoreKit
 import PlatformKit_api
-import DomainKit_api
+import DomainApi
 
 protocol EngineInternal {
     associatedtype EngineSpecs: Specs

@@ -10,7 +10,7 @@ import Foundation
 import CoreImage
 import CoreKit
 import PlatformKit_runtime
-import DomainKit_api
+import DomainApi
 
 // MARK: - DataSource
 

@@ -1,7 +1,7 @@
 import Foundation
 import Observation
 import CoreKit
-import DomainKit_api
+import DomainApi
 
 
 public enum FilterAction {

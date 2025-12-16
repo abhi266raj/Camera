@@ -10,7 +10,7 @@ import UIKit
 import Photos
 import CoreKit
 import PlatformKit_runtime
-import DomainKit_api
+import DomainApi
 
 //public class CameraPipeline: NSObject, AVCaptureFileOutputRecordingDelegate, CameraPipelineServiceNew {
 // 

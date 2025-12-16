@@ -7,7 +7,7 @@
 
 import CoreKit
 import PlatformKit_api
-import DomainKit_api
+import DomainApi
 import Combine
 import CoreMedia
 import PlatformKit_runtime

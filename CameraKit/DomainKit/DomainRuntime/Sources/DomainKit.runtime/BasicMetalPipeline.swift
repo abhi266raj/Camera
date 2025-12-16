@@ -12,7 +12,7 @@ import CoreMedia
 import CoreKit
 import PlatformKit_runtime
 import PlatformKit_api
-import DomainKit_api
+import DomainApi
 
 /// Basic Camera Pipeline Use UIView and record on camera
 class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {

@@ -9,7 +9,7 @@ import Foundation
 import AVFoundation
 import CoreKit
 import PlatformKit_runtime
-import DomainKit_api
+import DomainApi
 import PlatformKit_api
 import Combine
 
