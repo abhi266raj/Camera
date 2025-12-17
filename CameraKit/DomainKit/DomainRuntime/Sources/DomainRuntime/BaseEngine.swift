@@ -154,8 +154,6 @@ class BaseEngine {
             await try subSystem.setup()
         case .toggle:
             await try subSystem.toggleCamera()
-        case .updateFilter(let filter):
-            await try subSystem.updateSelection(filter: filter)
         case .takePicture:
             await try subSystem.performAction(action: .photo)
         case .startRecording:

@@ -100,8 +100,11 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
         
         let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
-            // Image render it than use via delegate to record
-            self.metalView.sampleBuffer = sampleBuffer
+            // Image render it than uTask { [sampleBuffer] in
+            
+                 metalView.sampleBuffer = sampleBuffer
+            //}
+            
         }else{
             // Audio delegate record it
             self.recordOutput.appendSampleBuffer(sampleBuffer)

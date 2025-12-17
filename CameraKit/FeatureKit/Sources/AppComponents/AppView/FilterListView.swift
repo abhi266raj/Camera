@@ -50,6 +50,6 @@ struct FilterListView: MultiActionableView {
 
 #Preview {
     let viewData = FilterListViewData()
-    viewData.filters = [FilterViewData(title: "First"), FilterViewData(title: "Second"), FilterViewData(title: "First")]
-    return FilterListView(viewData: viewData)
+    viewData.filters = [FilterViewData(title: "First", id:"F"), FilterViewData(title: "Second", id: "S"), FilterViewData(title: "First", id:"T")]
+     return FilterListView(viewData: viewData)
 }

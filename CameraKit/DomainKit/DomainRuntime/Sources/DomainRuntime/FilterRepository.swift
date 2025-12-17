@@ -14,12 +14,31 @@ import DomainApi
 
 // MARK: - DataSource
 
+
+struct FilterEntity {
+    public let title: String
+    public let model: any FilterModel
+    public let id: String = UUID().uuidString
+
+    public init(title: String, model: any FilterModel) {
+        self.title = title
+        self.model = model
+    }
+}
+
+
+extension FilterEntity: TitledContent {
+    
+}
+
 final public class StaticFilterDataSource {
     
     public init() {
         
     }
-    public func loadFilters() async -> [FilterEntity] {
+    
+
+     func loadFilter() async -> [FilterEntity] {
         [
             FilterEntity(title: "Monochrome", model: CIFilterModel(contents: CIFilter(name: "CIColorMonochrome")!)),
             FilterEntity(title: "Metal", model: MetalFilterModel()),
@@ -33,15 +52,55 @@ final public class StaticFilterDataSource {
 
 // MARK: - Repository Implementation
 
+
+// MARK: - Domain
+
+protocol FilterRepository {
+    func fetchAll() async -> [TitledContent]
+    func filter(id: String) -> FilterModel?
+}
+
+
+
 final class FilterRepositoryImpl: FilterRepository {
     private let dataSource: StaticFilterDataSource
+    private var filterMap: [String: FilterModel] = [:]
 
-    public init(dataSource: StaticFilterDataSource = StaticFilterDataSource()) {
+    init(dataSource: StaticFilterDataSource = StaticFilterDataSource()) {
         self.dataSource = dataSource
     }
 
-    public func fetchAll() async -> [FilterEntity] {
-        await dataSource.loadFilters()
+    func fetchAll() async -> [TitledContent] {
+        let list = await dataSource.loadFilter()
+        list.forEach { filterMap[$0.id] = $0.model }
+        return list
+    }
+
+    func filter(id: String) -> FilterModel? {
+        filterMap[id]
     }
 }
 
+
+
+
+final class FilterCoordinatorImp: FilterCoordinator {
+    func fetchAll() async -> [any TitledContent] {
+        return await repository.fetchAll()  // repository internal
+    }
+    
+    private let repository: FilterRepository
+    private let processor: CameraProccessor
+
+    init(repository: FilterRepository, processor: CameraProccessor) {
+        self.repository = repository
+        self.processor = processor
+    }
+
+    @discardableResult
+    func applyFilter(id: String) -> Bool {
+        guard let filter = repository.filter(id: id) else { return false }
+        processor.updateSelection(filter: filter)
+        return true
+    }
+}

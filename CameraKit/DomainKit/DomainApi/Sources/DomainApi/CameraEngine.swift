@@ -17,7 +17,6 @@ public protocol Specs {
 public enum EngineAction {
     case setup
     case toggle
-    case updateFilter(FilterModel)
     case takePicture
     case startRecording
     case stopRecording

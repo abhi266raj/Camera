@@ -8,8 +8,9 @@
 
 import CoreKit
 
-// MARK: - Domain
-
-public protocol FilterRepository {
-    func fetchAll() async -> [FilterEntity]
+public protocol FilterCoordinator {
+    
+    func fetchAll() async -> [TitledContent]
+    @discardableResult
+    func applyFilter(id: String) -> Bool 
 }

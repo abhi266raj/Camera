@@ -9,11 +9,13 @@ public enum FilterAction {
     case select(index:Int)
 }
 
-public struct FilterViewData {
+public struct FilterViewData: TitledContent {
     public let title: String
+    public var id: String
     
-    public init(title: String) {
+    public init(title: String, id:String) {
         self.title = title
+        self.id = id
     }
 }
 
@@ -37,20 +39,17 @@ public protocol FilterListViewModel: ActionableViewModel {
 @Observable
 final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, @unchecked Sendable {
     
-    private let cameraService: CameraEngine
-    private let repository: FilterRepository
+    private let coordinator: FilterCoordinator
 
-    public private(set) var items: [FilterEntity] = []
+    public private(set) var items: [TitledContent] = []
     
     @MainActor
     public var viewData: FilterListViewData = FilterListViewData()
 
     public init(
-        cameraService: CameraEngine,
-        repository: FilterRepository
+        coordinator: FilterCoordinator
     ) {
-        self.cameraService = cameraService
-        self.repository = repository
+        self.coordinator = coordinator
         Task {
             await refresh()
         }
@@ -58,17 +57,17 @@ final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, 
     
     @MainActor
     public func refresh() async {
-        items = await repository.fetchAll()
-        viewData.filters = items.map {FilterViewData(title: $0.title)}
+        items = await coordinator.fetchAll()
+        viewData.filters = items.map {FilterViewData(title: $0.title, id:UUID().uuidString)}
     }
 
 
     public func selectItem(at index: Int) {
         guard items.indices.contains(index) else { return }
         Task {
-            await try? cameraService.perform(.updateFilter(items[index].model))
+            let item = items[index].id
+            await try? coordinator.applyFilter(id: item)
         }
-        //cameraService.updateSelection(filter: items[index].model)
     }
     
     public func trigger(_ action: FilterAction) {

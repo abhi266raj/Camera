@@ -10,25 +10,58 @@ import PlatformApi
 import CoreKit
 
 
+public struct Module {
+    let dependecy: Dependency
+    
+    public init(dependecy: Dependency) {
+        self.dependecy = dependecy
+    }
+    
+    public func makeCameraFactory(profile: CameraProfile) -> CameraFactory {
+        return DomainFactory(platformFactory: dependecy.platformFactoryBuilder)
+    }
+    
+    public func makeServiceFactory() -> ServiceFactory {
+        return DomainFactory(platformFactory: dependecy.platformFactoryBuilder)
+    }
+    
+    
+}
+public typealias  PlatformFactoryBuilder =  () -> PlatformFactory
+public struct Dependency {
+    let platformFactoryBuilder:PlatformFactoryBuilder
+    
+    public init(platformFactoryBuilder: @escaping PlatformFactoryBuilder) {
+        self.platformFactoryBuilder = platformFactoryBuilder
+    }
+}
+
+
 public struct DomainFactory: Factory {
     
-    var builder: (() -> PlatformFactory)
+    //let builder: (() -> PlatformFactory)
+    let platformFactory: PlatformFactory
     @MainActor
     public func makeCameraEngine(profile: CameraProfile) -> any CameraEngine {
-        let platformFactory = builder()
         return BaseEngine(profile: profile, platfomFactory:platformFactory )
     }
     
     
     public init(platformFactory: @escaping (() -> PlatformFactory)) {
-        self.builder = platformFactory
+        self.platformFactory = platformFactory()
     }
     
     public func makePermissionService() -> any DomainApi.PermissionService {
         PermissionServiceImp()
     }
     
-    public func makeFilterRepository() -> any DomainApi.FilterRepository {
+    private func makeFilterRepository() -> any FilterRepository {
         FilterRepositoryImpl()
+    }
+    
+    public func makeFilterCoordinator() -> any FilterCoordinator {
+        let processor = platformFactory.makeEffectProcessor()
+        let repo = makeFilterRepository()
+        return FilterCoordinatorImp(repository: repo, processor: processor)
     }
 }

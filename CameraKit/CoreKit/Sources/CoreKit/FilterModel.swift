@@ -7,34 +7,21 @@
 
 import Foundation
 
-
-public struct FilterType: OptionSet, Sendable {
-    
-    public let rawValue: Int
-    
-    public init(rawValue: Int) {
-        self.rawValue = rawValue
-    }
-    
-    public static let ciFilter = FilterType(rawValue: 1 << 0)
-    public static let metalFilter = FilterType(rawValue: 1 << 1)
-   
-}
-
-public protocol FilterModel {
-    associatedtype Filter
-    var type: FilterType {get}
-    var contents: Filter {get}
+// Protocol for things with a title
+public protocol TitledContent: Identifiable<String> {
+    var title: String { get }
 }
 
 
-public struct FilterEntity {
+public struct DisplayItem: TitledContent {
+    public var id: String
+    
     public let title: String
-    public let model: any FilterModel
     
-    public init(title: String, model: any FilterModel) {
+    public init(title: String, id: String) {
         self.title = title
-        self.model = model
+        self.id = id
     }
 }
+
 

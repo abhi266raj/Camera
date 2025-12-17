@@ -28,7 +28,7 @@ protocol CameraSubSystem {
   //   associatedtype DiskOutput: CameraDiskOutputService
    //  associatedtype Processor =  Void
     
-    var displayCoordinator: any CameraDisplayCoordinator {get}
+     //var displayCoordinator: any CameraDisplayCoordinator {get}
     //var recordOutput: DiskOutput {get }
     //var processor: Processor {get}
     

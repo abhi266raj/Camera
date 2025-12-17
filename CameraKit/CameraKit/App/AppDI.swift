@@ -8,36 +8,36 @@ import AppView
 import PlatformApi
 import PlatformRuntime
 
-protocol CoreDependencies {
-    var filterRepository: FilterRepository { get }
-    var permissionService: PermissionService { get }
-    var factory: DomainApi.Factory {get}
+
+
+protocol PlatfomDependency {
+    var platformFactory: PlatformFactory {get}
 }
 
-class CoreDependenciesImpl: CoreDependencies {
-    let factory:Factory
-    init(factory: DomainApi.Factory) {
-        self.factory = factory
+protocol DomainDependency {
+    var permissionService: PermissionService { get }
+    var domainModule: DomainRuntime.Module {get}
+}
+
+class DomainDependencyImpl: DomainDependency {
+    let domainModule: DomainRuntime.Module
+    init(domainModule: DomainRuntime.Module) {
+        self.domainModule = domainModule
     }
-    lazy var filterRepository: FilterRepository = factory.makeFilterRepository()
-    //FilterRepositoryImpl()
-    lazy var permissionService: PermissionService = factory.makePermissionService()
-    //PermissionServiceImp()
+    lazy var permissionService: PermissionService = domainModule.makeServiceFactory().makePermissionService()
 }
 
 protocol CameraDependencies {
-    var cameraService: CameraEngine { get }
-    var filterRepository: FilterRepository { get }
+    var filterCoordinator: FilterCoordinator { get }
+    var cameraService: CameraEngine {get}
     var permissionService: PermissionService { get }
 }
 
 struct CameraDependenciesImpl: CameraDependencies {
     
-    let coreDependencies:CoreDependencies
+    let coreDependencies:DomainDependency
     let cameraService: CameraEngine
-    var filterRepository: FilterRepository {
-        return coreDependencies.filterRepository
-    }
+    var filterCoordinator: FilterCoordinator
     var permissionService: PermissionService {
         return coreDependencies.permissionService
     }
@@ -49,34 +49,34 @@ protocol CameraDependenciesProvider {
 
 final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
 
-    let core:CoreDependencies
+    let core:DomainDependency
     
-    init(core:CoreDependencies) {
+    init(core:DomainDependency) {
         self.core = core
     }
     
     func dependencies(for cameraType: CameraType) async -> CameraDependencies {
-        
-        
-        let plattformFactory:PlatformFactory = PlatformFactoryImp()
+        let factory = core.domainModule.makeCameraFactory(profile: .multiCam)
         let cameraService: CameraEngine =  await MainActor.run {
             switch cameraType {
             case .multicam:
-                return core.factory.makeCameraEngine(profile: .multiCam)
+                return factory.makeCameraEngine(profile: .multiCam)
             case .basicPhoto:
-                return core.factory.makeCameraEngine(profile: .simplephoto)
+                return factory.makeCameraEngine(profile: .simplephoto)
                 //BaseEngine(profile: .simplephoto, platfomFactory: plattformFactory)
             case .basicVideo:
-                return core.factory.makeCameraEngine(profile: .video)
+                return factory.makeCameraEngine(profile: .video)
                 //BaseEngine(profile: .video, platfomFactory: plattformFactory)
             case .metal:
-                return core.factory.makeCameraEngine(profile: .filter)
+                return factory.makeCameraEngine(profile: .filter)
                 //BaseEngine(profile: .filter, platfomFactory: plattformFactory)
             }
         }
+        
+        let coordinator = factory.makeFilterCoordinator()
 
         return CameraDependenciesImpl(
-            coreDependencies: core, cameraService: cameraService
+            coreDependencies: core, cameraService: cameraService, filterCoordinator: coordinator
         )
     }
 }
@@ -109,8 +109,7 @@ struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
         )
 
         let filterVM = FilterListViewModelImp(
-            cameraService: deps.cameraService,
-            repository: deps.filterRepository
+            coordinator: deps.filterCoordinator
         )
 
         return ViewModelDependenciesImpl(
@@ -125,12 +124,15 @@ struct ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
 final class AppDependencies {
     static let shared = AppDependencies()
 
-    let core: CoreDependencies
+    let core: DomainDependency
     let services: CameraDependenciesProvider
     let viewModels: ViewModelDependenciesProvider
 
     private init() {
-        let core = CoreDependenciesImpl(factory: DomainFactory {PlatformFactoryImp()} )
+        let platformBuilder = {PlatformFactoryImp()}
+        let dep = DomainRuntime.Dependency(platformFactoryBuilder: platformBuilder)
+        let module = DomainRuntime.Module(dependecy: dep)
+        let core = DomainDependencyImpl(domainModule: module)
         self.core = core
         let serviceProvider = CameraDependenciesProviderImpl(core:core)
         self.services = serviceProvider

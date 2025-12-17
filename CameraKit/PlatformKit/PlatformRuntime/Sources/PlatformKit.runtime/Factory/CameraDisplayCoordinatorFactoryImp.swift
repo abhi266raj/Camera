@@ -11,7 +11,7 @@ import CoreKit
 import UIKit
 
 
-public class PlatformFactoryImp: PlatformFactory {
+public final class PlatformFactoryImp: PlatformFactory {
     public func makeSampleBufferOutputService() -> any CameraDiskOutputService {
         SampleBufferCameraRecorderService()
     }
@@ -28,8 +28,9 @@ public class PlatformFactoryImp: PlatformFactory {
         CameraRecordingCameraService(videoCaptureOutput: videoCaptureOutput)
     }
     
+    lazy var effectProcessor = EffectCameraProcessor()
     public func makeEffectProcessor() -> any CameraProccessor {
-        EffectCameraProcessor()
+        effectProcessor
     }
     
     public func makeSessionService(session: AVCaptureSession) -> any CameraSessionService {
