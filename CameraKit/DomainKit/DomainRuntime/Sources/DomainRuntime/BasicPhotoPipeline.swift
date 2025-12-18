@@ -61,8 +61,6 @@ class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
 
 extension BasicPhotoPipeline {
     
-    func updateSelection(filter: (any FilterModel)?)  {
-    }
     
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
         return recordOutput.cameraModePublisher

@@ -25,7 +25,7 @@ public struct Module {
         self.dependecy = dependecy
     }
     
-    public func makeCameraFactory(cameraType: CameraType) -> CameraFactory {
+    public func makeCameraFactory() -> CameraFactory {
         return CameraFactoryImp(platformFactory: dependecy.platformFactoryBuilder)
     }
     

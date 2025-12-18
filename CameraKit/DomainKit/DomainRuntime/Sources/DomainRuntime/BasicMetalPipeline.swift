@@ -121,9 +121,6 @@ extension BasicMetalPipeline: MetalRenderingDelegate {
         recordOutput.appendSampleBuffer(buffer)
     }
     
-//    func updateSelection(filter: (any FilterModel)?)  {
-//        processor.updateSelection(filter: filter)
-//    }
 }
 
 

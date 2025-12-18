@@ -28,10 +28,3 @@ public final class FilterSelectionDelegateProxy: FilterSelectionDelegate {
     }
 }
 
-
-
-//public extension CameraProccessor {
-//    func updateSelection(filter: (any FilterModel)?) {
-//    }
-//}
-

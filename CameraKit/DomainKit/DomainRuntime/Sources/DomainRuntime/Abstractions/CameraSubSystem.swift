@@ -31,21 +31,13 @@ protocol CameraSubSystem {
      //var displayCoordinator: any CameraDisplayCoordinator {get}
     //var recordOutput: DiskOutput {get }
     //var processor: Processor {get}
-    
-    func updateSelection(filter: (any FilterModel)?)
+   
     func toggleCamera() async  -> Bool
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
     func performAction( action: CameraAction) async throws -> Bool
     func setup() async
     @MainActor
     func attachDisplay(_ target: some CameraDisplayTarget) throws
-}
-
-
-extension CameraSubSystem  {
-        
-    func updateSelection(filter: (any FilterModel)?)  {
-    }
 }
 
 extension CameraInputSubSystem  {

@@ -17,9 +17,9 @@ import AppView
 final class CameraComponentBuilder {
 
     // Injected service dependencies
-    let viewModelServiceProvider: ViewModelDependenciesProvider
+    let viewModelServiceProvider: CameraViewDependenciesProvider
 
-    init(viewModelServiceProvider: ViewModelDependenciesProvider = AppDependencies.shared.viewModels) {
+    init(viewModelServiceProvider: CameraViewDependenciesProvider = AppDependencies.shared.viewModels) {
         self.viewModelServiceProvider = viewModelServiceProvider
     }
 
