@@ -21,8 +21,8 @@ public protocol CameraFactory {
     func makeCameraEngine(profile: CameraProfile) -> CameraEngine
 }
 
-public protocol Factory : ServiceFactory, CameraFactory {
-    
-}
+//public protocol Factory : ServiceFactory, CameraFactory {
+//    
+//}
 
 

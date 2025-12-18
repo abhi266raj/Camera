@@ -56,7 +56,7 @@ final class CameraDependenciesProviderImpl: CameraDependenciesProvider {
     }
     
     func dependencies(for cameraType: CameraType) async -> CameraDependencies {
-        let factory = core.domainModule.makeCameraFactory(profile: .multiCam)
+        let factory = core.domainModule.makeCameraFactory(cameraType: cameraType)
         let cameraService: CameraEngine =  await MainActor.run {
             switch cameraType {
             case .multicam:

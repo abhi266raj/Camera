@@ -66,7 +66,7 @@ final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, 
         guard items.indices.contains(index) else { return }
         Task {
             let item = items[index].id
-            await try? coordinator.applyFilter(id: item)
+            await try? coordinator.selectFilter(id: item)
         }
     }
     

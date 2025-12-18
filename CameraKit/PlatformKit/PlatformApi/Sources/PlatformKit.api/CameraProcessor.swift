@@ -9,10 +9,26 @@ import Foundation
 import CoreMedia
 import CoreKit
 
-public protocol CameraProccessor {
+public protocol CameraProccessor: FilterSelectionDelegate {
     func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer
-    func updateSelection(filter: (any FilterModel)?)
 }
+
+public protocol FilterSelectionDelegate: AnyObject {
+    func didUpdateSelection(_ filter: FilterModel?)
+}
+
+public final class FilterSelectionDelegateProxy: FilterSelectionDelegate {
+    weak public var target: FilterSelectionDelegate?
+
+    public init() {
+    }
+
+    public func didUpdateSelection(_ filter: FilterModel?) {
+        target?.didUpdateSelection(filter)
+    }
+}
+
+
 
 //public extension CameraProccessor {
 //    func updateSelection(filter: (any FilterModel)?) {

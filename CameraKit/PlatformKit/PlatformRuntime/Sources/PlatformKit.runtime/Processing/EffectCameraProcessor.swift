@@ -59,14 +59,14 @@ class EffectCameraProcessor : CameraProccessor {
                 }
             }
             if let newPixelBuffer =  filterRender.render(pixelBuffer: videoPixelBuffer)  {
-           
+                
                 var newSampleBuffer: CMSampleBuffer? = nil
                 var timingInfo = CMSampleTimingInfo()
                 CMSampleBufferGetSampleTimingInfo(sampleBuffer, at: 0, timingInfoOut: &timingInfo)
                 _ = CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: newPixelBuffer, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: formatDescription, sampleTiming: &timingInfo, sampleBufferOut: &newSampleBuffer)
                 return newSampleBuffer ?? sampleBuffer
-
-               
+                
+                
             }
             
         }
@@ -75,9 +75,11 @@ class EffectCameraProcessor : CameraProccessor {
         return sampleBuffer
     }
     
-    func updateSelection(filter: (any FilterModel)?)  {
+    
+    func didUpdateSelection(_ filter: FilterModel?) {
         self.selectedFilter = filter
     }
+    
     
     
 }

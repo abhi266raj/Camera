@@ -29,7 +29,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     
     @MainActor
     // Metal view need main actor. Shoule be added via somewhere else
-    public init(platformFactory: PlatformFactory) {
+    public init(platformFactory: PlatformFactory, filterSelectionDelegateProxy: FilterSelectionDelegateProxy) {
         let session = AVCaptureSession()
         self.captureSession = session
         recordOutput = platformFactory.makeSampleBufferOutputService()
@@ -38,6 +38,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         self.metalView = metalView
         self.input = platformFactory.makeCameraInput()
         self.processor = platformFactory.makeEffectProcessor()
+        filterSelectionDelegateProxy.target =  processor
         super.init()
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
@@ -120,9 +121,9 @@ extension BasicMetalPipeline: MetalRenderingDelegate {
         recordOutput.appendSampleBuffer(buffer)
     }
     
-    func updateSelection(filter: (any FilterModel)?)  {
-        processor.updateSelection(filter: filter)
-    }
+//    func updateSelection(filter: (any FilterModel)?)  {
+//        processor.updateSelection(filter: filter)
+//    }
 }
 
 

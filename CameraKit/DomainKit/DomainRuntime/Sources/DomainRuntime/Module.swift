@@ -1,5 +1,13 @@
 //
 //  Module.swift
+//  CameraKit
+//
+//  Created by Abhiraj on 17/12/25.
+//
+
+
+//
+//  Module.swift
 //  DomainRuntime
 //
 //  Created by Abhiraj on 16/12/25.
@@ -17,12 +25,12 @@ public struct Module {
         self.dependecy = dependecy
     }
     
-    public func makeCameraFactory(profile: CameraProfile) -> CameraFactory {
-        return DomainFactory(platformFactory: dependecy.platformFactoryBuilder)
+    public func makeCameraFactory(cameraType: CameraType) -> CameraFactory {
+        return CameraFactoryImp(platformFactory: dependecy.platformFactoryBuilder)
     }
     
     public func makeServiceFactory() -> ServiceFactory {
-        return DomainFactory(platformFactory: dependecy.platformFactoryBuilder)
+        return DomainFactory()
     }
     
     
@@ -33,35 +41,5 @@ public struct Dependency {
     
     public init(platformFactoryBuilder: @escaping PlatformFactoryBuilder) {
         self.platformFactoryBuilder = platformFactoryBuilder
-    }
-}
-
-
-public struct DomainFactory: Factory {
-    
-    //let builder: (() -> PlatformFactory)
-    let platformFactory: PlatformFactory
-    @MainActor
-    public func makeCameraEngine(profile: CameraProfile) -> any CameraEngine {
-        return BaseEngine(profile: profile, platfomFactory:platformFactory )
-    }
-    
-    
-    public init(platformFactory: @escaping (() -> PlatformFactory)) {
-        self.platformFactory = platformFactory()
-    }
-    
-    public func makePermissionService() -> any DomainApi.PermissionService {
-        PermissionServiceImp()
-    }
-    
-    private func makeFilterRepository() -> any FilterRepository {
-        FilterRepositoryImpl()
-    }
-    
-    public func makeFilterCoordinator() -> any FilterCoordinator {
-        let processor = platformFactory.makeEffectProcessor()
-        let repo = makeFilterRepository()
-        return FilterCoordinatorImp(repository: repo, processor: processor)
     }
 }

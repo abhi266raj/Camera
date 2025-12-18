@@ -90,17 +90,16 @@ final class FilterCoordinatorImp: FilterCoordinator {
     }
     
     private let repository: FilterRepository
-    private let processor: CameraProccessor
+    var selectionDelgate: FilterSelectionDelegate?
 
-    init(repository: FilterRepository, processor: CameraProccessor) {
+    init(repository: FilterRepository) {
         self.repository = repository
-        self.processor = processor
     }
 
     @discardableResult
-    func applyFilter(id: String) -> Bool {
-        guard let filter = repository.filter(id: id) else { return false }
-        processor.updateSelection(filter: filter)
+    func selectFilter(id: String) -> Bool {
+        guard let selectionDelgate, let filter = repository.filter(id: id) else { return false }
+        selectionDelgate.didUpdateSelection(filter)
         return true
     }
 }
