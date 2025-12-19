@@ -1,7 +1,7 @@
 import SwiftUI
 import AppViewModel
 
-struct CameraAuthorizedView: View {
+struct CameraAuthorizedView: ContentView {
  
     let viewData: CameraContentViewData
     let viewAction: CameraContentAction
@@ -21,7 +21,7 @@ struct CameraAuthorizedView: View {
             VStack() {
                 HStack {
                     Spacer()
-                    CameraActionBar(viewAction: viewAction.cameraAction)
+                    CameraActionBar(onAction: viewAction.cameraAction)
                 }
                 .padding(.horizontal, 12)
                 .padding(.top, 8)

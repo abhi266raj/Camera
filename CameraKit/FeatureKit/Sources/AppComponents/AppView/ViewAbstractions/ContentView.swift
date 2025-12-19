@@ -13,6 +13,12 @@ protocol ContentView: View {
     var viewData: ViewData { get }
 }
 
+protocol ConfigurableView: View {
+    associatedtype ViewConfig
+    var config: ViewConfig { get }
+    
+}
+
 // View with a simple no-parameter action
 protocol ActionableView: ContentView {
     var onAction: () -> Void { get }

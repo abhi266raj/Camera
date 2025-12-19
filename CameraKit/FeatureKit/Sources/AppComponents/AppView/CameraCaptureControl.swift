@@ -8,7 +8,7 @@
 import SwiftUI
 import AppViewModel
 
-struct CameraCaptureControl: View {
+struct CameraCaptureControl: ContentView {
 
     //var viewModel: CameraViewModel
     var viewData: CameraViewData
