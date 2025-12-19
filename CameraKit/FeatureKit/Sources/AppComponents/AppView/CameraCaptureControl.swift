@@ -11,17 +11,19 @@ import AppViewModel
 struct CameraCaptureControl: View {
 
     var viewModel: CameraViewModel
+    var viewData: CameraViewData
 
     private let controlSize: CGFloat = 56
     private let controlBackground = Color.black.opacity(0.35)
 
     init(viewModel: CameraViewModel) {
         self.viewModel = viewModel
+        self.viewData = viewModel.viewData
     }
 
     var body: some View {
         VStack(spacing: 10) {
-            switch viewModel.cameraPhase {
+            switch viewData.cameraPhase {
 
             case .inactive, .paused, .switching:
                 loadingView
@@ -29,9 +31,9 @@ struct CameraCaptureControl: View {
             case .active(let mode):
                 switch mode {
                 case .preview:
-                    if viewModel.showRecording {
+                    if viewModel.viewData.showRecording {
                         startRecordingButton
-                    } else if viewModel.showCamera {
+                    } else if viewModel.viewData.showPhotoCapture {
                         capturePhotoButton
                     } else {
                         EmptyView()

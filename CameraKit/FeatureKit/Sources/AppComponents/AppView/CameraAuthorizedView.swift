@@ -8,9 +8,9 @@ struct CameraAuthorizedView: View {
     var body: some View {
         ZStack {
             
-                if viewModel.showFilter {
+            if viewModel.viewData.showFilter {
                     CameraMetalViewer(viewModel: viewModel)
-                }else if viewModel.showMultiCam {
+            }else if viewModel.viewData.showMultiCam {
                     DualCameraViewer(viewModel: viewModel)
                 }else {
                     CameraFeedViewer(viewModel: viewModel)
@@ -26,7 +26,7 @@ struct CameraAuthorizedView: View {
 
                 Spacer()
 
-                if viewModel.showFilter {
+                if viewModel.viewData.showFilter {
                     FilterListView(viewModel: filterListViewModel)
                         .padding(.bottom)
                 }

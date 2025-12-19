@@ -10,20 +10,31 @@ import PlatformRuntime
 
 
 
-protocol PlatfomDependency {
+protocol PlatfomOutput {
     var platformFactoy: PlatformFactory {get}
 }
 
-protocol DomainDependency {
+protocol DomainOutput {
     var permissionService: PermissionService { get }
     var cameraFactory: CameraFactory {get}
 }
 
-struct PlatformDependencyImpl: PlatfomDependency {
+protocol ViewModelOutput {
+    var cameraViewModelProvider: CameraViewModelProvider {get}
+}
+
+protocol CameraViewModelProvider {
+    func cameraViewModel(for cameraType: CameraType) async  -> CameraViewModel
+    func filterViewModel() async -> any FilterListViewModel
+    
+}
+
+
+struct PlatformOutputImpl: PlatfomOutput {
     var platformFactoy: PlatformFactory
 }
 
-class DomainDependencyImpl: DomainDependency {
+class DomainOutputImpl: DomainOutput {
     let domainModule: DomainRuntime.Module
     lazy var cameraFactory = domainModule.makeCameraFactory()
     init(domainModule: DomainRuntime.Module) {
@@ -40,7 +51,7 @@ protocol ViewModelDependcies {
 
 struct CameraDependenciesImpl: ViewModelDependcies {
     
-    let coreDependencies:DomainDependency
+    let coreDependencies:DomainOutput
     let cameraService: CameraEngine
     var filterCoordinator: FilterCoordinator
     var permissionService: PermissionService {
@@ -48,82 +59,44 @@ struct CameraDependenciesImpl: ViewModelDependcies {
     }
 }
 
-protocol ViewModelDependenciesProvider {
-    func dependencies(for cameraType: CameraType) async -> ViewModelDependcies
-}
-
-final class ViewModelDependenciesProviderImpl: ViewModelDependenciesProvider {
-
-    let dependecy:DomainDependency
+class CameraViewModelProviderImpl: CameraViewModelProvider {
     
-    init(dependecy:DomainDependency) {
-        self.dependecy = dependecy
+    var dep: DomainOutput
+    
+    init(dep: DomainOutput) {
+        self.dep = dep
     }
     
-    func dependencies(for cameraType: CameraType) async -> ViewModelDependcies {
-        let factory = dependecy.cameraFactory
-        let cameraService: CameraEngine =  await MainActor.run {
-            switch cameraType {
-            case .multicam:
-                return factory.makeCameraEngine(profile: .multiCam)
-            case .basicPhoto:
-                return factory.makeCameraEngine(profile: .simplephoto)
-                //BaseEngine(profile: .simplephoto, platfomFactory: plattformFactory)
-            case .basicVideo:
-                return factory.makeCameraEngine(profile: .video)
-                //BaseEngine(profile: .video, platfomFactory: plattformFactory)
-            case .metal:
-                return factory.makeCameraEngine(profile: .filter)
-                //BaseEngine(profile: .filter, platfomFactory: plattformFactory)
-            }
+    lazy var filterCoordinator = factory.makeFilterCoordinator()
+    lazy var factory = dep.cameraFactory
+    
+    func cameraService(for cameraType: CameraType) async -> CameraEngine {
+        await MainActor.run {
+            let profile = cameraProfile(for: cameraType)
+            return factory.makeCameraEngine(profile: profile)
         }
+    }
+
+    private func cameraProfile(for type: CameraType) -> CameraProfile {
+        switch type {
+        case .multicam: return .multiCam
+        case .basicPhoto: return .simplephoto
+        case .basicVideo: return .video
+        case .metal: return .filter
+        }
+    }
+
+    func cameraViewModel(for cameraType: CameraType) async  -> CameraViewModel {
+        let cameraService = await cameraService(for: cameraType)
+        return await CameraViewModel(permissionService: dep.permissionService, cameraService: cameraService)
         
-        let coordinator = factory.makeFilterCoordinator()
-
-        return CameraDependenciesImpl(
-            coreDependencies: dependecy, cameraService: cameraService, filterCoordinator: coordinator
-        )
     }
-}
-
-// MARK: - VIEWMODEL LAYER
-
-protocol CameraViewDependencies {
-    var cameraViewModel: CameraViewModel { get }
-    var filterListViewModel: FilterListViewModel { get }
-}
-
-struct ViewModelDependenciesImpl: CameraViewDependencies {
-    let cameraViewModel: CameraViewModel
-    let filterListViewModel: FilterListViewModel
-}
-
-protocol CameraViewDependenciesProvider {
-    func viewModels(for cameraType: CameraType) async  -> CameraViewDependencies
-}
-
-struct CameraViewDependenciesProviderImpl: CameraViewDependenciesProvider {
-    let services: ViewModelDependenciesProvider
     
-    
-
-    func viewModels(for cameraType: CameraType) async -> CameraViewDependencies {
-        let deps = await services.dependencies(for: cameraType)
-
-        let cameraVM = CameraViewModel(
-            permissionService: deps.permissionService,
-            cameraService: deps.cameraService
-        )
-
-        let filterVM = FilterListViewModelImp(
-            coordinator: deps.filterCoordinator
-        )
-
-        return ViewModelDependenciesImpl(
-            cameraViewModel: cameraVM,
-            filterListViewModel: filterVM
-        )
+    func filterViewModel() async -> any FilterListViewModel {
+        FilterListViewModelImp(coordinator: filterCoordinator)
+        
     }
+    
 }
 
 // MARK: - APP ROOT CONTAINER
@@ -131,24 +104,21 @@ struct CameraViewDependenciesProviderImpl: CameraViewDependenciesProvider {
 final class AppDependencies {
     static let shared = AppDependencies()
 
-    let platformDependency: PlatfomDependency
-    let domainDependency: DomainDependency
-    let services: ViewModelDependenciesProvider
-   let viewModels: CameraViewDependenciesProvider
+    let platformDependency: PlatfomOutput
+    let domainDependency: DomainOutput
+    let viewModelProvider: CameraViewModelProvider
 
     private init() {
         let platformDep = PlatformRuntime.Dependency()
         let platformModule = PlatformRuntime.Module(dependency: platformDep)
         let platformdep = platformModule.makePlatformFactory()
-        let platformDepImp = PlatformDependencyImpl(platformFactoy: platformdep)
+        let platformDepImp = PlatformOutputImpl(platformFactoy: platformdep)
         let dep = DomainRuntime.Dependency(platformFactoryBuilder: {platformDepImp.platformFactoy})
         let module = DomainRuntime.Module(dependecy: dep)
-        let domainDependency = DomainDependencyImpl(domainModule: module)
+        let domainDependency = DomainOutputImpl(domainModule: module)
         self.domainDependency = domainDependency
-        let serviceProvider = ViewModelDependenciesProviderImpl(dependecy:domainDependency)
-        self.services = serviceProvider
-        self.viewModels = CameraViewDependenciesProviderImpl(services: serviceProvider)
         self.platformDependency = platformDepImp
+        self.viewModelProvider = CameraViewModelProviderImpl(dep: domainDependency)
     }
 }
 

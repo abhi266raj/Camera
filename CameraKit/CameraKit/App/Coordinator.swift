@@ -17,19 +17,20 @@ import AppView
 final class CameraComponentBuilder {
 
     // Injected service dependencies
-    let viewModelServiceProvider: CameraViewDependenciesProvider
+    //let viewModelServiceProvider: CameraViewDependenciesProvider
+    
+    let viewModelProvider: CameraViewModelProvider
 
-    init(viewModelServiceProvider: CameraViewDependenciesProvider = AppDependencies.shared.viewModels) {
-        self.viewModelServiceProvider = viewModelServiceProvider
+    init(viewModelProvider: CameraViewModelProvider = AppDependencies.shared.viewModelProvider) {
+        self.viewModelProvider = viewModelProvider
     }
 
     @MainActor
     func makeCameraView(cameraType: CameraType = .metal) -> some View {
         let view = AsyncView {
-            let viewModelDependcies = await self.viewModelServiceProvider.viewModels(for: cameraType)
-            let vm = viewModelDependcies.cameraViewModel
-            let filterVM = viewModelDependcies.filterListViewModel
-            return CameraView(viewModel: vm, filterListViewModel: filterVM)
+            let cameraViewModel = await self.viewModelProvider.cameraViewModel(for: cameraType)
+            let filterVM = await self.viewModelProvider.filterViewModel()
+            return CameraView(viewModel: cameraViewModel, filterListViewModel: filterVM)
         }
         return view
     }
