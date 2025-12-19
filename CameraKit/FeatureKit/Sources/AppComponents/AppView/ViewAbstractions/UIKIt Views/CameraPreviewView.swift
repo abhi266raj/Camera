@@ -21,7 +21,7 @@ struct CameraFeedViewer: UIViewRepresentable {
 
     func makeUIView(context: Context) -> UIView {
         previewView.backgroundColor = .black
-        viewModel.attachDisplay(previewView)
+        viewModel.trigger(.attachDisplay(previewView))
         return previewView
     }
 

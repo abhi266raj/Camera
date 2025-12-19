@@ -8,7 +8,7 @@
 import UIKit
 import Foundation
 
-public protocol CameraDisplayTarget: AnyObject {}
+public protocol CameraDisplayTarget: Sendable, AnyObject {}
 
 
 public protocol CameraDisplayLayerTarget: CameraDisplayTarget {

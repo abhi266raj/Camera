@@ -22,7 +22,7 @@ struct DualCameraViewer: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UIView {
-        viewModel.attachDisplay(previewView)
+        viewModel.trigger(.attachDisplay(previewView))
         return previewView
     }
 
@@ -31,6 +31,7 @@ struct DualCameraViewer: UIViewRepresentable {
     }
 }
 
+@MainActor
 public final class DualDisplayPreviewView: UIView {
 
     public enum Quadrant: CaseIterable {
@@ -186,7 +187,7 @@ public final class DualDisplayPreviewView: UIView {
 
 
 
-extension DualDisplayPreviewView: @MainActor DualDisplayLayerTarget {
+extension DualDisplayPreviewView: DualDisplayLayerTarget {
     
     @MainActor
     public func addFirstDisplaylayer(_ layer: CALayer) async {

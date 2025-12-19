@@ -16,7 +16,7 @@ struct CameraActionBar: View {
     var body: some View {
         HStack(spacing: 6) {
             Button {
-                Task { await viewModel.toggleCamera() }
+                viewModel.trigger(.toggle)
             } label: {
                 Image(systemName: "arrow.triangle.2.circlepath.camera")
                     .font(.system(size: 18, weight: .semibold))

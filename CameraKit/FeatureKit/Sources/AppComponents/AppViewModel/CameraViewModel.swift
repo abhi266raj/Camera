@@ -26,17 +26,25 @@ public enum PermissionStatus {
     public var showPhotoCapture: Bool = false
     public var showFilter: Bool = false
     public var showRecording: Bool = false
-    
 }
 
+public enum CameraViewAction: Sendable {
+    case toggle
+    case setup
+    case permissionSetup
+    case capture(CameraAction)
+    case attachDisplay(CameraDisplayTarget)
+}
 
+public protocol CameraViewModel: ActionableViewModel, Sendable {
+    @MainActor var viewData: CameraViewData  {get}
+    func trigger(_ action: CameraViewAction)
+}
 
-
-
-@Observable public class CameraViewModel: @unchecked Sendable {
+public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
     
     @MainActor public var viewData: CameraViewData = CameraViewData()
-    
+    // public let viewAction: CameraViewAction
     @MainActor private var cameraMode: CameraMode = .preview
    // @MainActor public var cameraPhase: CameraPhase = .inactive
     private var cancellables = Set<AnyCancellable>()
@@ -44,6 +52,7 @@ public enum PermissionStatus {
     private let permissionService: PermissionService
     //public var cameraPermissionState: PermissionStatus = .unknown
     private let cameraService:CameraEngine
+    
     
     @MainActor
     public init(permissionService: PermissionService, cameraService: CameraEngine) {
@@ -84,41 +93,26 @@ public enum PermissionStatus {
         try? cameraService.attachDisplay(target)
     }
     
-//    public var showMultiCam: Bool {
-//        return cameraService.activeConfig.display == .multicam
-//    }
-//
-//    
-//    public var showCamera: Bool {
-//        return cameraService.activeConfig.storage == .photo
-//    }
-//    
-//    public var showFilter: Bool {
-//        cameraService.activeConfig.inputOutput.contains(.ciFilter) || cameraService.activeConfig.inputOutput.contains(.metalFilter)
-//    }
-//    
-//    public var showRecording: Bool {
-//        cameraService.activeConfig.storage == .video
-//    }
-    
-    @MainActor public func permissionSetup() async {
-        if viewData.cameraPermissionState == .unknown {
-            let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()
-            if permission == false {
-                viewData.cameraPermissionState = .denied
-            }else {
-                viewData.cameraPermissionState = .authorized
+    @MainActor public func permissionSetup()  {
+        Task {
+            if viewData.cameraPermissionState == .unknown {
+                let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()
+                if permission == false {
+                    viewData.cameraPermissionState = .denied
+                }else {
+                    viewData.cameraPermissionState = .authorized
+                }
             }
         }
-        
     }
     
-     public func setup() async  {
-         //await self.cameraService.setup()
-         await try? self.cameraService.perform(.setup)
-          Task { @MainActor in
-              self.viewData.cameraPhase = .active(self.cameraMode)
-          }
+     public func setup()   {
+         Task {
+             await try? self.cameraService.perform(.setup)
+             Task { @MainActor in
+                 self.viewData.cameraPhase = .active(self.cameraMode)
+             }
+         }
     }
     
     @MainActor
@@ -134,6 +128,32 @@ public enum PermissionStatus {
         let map = action.toEngineAction()
         try? await cameraService.perform(map)
         return true
+    }
+     
+    
+    public func trigger(_ action: CameraViewAction)  {
+        Task {
+            switch action {
+            case .toggle:
+                return await toggleCamera()
+                
+            case .setup:
+                await setup()
+                return true
+                
+            case .permissionSetup:
+                await permissionSetup()
+                return true
+                
+            case .capture(let cameraAction):
+                return try await performAction(action: cameraAction)
+            
+            case .attachDisplay(let cameraDisplayTarget):
+                 await attachDisplay(cameraDisplayTarget)
+                return true
+            }
+            
+        }
     }
     
 }

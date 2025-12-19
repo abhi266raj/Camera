@@ -23,7 +23,7 @@ struct CameraMetalViewer: UIViewRepresentable {
     }
 
     func makeUIView(context: Context) -> UIView {
-        viewModel.attachDisplay(previewView)
+        viewModel.trigger(.attachDisplay(previewView))
         return previewView
     }
 

@@ -27,17 +27,13 @@ public struct CameraView: View {
             case .authorized:
                 CameraAuthorizedView(viewModel: viewModel, filterListViewModel: filterListViewModel)
                     .onAppear(perform: {
-                        Task  {
-                            await viewModel.setup()
-                        }
+                        viewModel.trigger(.setup)
                     })
             }
         }
         
         .onAppear(perform: {
-            Task  {
-                await viewModel.permissionSetup()
-            }
+            viewModel.trigger(.permissionSetup)
         })
         .padding()
     }

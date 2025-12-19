@@ -85,7 +85,7 @@ private extension CameraCaptureControl {
 
     var startRecordingButton: some View {
         Button {
-            Task { try? await viewModel.performAction(action: .startRecord) }
+            viewModel.trigger(.capture(.startRecord))
         } label: {
             ZStack {
                 // Outer white ring (iOS-style record button ring)
@@ -106,7 +106,7 @@ private extension CameraCaptureControl {
 
     var stopRecordingButton: some View {
         Button {
-            Task { try? await viewModel.performAction(action: .stopRecord) }
+            Task { viewModel.trigger(.capture(.stopRecord))}
         } label: {
             ZStack {
                 // Outer red ring
@@ -128,7 +128,7 @@ private extension CameraCaptureControl {
 
     var capturePhotoButton: some View {
         Button {
-            Task { try? await viewModel.performAction(action: .photo) }
+            Task { viewModel.trigger(.capture(.photo))}
         } label: {
             Image(systemName: "camera.circle")
                 .font(.system(size: 34))
