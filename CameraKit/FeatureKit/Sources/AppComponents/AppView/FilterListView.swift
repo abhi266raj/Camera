@@ -13,12 +13,6 @@ struct FilterListView: MultiActionableView {
     let viewData: FilterListViewData
     let onAction: (FilterAction) -> Void
     
-    init(viewModel: FilterListViewModel) {
-        self.init(viewData: viewModel.viewData) { action in
-            viewModel.trigger(action)
-        }
-    }
-    
     init(viewData: FilterListViewData, onAction: @escaping (FilterAction) -> Void = {_ in }) {
         self.viewData = viewData
         self.onAction = onAction

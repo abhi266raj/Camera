@@ -44,13 +44,9 @@ public protocol CameraViewModel: ActionableViewModel, Sendable {
 public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
     
     @MainActor public var viewData: CameraViewData = CameraViewData()
-    // public let viewAction: CameraViewAction
     @MainActor private var cameraMode: CameraMode = .preview
-   // @MainActor public var cameraPhase: CameraPhase = .inactive
     private var cancellables = Set<AnyCancellable>()
-    // private let cameraConfig: CameraConfig
     private let permissionService: PermissionService
-    //public var cameraPermissionState: PermissionStatus = .unknown
     private let cameraService:CameraEngine
     
     

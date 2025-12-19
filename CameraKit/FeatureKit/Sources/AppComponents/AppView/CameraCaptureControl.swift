@@ -10,16 +10,14 @@ import AppViewModel
 
 struct CameraCaptureControl: View {
 
-    var viewModel: CameraViewModel
+    //var viewModel: CameraViewModel
     var viewData: CameraViewData
+    var viewAction: (CameraViewAction) -> Void
 
     private let controlSize: CGFloat = 56
     private let controlBackground = Color.black.opacity(0.35)
 
-    init(viewModel: CameraViewModel) {
-        self.viewModel = viewModel
-        self.viewData = viewModel.viewData
-    }
+    
 
     var body: some View {
         VStack(spacing: 10) {
@@ -31,9 +29,9 @@ struct CameraCaptureControl: View {
             case .active(let mode):
                 switch mode {
                 case .preview:
-                    if viewModel.viewData.showRecording {
+                    if viewData.showRecording {
                         startRecordingButton
-                    } else if viewModel.viewData.showPhotoCapture {
+                    } else if viewData.showPhotoCapture {
                         capturePhotoButton
                     } else {
                         EmptyView()
@@ -85,7 +83,7 @@ private extension CameraCaptureControl {
 
     var startRecordingButton: some View {
         Button {
-            viewModel.trigger(.capture(.startRecord))
+           viewAction(.capture(.startRecord))
         } label: {
             ZStack {
                 // Outer white ring (iOS-style record button ring)
@@ -106,7 +104,7 @@ private extension CameraCaptureControl {
 
     var stopRecordingButton: some View {
         Button {
-            Task { viewModel.trigger(.capture(.stopRecord))}
+            Task { viewAction(.capture(.stopRecord))}
         } label: {
             ZStack {
                 // Outer red ring
@@ -128,7 +126,7 @@ private extension CameraCaptureControl {
 
     var capturePhotoButton: some View {
         Button {
-            Task { viewModel.trigger(.capture(.photo))}
+            Task { viewAction(.capture(.photo))}
         } label: {
             Image(systemName: "camera.circle")
                 .font(.system(size: 34))

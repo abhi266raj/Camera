@@ -12,16 +12,12 @@ import AppViewModel
 
 struct CameraFeedViewer: UIViewRepresentable {
     private let previewView =  CameraVideoPreviewView()
-    let viewModel: CameraViewModel
+    let viewAction: (CameraViewAction) -> Void
     
-    init(viewModel: CameraViewModel) {
-        self.viewModel = viewModel
-        
-    }
 
     func makeUIView(context: Context) -> UIView {
         previewView.backgroundColor = .black
-        viewModel.trigger(.attachDisplay(previewView))
+        viewAction(.attachDisplay(previewView))
         return previewView
     }
 

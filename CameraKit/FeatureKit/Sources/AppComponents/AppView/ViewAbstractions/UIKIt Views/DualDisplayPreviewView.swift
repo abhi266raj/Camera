@@ -14,15 +14,10 @@ import AppViewModel
 
 struct DualCameraViewer: UIViewRepresentable {
     private let previewView =  DualDisplayPreviewView()
-    let viewModel: CameraViewModel
+    let viewAction: (CameraViewAction) -> Void
     
-    init(viewModel: CameraViewModel) {
-        self.viewModel = viewModel
-        
-    }
-
     func makeUIView(context: Context) -> UIView {
-        viewModel.trigger(.attachDisplay(previewView))
+        viewAction(.attachDisplay(previewView))
         return previewView
     }
 

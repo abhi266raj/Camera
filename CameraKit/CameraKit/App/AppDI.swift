@@ -24,7 +24,7 @@ protocol ViewModelOutput {
 }
 
 protocol CameraViewModelProvider {
-    func cameraViewModel(for cameraType: CameraType) async  -> CameraViewModel
+    func cameraViewModel(for cameraType: CameraType) async  -> any CameraViewModel
     func filterViewModel() async -> any FilterListViewModel
     
 }

@@ -2,38 +2,40 @@ import SwiftUI
 import AppViewModel
 
 struct CameraAuthorizedView: View {
-    let viewModel: CameraViewModel
-    let filterListViewModel: FilterListViewModel
+ 
+    let viewData: CameraContentViewData
+    let viewAction: CameraContentAction
+
 
     var body: some View {
         ZStack {
             
-            if viewModel.viewData.showFilter {
-                    CameraMetalViewer(viewModel: viewModel)
-            }else if viewModel.viewData.showMultiCam {
-                    DualCameraViewer(viewModel: viewModel)
+            if viewData.cameraData.showFilter {
+                CameraMetalViewer(viewAction: viewAction.cameraAction)
+            }else if viewData.cameraData.showMultiCam {
+                    DualCameraViewer(viewAction: viewAction.cameraAction)
                 }else {
-                    CameraFeedViewer(viewModel: viewModel)
+                    CameraFeedViewer(viewAction: viewAction.cameraAction)
                 }
     
             VStack() {
                 HStack {
                     Spacer()
-                    CameraActionBar(viewModel: viewModel)
+                    CameraActionBar(viewAction: viewAction.cameraAction)
                 }
                 .padding(.horizontal, 12)
                 .padding(.top, 8)
 
                 Spacer()
 
-                if viewModel.viewData.showFilter {
-                    FilterListView(viewModel: filterListViewModel)
+                if viewData.cameraData.showFilter {
+                    FilterListView(viewData: viewData.filterData, onAction: viewAction.filterAction)
                         .padding(.bottom)
                 }
                 
                 HStack {
                     Spacer()
-                    CameraCaptureControl(viewModel: viewModel)
+                    CameraCaptureControl(viewData: viewData.cameraData, viewAction: viewAction.cameraAction)
                         .padding(.bottom, 16)
                     Spacer()
                 }

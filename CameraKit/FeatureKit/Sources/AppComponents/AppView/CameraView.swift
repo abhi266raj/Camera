@@ -8,32 +8,57 @@
 import SwiftUI
 import AppViewModel
 
+
+@Observable final class CameraContentViewData: Sendable {
+    let cameraData: CameraViewData
+    let filterData: FilterListViewData
+    
+    init(cameraData: CameraViewData, filterData: FilterListViewData) {
+        self.cameraData = cameraData
+        self.filterData = filterData
+    }
+}
+
+struct CameraContentAction {
+    var cameraAction: (CameraViewAction) -> Void
+    var filterAction: (FilterAction) -> Void
+    
+}
+
 public struct CameraView: View {
     @State var viewModel: CameraViewModel
     @State var filterListViewModel: FilterListViewModel
+    @State var viewAction: CameraContentAction
+    @State var viewData: CameraContentViewData
     
     public init(viewModel: CameraViewModel, filterListViewModel: FilterListViewModel) {
         self.viewModel = viewModel
         self.filterListViewModel = filterListViewModel
+        
+        viewAction = CameraContentAction(cameraAction: { action in
+            viewModel.trigger(action)
+        }, filterAction: { filterAction in
+            filterListViewModel.trigger(filterAction)
+        })
+        
+        viewData = CameraContentViewData(cameraData:viewModel.viewData, filterData:filterListViewModel.viewData)
     }
     
     public var body: some View {
         VStack {
-            switch viewModel.viewData.cameraPermissionState {
+            switch viewData.cameraData.cameraPermissionState {
             case .unknown:
                 LoadingView()
             case .denied:
                 CameraDeniedView()
             case .authorized:
-                CameraAuthorizedView(viewModel: viewModel, filterListViewModel: filterListViewModel)
-                    .onAppear(perform: {
-                        viewModel.trigger(.setup)
-                    })
+                CameraAuthorizedView(viewData: viewData, viewAction: viewAction)
+                    .onAppear(perform: { viewAction.cameraAction(.setup) })
             }
         }
         
         .onAppear(perform: {
-            viewModel.trigger(.permissionSetup)
+            viewAction.cameraAction(.permissionSetup)
         })
         .padding()
     }

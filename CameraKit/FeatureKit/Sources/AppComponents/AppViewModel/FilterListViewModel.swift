@@ -19,7 +19,8 @@ public struct FilterViewData: TitledContent {
     }
 }
 
-@Observable final public class FilterListViewData {
+@MainActor
+@Observable final public class FilterListViewData: Sendable {
     public var count: Int  {
         return filters.count
     }
@@ -36,8 +37,9 @@ public protocol FilterListViewModel: ActionableViewModel {
     
 }
 
+
 @Observable
-final public class FilterListViewModelImp: @preconcurrency FilterListViewModel, @unchecked Sendable {
+final public class FilterListViewModelImp: FilterListViewModel, @unchecked Sendable {
     
     private let coordinator: FilterCoordinator
 

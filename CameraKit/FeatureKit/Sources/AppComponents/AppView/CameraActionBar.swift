@@ -9,14 +9,16 @@ import SwiftUI
 import AppViewModel
 
 struct CameraActionBar: View {
-    let viewModel: CameraViewModel
+    //let viewModel: CameraViewModel
+    let viewAction: (CameraViewAction) -> Void
 
     private let controlBackground = Color.black.opacity(0.35)
 
     var body: some View {
         HStack(spacing: 6) {
             Button {
-                viewModel.trigger(.toggle)
+                viewAction(.toggle)
+                //viewModel.trigger(.toggle)
             } label: {
                 Image(systemName: "arrow.triangle.2.circlepath.camera")
                     .font(.system(size: 18, weight: .semibold))
