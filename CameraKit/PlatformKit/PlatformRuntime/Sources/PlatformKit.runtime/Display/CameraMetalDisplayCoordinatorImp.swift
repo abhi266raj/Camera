@@ -12,10 +12,10 @@ import CoreKit
 import UIKit
 
 class CameraMetalDisplayCoordinatorImp: CameraDisplayCoordinator {
-    let metalView: UIView
+    let builder: () -> UIView
     
-    init(metalView: UIView) {
-        self.metalView = metalView
+    init(builder: @escaping () -> UIView) {
+        self.builder = builder
     }
     
     @MainActor
@@ -31,6 +31,7 @@ class CameraMetalDisplayCoordinatorImp: CameraDisplayCoordinator {
     
     @MainActor
     func attach(_ target:CameraDisplayMetalTarget) async throws {
+        let metalView = builder()
         await target.metalView = metalView
     }
 }

@@ -16,7 +16,6 @@ public protocol ServiceFactory {
 public protocol CameraFactory {
     func makeFilterCoordinator() -> any FilterCoordinator
     
-    @MainActor
     func makeCameraEngine(profile: CameraProfile) -> CameraEngine
 }
 

@@ -41,8 +41,8 @@ final class PlatformFactoryImp: PlatformFactory {
     
     public init() {}
     
-    func makeMetalDisplayCoordinator(metalView: UIView) -> CameraDisplayCoordinator {
-        return CameraMetalDisplayCoordinatorImp(metalView: metalView)
+    func makeMetalDisplayCoordinator(builder: @escaping () -> UIView) -> CameraDisplayCoordinator {
+        return CameraMetalDisplayCoordinatorImp(builder: builder)
     }
     
     func makeMultiCameraDisplayCoordinator(avcaptureSession: AVCaptureMultiCamSession) -> CameraDisplayCoordinator {

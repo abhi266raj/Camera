@@ -71,10 +71,10 @@ class CameraViewModelProviderImpl: CameraViewModelProvider {
     lazy var factory = dep.cameraFactory
     
     func cameraService(for cameraType: CameraType) async -> CameraEngine {
-        await MainActor.run {
+       // await MainActor.run {
             let profile = cameraProfile(for: cameraType)
             return factory.makeCameraEngine(profile: profile)
-        }
+       // }
     }
 
     private func cameraProfile(for type: CameraType) -> CameraProfile {

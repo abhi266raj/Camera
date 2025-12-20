@@ -162,7 +162,6 @@ class BaseEngine {
     public let activeConfig: EngineOption.Config
     let subSystem: CameraSubSystem
         
-    @MainActor
     init (profile: CameraProfile, platfomFactory: PlatformFactory, stream: AsyncStream<FilterModel> ) {
         switch profile {
         case .simplephoto:

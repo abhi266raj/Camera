@@ -15,7 +15,6 @@ public final class CameraFactoryImp: CameraFactory {
     let platformFactory: PlatformFactory
     var filterCoordinatorImp: FilterCoordinatorImp?
 
-    @MainActor
     public func makeCameraEngine(profile: CameraProfile) -> any CameraEngine {
         makeFilterCoordinator()
         guard let filterCoordinatorImp else {fatalError()}

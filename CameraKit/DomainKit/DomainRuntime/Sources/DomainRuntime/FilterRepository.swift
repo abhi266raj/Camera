@@ -110,12 +110,3 @@ final class FilterCoordinatorImp: FilterCoordinator {
 }
 
 
-extension AsyncStream {
-     static func make() -> (Self, Self.Continuation) {
-        var cont: Self.Continuation!
-        let stream = AsyncStream(Element.self) { continuation in
-            cont = continuation
-        }
-        return (stream, cont)
-    }
-}
