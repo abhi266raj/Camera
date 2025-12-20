@@ -72,16 +72,15 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
     }
     
     func commonInit() {
-        cameraService.cameraModePublisher
-            .sink {  [weak self] mode in
-            guard let self else {return }
-                Task { @MainActor in
-                    self.cameraMode = mode
-                    if case .active(_) = self.viewData.cameraPhase {
-                        self.viewData.cameraPhase = .active(mode)
-                    }
+        let stream =  cameraService.cameraModePublisher
+        let task = Task{ @MainActor in
+            for await mode in stream {
+                await self.cameraMode = mode
+                if case .active(_) = self.viewData.cameraPhase {
+                    self.viewData.cameraPhase = .active(mode)
                 }
-        }.store(in: &cancellables)
+            }
+        }
     }
     
     @MainActor

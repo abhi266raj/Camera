@@ -26,7 +26,7 @@ protocol CameraRecordingSubSystem {
 
 protocol CameraSubSystem {
     func toggleCamera() async  -> Bool
-    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
+    var cameraModePublisher: AsyncSequence<CameraMode, Never>  { get }
     func performAction( action: CameraAction) async throws -> Bool
     func setup() async
     @MainActor
@@ -49,8 +49,8 @@ extension CameraSubSystem {
 
 extension CameraRecordingSubSystem {
     
-    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
-        return recordOutput.cameraModePublisher
+    var cameraModePublisher: AsyncSequence<CameraMode, Never> {
+        return recordOutput.cameraModePublisher.values
     }
     
     func performAction( action: CameraAction) async throws -> Bool {

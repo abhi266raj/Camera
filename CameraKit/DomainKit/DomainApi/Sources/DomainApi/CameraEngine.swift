@@ -27,7 +27,7 @@ public protocol CameraEngine {
     func perform(_ action: EngineAction) async throws
     @MainActor
     func attachDisplay(_ target: some CameraDisplayTarget) throws
-    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
+    var cameraModePublisher: AsyncSequence<CameraMode, Never> { get }
 }
 
 

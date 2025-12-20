@@ -62,8 +62,8 @@ class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
 extension BasicPhotoPipeline {
     
     
-    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
-        return recordOutput.cameraModePublisher
+    var cameraModePublisher: AsyncSequence<CameraMode, Never> {
+        return recordOutput.cameraModePublisher.values
     }
     
     func performAction( action: CameraAction) async throws -> Bool {

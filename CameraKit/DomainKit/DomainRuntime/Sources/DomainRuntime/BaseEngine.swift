@@ -203,7 +203,7 @@ extension BaseEngine: CameraEngine {
 extension BaseEngine: EngineInternal  {
 
     
-    public var cameraModePublisher: CurrentValueSubject<CoreKit.CameraMode, Never> {
+    public var cameraModePublisher: AsyncSequence<CameraMode, Never> {
         return subSystem.cameraModePublisher
     }
         
