@@ -37,9 +37,12 @@ extension VideoOutputImp: VideoOutput {
         guard let recorder = videoRecorder else {return }
         videoRecorder = nil
         return await withCheckedContinuation { continum in
-            recorder.stopRecording { url in
-                self.videoSaver.save(outputFileURL: url, error: nil)
-                continum.resume()
+            recorder.stopRecording { [videoSaver] url in
+                Task { [videoSaver] in
+                    await try? videoSaver.saveVideo(from: url)
+                    //self.videoSaver.save(outputFileURL: url, error: nil)
+                    continum.resume()
+                }
             }
             
         }

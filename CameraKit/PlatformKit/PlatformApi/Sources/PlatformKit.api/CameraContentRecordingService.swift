@@ -31,8 +31,9 @@ public protocol VideoOutput {
     var videoRecorder: VideoRecorder? {get}
 }
 
-public protocol VideoSaver {
-    func save(outputFileURL: URL, error: Error?)
+public protocol VideoSaver: Sendable {
+    //func save(outputFileURL: URL, error: Error?)
+    func saveVideo(from url: URL) async throws
 }
 
 public protocol VideoRecorder {
