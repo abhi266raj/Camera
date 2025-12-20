@@ -29,7 +29,7 @@ class CameraInputImp: CameraInput {
         session?.stopRunning()
     }
     
-    public var audioDevice: AVCaptureDeviceInput? {
+    var audioDevice: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(for: .audio)
         guard let device else {return nil}
         do {
@@ -43,11 +43,11 @@ class CameraInputImp: CameraInput {
     
     var selectedPosition: AVCaptureDevice.Position = .front
     
-    public var videoDevice:  AVCaptureDeviceInput? {
+    var videoDevice:  AVCaptureDeviceInput? {
         frontCamera
     }
     
-    public var frontCamera: AVCaptureDeviceInput? {
+    var frontCamera: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
         guard let device else {return nil}
         do {
@@ -58,7 +58,7 @@ class CameraInputImp: CameraInput {
         }
     }
     
-    public var backCamera: AVCaptureDeviceInput? {
+    var backCamera: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
         guard let device else {return nil}
         do {

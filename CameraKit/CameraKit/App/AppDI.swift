@@ -86,7 +86,7 @@ class CameraViewModelProviderImpl: CameraViewModelProvider {
         }
     }
 
-    func cameraViewModel(for cameraType: CameraType) async  -> CameraViewModel {
+    func cameraViewModel(for cameraType: CameraType) async  -> any CameraViewModel {
         let cameraService = await cameraService(for: cameraType)
         return await CameraViewModelImp(permissionService: dep.permissionService, cameraService: cameraService)
         

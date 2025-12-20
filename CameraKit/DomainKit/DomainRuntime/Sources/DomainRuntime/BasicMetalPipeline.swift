@@ -35,14 +35,11 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     }
     private let metalRenderingDelegateImp: MetalRenderingDelegateImp
     private var streamTask : Task<Void, Never>?
-    
-    //@MainActor
-    // Metal view need main actor. Shoule be added via somewhere else
+
     public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
         let session = AVCaptureSession()
         self.captureSession = session
         sampleBufferOutputService = platformFactory.makeSampleBufferOutputService()
-       // let metalView = platformFactory.makePreviewMetalTarget()
         let metalRenderingDelegateImp = MetalRenderingDelegateImp(sampleBufferOutputService: sampleBufferOutputService)
         let viewBuilder: () -> UIView = {
             let metalView = platformFactory.makePreviewMetalTarget()
@@ -52,19 +49,10 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         }
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator(builder: viewBuilder)
         self.metalRenderingDelegateImp = metalRenderingDelegateImp
-        //self.metalView = metalView
         self.input = platformFactory.makeCameraInput()
         let effectProcessor = platformFactory.makeEffectProcessor()
         self.processor = effectProcessor
         
-//        self.streamTask = Task { @MainActor in
-//            await handleFilter(stream: stream, processor: nil)
-////            for await filter in stream {
-////                effectProcessor.selectedFilter = filter
-////            }
-//            
-//        }
-       
         super.init()
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)

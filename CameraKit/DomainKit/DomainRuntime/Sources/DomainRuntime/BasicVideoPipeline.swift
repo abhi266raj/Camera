@@ -30,7 +30,6 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
         recordOutput = platformFactory.makeVideoOutputService(videoCaptureOutput: fileOutput)
     }
 
-    // @CameraInputSessionActor
     public func setup() async {
                 let _  = setupInputAndOutput()
                 input.session = captureSession
@@ -44,7 +43,6 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
         }
     }
     
-    //@CameraInputSessionActor
     private func setupInputAndOutput() -> Bool {
         guard let videoDevice =  input.videoDevice else {return false}
         guard let audioDevice =  input.audioDevice else {return false}
