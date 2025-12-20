@@ -12,5 +12,5 @@ public protocol FilterCoordinator {
     
     func fetchAll() async -> [TitledContent]
     @discardableResult
-    func selectFilter(id: String) -> Bool 
+    func selectFilter(id: String) -> Bool
 }

@@ -20,7 +20,7 @@ public struct FilterType: OptionSet, Sendable {
    
 }
 
-public protocol FilterModel {
+public protocol FilterModel: Sendable {
     associatedtype Filter
     var type: FilterType {get}
     var contents: Filter {get}

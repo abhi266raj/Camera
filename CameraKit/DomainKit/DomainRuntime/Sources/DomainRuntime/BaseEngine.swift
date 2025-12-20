@@ -169,7 +169,7 @@ class BaseEngine {
     let subSystem: CameraSubSystem
         
     @MainActor
-    public init (profile: CameraProfile, platfomFactory: PlatformFactory, filterSelectionDelegateProxy: FilterSelectionDelegateProxy ) {
+    init (profile: CameraProfile, platfomFactory: PlatformFactory, stream: AsyncStream<FilterModel> ) {
         switch profile {
         case .simplephoto:
             let specification = EngineSpecsImp.photoEngineSpecs()
@@ -192,7 +192,7 @@ class BaseEngine {
             let specification = EngineSpecsImp.filterCamEngineSpecs()
             self.activeConfig = specification.allConfig[0]
             self.specs = specification
-            self.subSystem = BasicMetalPipeline(platformFactory: platfomFactory, filterSelectionDelegateProxy: filterSelectionDelegateProxy)
+            self.subSystem = BasicMetalPipeline(platformFactory: platfomFactory, stream: stream)
         }
     }
 }

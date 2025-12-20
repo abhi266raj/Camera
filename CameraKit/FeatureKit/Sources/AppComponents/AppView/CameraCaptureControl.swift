@@ -10,7 +10,6 @@ import AppViewModel
 
 struct CameraCaptureControl: ContentView {
 
-    //var viewModel: CameraViewModel
     var viewData: CameraViewData
     var viewAction: (CameraViewAction) -> Void
 

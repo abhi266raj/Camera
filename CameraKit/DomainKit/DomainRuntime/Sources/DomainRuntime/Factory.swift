@@ -10,15 +10,18 @@ import PlatformApi
 import CoreKit
 
 
-public struct CameraFactoryImp: CameraFactory {
+public final class CameraFactoryImp: CameraFactory {
     
     //let builder: (() -> PlatformFactory)
     let platformFactory: PlatformFactory
-    let filterSelectionDelegateProxy: FilterSelectionDelegateProxy = FilterSelectionDelegateProxy()
+    var filterCoordinatorImp: FilterCoordinatorImp?
 
     @MainActor
     public func makeCameraEngine(profile: CameraProfile) -> any CameraEngine {
-        return BaseEngine(profile: profile, platfomFactory:platformFactory, filterSelectionDelegateProxy: filterSelectionDelegateProxy )
+        makeFilterCoordinator()
+        guard let filterCoordinatorImp else {fatalError()}
+        let stream = filterCoordinatorImp.selectionStream
+        return BaseEngine(profile: profile, platfomFactory:platformFactory, stream: stream )
     }
     
     
@@ -31,9 +34,12 @@ public struct CameraFactoryImp: CameraFactory {
     }
     
     public func makeFilterCoordinator() -> any FilterCoordinator {
+        if let filterCoordinatorImp {
+            return  filterCoordinatorImp
+        }
         let repo = makeFilterRepository()
         let result =  FilterCoordinatorImp(repository: repo)
-        result.selectionDelgate = filterSelectionDelegateProxy
+        self.filterCoordinatorImp = result
         return result
     }
 }

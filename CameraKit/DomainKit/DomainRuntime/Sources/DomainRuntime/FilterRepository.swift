@@ -90,16 +90,32 @@ final class FilterCoordinatorImp: FilterCoordinator {
     }
     
     private let repository: FilterRepository
-    var selectionDelgate: FilterSelectionDelegate?
+    var selectionStream: AsyncStream<FilterModel>
+    var continuation: AsyncStream<FilterModel>.Continuation
 
     init(repository: FilterRepository) {
         self.repository = repository
+        (selectionStream, continuation) = AsyncStream<FilterModel>.make()
     }
 
     @discardableResult
     func selectFilter(id: String) -> Bool {
-        guard let selectionDelgate, let filter = repository.filter(id: id) else { return false }
-        selectionDelgate.didUpdateSelection(filter)
+        guard let filter = repository.filter(id: id) else { return false }
+        continuation.yield(filter)
+        
         return true
+    }
+    
+    
+}
+
+
+extension AsyncStream {
+     static func make() -> (Self, Self.Continuation) {
+        var cont: Self.Continuation!
+        let stream = AsyncStream(Element.self) { continuation in
+            cont = continuation
+        }
+        return (stream, cont)
     }
 }

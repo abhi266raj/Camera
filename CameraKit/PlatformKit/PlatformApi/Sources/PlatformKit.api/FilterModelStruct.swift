@@ -12,7 +12,7 @@ import CoreImage
 import CoreKit
 
 
-public struct CIFilterModel : FilterModel {
+public struct CIFilterModel : @unchecked Sendable, FilterModel {
     public let type: FilterType = .ciFilter
     public let contents: CIFilter
     
@@ -21,7 +21,7 @@ public struct CIFilterModel : FilterModel {
     }
 }
 
-public struct MetalFilterModel : FilterModel {
+public struct MetalFilterModel : FilterModel, Sendable {
     public let type: FilterType = .metalFilter
     public let contents: String
     
