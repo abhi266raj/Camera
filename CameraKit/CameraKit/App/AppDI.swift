@@ -16,7 +16,7 @@ protocol PlatfomOutput {
 
 protocol DomainOutput {
     var permissionService: PermissionService { get }
-    var cameraFactory: CameraFactory {get}
+    func cameraFactory() -> CameraFactory
 }
 
 protocol ViewModelOutput {
@@ -36,7 +36,9 @@ struct PlatformOutputImpl: PlatfomOutput {
 
 class DomainOutputImpl: DomainOutput {
     let domainModule: DomainRuntime.Module
-    lazy var cameraFactory = domainModule.makeCameraFactory()
+    func cameraFactory() -> CameraFactory {
+        domainModule.makeCameraFactory()
+    }
     init(domainModule: DomainRuntime.Module) {
         self.domainModule = domainModule
     }
@@ -68,13 +70,11 @@ class CameraViewModelProviderImpl: CameraViewModelProvider {
     }
     
     lazy var filterCoordinator = factory.makeFilterCoordinator()
-    lazy var factory = dep.cameraFactory
+    lazy var factory = dep.cameraFactory()
     
     func cameraService(for cameraType: CameraType) async -> CameraEngine {
-       // await MainActor.run {
             let profile = cameraProfile(for: cameraType)
             return factory.makeCameraEngine(profile: profile)
-       // }
     }
 
     private func cameraProfile(for type: CameraType) -> CameraProfile {
@@ -106,7 +106,9 @@ final class AppDependencies {
 
     let platformDependency: PlatfomOutput
     let domainDependency: DomainOutput
-    let viewModelProvider: CameraViewModelProvider
+    var viewModelProvider: CameraViewModelProvider {
+        CameraViewModelProviderImpl(dep: domainDependency)
+    }
 
     private init() {
         let platformDep = PlatformRuntime.Dependency()
@@ -118,7 +120,7 @@ final class AppDependencies {
         let domainDependency = DomainOutputImpl(domainModule: module)
         self.domainDependency = domainDependency
         self.platformDependency = platformDepImp
-        self.viewModelProvider = CameraViewModelProviderImpl(dep: domainDependency)
+        //self.viewModelProvider = CameraViewModelProviderImpl(dep: domainDependency)
     }
 }
 

@@ -86,7 +86,7 @@ final class FilterRepositoryImpl: FilterRepository {
 
 final class FilterCoordinatorImp: FilterCoordinator {
     func fetchAll() async -> [any TitledContent] {
-        return await repository.fetchAll()  // repository internal
+        return await repository.fetchAll()
     }
     
     private let repository: FilterRepository
@@ -104,6 +104,10 @@ final class FilterCoordinatorImp: FilterCoordinator {
         continuation.yield(filter)
         
         return true
+    }
+    
+    deinit {
+        print("filter dinit")
     }
     
     

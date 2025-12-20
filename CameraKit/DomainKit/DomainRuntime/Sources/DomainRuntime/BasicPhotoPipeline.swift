@@ -13,7 +13,7 @@ import PlatformApi
 internal import Combine
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
+final class BasicPhotoPipeline: NSObject, CameraSubSystem {
    
     public  let displayCoordinator: any CameraDisplayCoordinator
     
@@ -34,6 +34,10 @@ class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
         self.sessionManager = platformFactory.makeSessionService(session: session)
         super.init()
         
+    }
+    
+    deinit {
+        print("dinit")
     }
     
     public func setup() async {

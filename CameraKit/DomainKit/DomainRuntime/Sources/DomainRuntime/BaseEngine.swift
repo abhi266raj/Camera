@@ -157,6 +157,10 @@ class BaseEngine {
         }
     }
     
+    deinit {
+        
+    }
+    
     
     let specs: EngineSpecsImp
     public let activeConfig: EngineOption.Config

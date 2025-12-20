@@ -56,11 +56,13 @@ struct AsyncView<Content: View>: View {
 @Observable
 class AppCoordinator {
     
-    private let componentBuilder: CameraComponentBuilder
+    private var componentBuilder: CameraComponentBuilder {
+        CameraComponentBuilder()
+    }
     var path = NavigationPath()
 
-    init(componentBuilder: CameraComponentBuilder = CameraComponentBuilder()) {
-        self.componentBuilder = componentBuilder
+    init() {
+        
     }
 
     @MainActor
