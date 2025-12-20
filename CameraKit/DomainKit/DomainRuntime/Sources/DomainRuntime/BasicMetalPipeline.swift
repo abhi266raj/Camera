@@ -47,8 +47,6 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
             }
         }
        
-        
-        //filterSelectionDelegateProxy.target =  processor
         super.init()
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
@@ -56,7 +54,6 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         
     }
     
-    //@CameraInputSessionActor
     public func setup() async {
             let _  = self.setupInputAndOutput()
             self.input.session = self.captureSession
@@ -112,11 +109,7 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
         
         let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
-            // Image render it than uTask { [sampleBuffer] in
-            
-                 metalView.sampleBuffer = sampleBuffer
-            //}
-            
+            metalView.captureOutput?(output, didOutput: sampleBuffer, from: connection)
         }else{
             // Audio delegate record it
             self.recordOutput.appendSampleBuffer(sampleBuffer)
@@ -133,5 +126,6 @@ extension BasicMetalPipeline: MetalRenderingDelegate {
     }
     
 }
+
 
 

@@ -8,10 +8,11 @@
 import UIKit
 import CoreKit
 import CoreMedia
+import AVFoundation
 
 
-public protocol PreviewMetalTarget: UIView {
-     var sampleBuffer: CMSampleBuffer? {get set}
+public protocol PreviewMetalTarget: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
+    // var sampleBuffer: CMSampleBuffer? {get set}
     var renderingDelegate:MetalRenderingDelegate? {get set}
 }
 

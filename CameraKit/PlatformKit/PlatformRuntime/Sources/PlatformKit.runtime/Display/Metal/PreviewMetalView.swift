@@ -11,9 +11,10 @@ import Metal
 import MetalKit
 import CoreKit
 import PlatformApi
+import AVFoundation
 
 
-public class PreviewMetalView: MTKView, PreviewMetalTarget {
+ class PreviewMetalView: MTKView, PreviewMetalTarget {
     
     weak public var renderingDelegate:MetalRenderingDelegate?
     
@@ -485,6 +486,13 @@ func convertMetalTextureToPixelBuffer(_ metalTexture: MTLTexture, samplePixelBuf
     } else {
         // Handle the error or return nil if unable to get the base address
         return nil
+    }
+}
+
+
+nonisolated extension PreviewMetalView {
+    nonisolated func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        self.sampleBuffer = sampleBuffer
     }
 }
 
