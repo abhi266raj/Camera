@@ -9,8 +9,6 @@ import Foundation
 import Observation
 import CoreKit
 import DomainApi
-internal import Combine
-
 
 public enum PermissionStatus {
     case unknown
@@ -45,7 +43,6 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
     
     @MainActor public var viewData: CameraViewData = CameraViewData()
     @MainActor private var cameraMode: CameraMode = .preview
-    private var cancellables = Set<AnyCancellable>()
     private let permissionService: PermissionService
     private let cameraService:CameraEngine
     

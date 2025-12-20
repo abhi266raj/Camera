@@ -8,7 +8,7 @@
 import CoreKit
 import PlatformApi
 import DomainApi
-import Combine
+internal import Combine
 import CoreMedia
 
 protocol CameraInputSubSystem {

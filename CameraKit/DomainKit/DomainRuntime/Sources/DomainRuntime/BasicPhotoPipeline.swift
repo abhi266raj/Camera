@@ -10,7 +10,7 @@ import AVFoundation
 import CoreKit
 import DomainApi
 import PlatformApi
-import Combine
+internal import Combine
 
 /// Basic Camera Pipeline Use UIView and record on camera
 class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
