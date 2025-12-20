@@ -12,17 +12,17 @@ import AVFoundation
 import CoreKit
 import PlatformApi
 
-final class CameraContentRecordingProxyService: CameraDiskOutputService {
+final class CameraContentRecordingProxyService: AVCaptureDiskOutputService {
     public var availableOutput: [AVCaptureOutput] {
         return actualService.availableOutput
     }
     
-    private let actualService: CameraDiskOutputService
+    private let actualService: AVCaptureDiskOutputService
     public var cameraModePublisher: CurrentValueSubject<CameraMode, Never> {
         actualService.cameraModePublisher
     }
 
-    public init(actualService: CameraDiskOutputService) {
+    public init(actualService: AVCaptureDiskOutputService) {
         self.actualService = actualService
     }
     

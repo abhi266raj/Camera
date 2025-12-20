@@ -16,7 +16,11 @@ import DomainApi
 class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraInputSubSystem, CameraEffectSubSystem, CameraRecordingSubSystem {
             
     private let captureSession: AVCaptureSession
-    public let recordOutput: CameraDiskOutputService
+    public var recordOutput: CameraDiskOutputService {
+        sampleBufferOutputService
+    }
+    
+    private let sampleBufferOutputService: SampleBufferDiskOutputService
 
     private(set) var input: CameraInput
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
@@ -33,7 +37,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
         let session = AVCaptureSession()
         self.captureSession = session
-        recordOutput = platformFactory.makeSampleBufferOutputService()
+        sampleBufferOutputService = platformFactory.makeSampleBufferOutputService()
         let metalView = platformFactory.makePreviewMetalTarget()
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator(metalView: metalView)
         self.metalView = metalView
@@ -106,13 +110,12 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
 extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        
-        let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
         if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
+            let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
             metalView.captureOutput?(output, didOutput: sampleBuffer, from: connection)
         }else{
             // Audio delegate record it
-            self.recordOutput.appendSampleBuffer(sampleBuffer)
+            self.sampleBufferOutputService.appendSampleBuffer(sampleBuffer)
         }
       
     }
@@ -122,7 +125,7 @@ extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCa
 
 extension BasicMetalPipeline: MetalRenderingDelegate {
     public func sampleBufferRendered(_ buffer: CMSampleBuffer) {
-        recordOutput.appendSampleBuffer(buffer)
+        sampleBufferOutputService.appendSampleBuffer(buffer)
     }
     
 }

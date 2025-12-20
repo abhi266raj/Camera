@@ -17,7 +17,6 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
  
     public let displayCoordinator: any CameraDisplayCoordinator
     private let captureSession: AVCaptureSession
-    //public let output: CameraVideoOutputImp
     public var input: CameraInput
     let fileOutput = AVCaptureMovieFileOutput()
     var videoRecordingConfig =  VideoRecordingConfig()
@@ -26,7 +25,6 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
-        // recordOutput = CameraRecordingCameraService(videoCaptureOutput: fileOutput)
         self.input = platformFactory.makeCameraInput()
         displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
         recordOutput = platformFactory.makeVideoOutputService(videoCaptureOutput: fileOutput)

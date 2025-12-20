@@ -17,7 +17,7 @@ class BasicPhotoPipeline: NSObject, @unchecked Sendable, CameraSubSystem {
    
     public  let displayCoordinator: any CameraDisplayCoordinator
     
-    public var recordOutput: CameraDiskOutputService
+    public var recordOutput: AVCaptureDiskOutputService
     
     private let captureSession: AVCaptureSession
     public let sessionManager: CameraSessionService

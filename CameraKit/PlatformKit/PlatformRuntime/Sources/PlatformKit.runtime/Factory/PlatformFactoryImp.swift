@@ -14,7 +14,7 @@ import UIKit
 
 
 final class PlatformFactoryImp: PlatformFactory {
-    func makeSampleBufferOutputService() -> any CameraDiskOutputService {
+    func makeSampleBufferOutputService() -> any SampleBufferDiskOutputService {
         SampleBufferCameraRecorderService()
     }
     
@@ -22,11 +22,11 @@ final class PlatformFactoryImp: PlatformFactory {
         PreviewMetalView(frame: .zero)
     }
     
-    func makePhotoOutputService(imageCaptureConfig:ImageCaptureConfig) -> any CameraDiskOutputService {
+    func makePhotoOutputService(imageCaptureConfig:ImageCaptureConfig) -> any AVCaptureDiskOutputService {
         CameraPhotoCameraService(imageCaptureConfig: imageCaptureConfig)
     }
     
-    func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> any CameraDiskOutputService {
+    func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> any AVCaptureDiskOutputService {
         CameraRecordingCameraService(videoCaptureOutput: videoCaptureOutput)
     }
     
@@ -54,7 +54,7 @@ final class PlatformFactoryImp: PlatformFactory {
         CameraLayerDisplayCoordinatorImp(session: avcaptureSession)
     }
     
-    func makePassThroughDiskRecordingService() -> any CameraDiskOutputService {
+    func makePassThroughDiskRecordingService() -> any AVCaptureDiskOutputService {
         PreviewOnlyService()
     }
     
