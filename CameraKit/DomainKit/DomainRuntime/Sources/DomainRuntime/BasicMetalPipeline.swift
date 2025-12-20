@@ -7,7 +7,7 @@
 
 import Foundation
 import AVFoundation
-import CoreMedia
+internal import CoreMedia
 import CoreKit
 import PlatformApi
 import DomainApi

@@ -7,7 +7,7 @@
 
 import Foundation
 import AVFoundation
-import UIKit
+internal import UIKit
 internal import Photos
 import CoreKit
 import DomainApi

@@ -5,8 +5,6 @@
 //  Created by Abhiraj on 14/12/25.
 //
 
-
-import Foundation
 import CoreKit
 import PlatformApi
 import DomainApi
@@ -18,9 +16,9 @@ protocol EngineInternal {
 }
 
 struct EngineSpecsImp: Sendable, Specs {
-    public var capabilty: EngineOption.Capabilty
-    public var allConfig: [EngineOption.Config]
-    public var availableProfile: [CameraProfile:EngineOption.Config]
+    var capabilty: EngineOption.Capabilty
+    var allConfig: [EngineOption.Config]
+    var availableProfile: [CameraProfile:EngineOption.Config]
     
     init(capabilty: EngineOption.Capabilty, allConfig: [EngineOption.Config], availableProfile: [CameraProfile : EngineOption.Config]) {
         self.capabilty = capabilty

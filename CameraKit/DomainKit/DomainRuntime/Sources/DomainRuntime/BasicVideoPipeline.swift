@@ -6,7 +6,7 @@
 //
 
 import AVFoundation
-import UIKit
+internal import UIKit
 import CoreKit
 import DomainApi
 import PlatformApi

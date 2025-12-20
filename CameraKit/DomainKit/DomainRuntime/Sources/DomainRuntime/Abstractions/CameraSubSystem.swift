@@ -9,7 +9,7 @@ import CoreKit
 import PlatformApi
 import DomainApi
 internal import Combine
-import CoreMedia
+internal import CoreMedia
 
 protocol CameraInputSubSystem {
     var input:CameraInput {get}
