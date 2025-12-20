@@ -12,7 +12,6 @@ import CoreKit
 
 public final class CameraFactoryImp: CameraFactory {
     
-    //let builder: (() -> PlatformFactory)
     let platformFactory: PlatformFactory
     var filterCoordinatorImp: FilterCoordinatorImp?
 

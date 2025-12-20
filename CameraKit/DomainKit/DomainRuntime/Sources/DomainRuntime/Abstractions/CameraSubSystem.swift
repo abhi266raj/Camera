@@ -25,13 +25,6 @@ protocol CameraRecordingSubSystem {
 
 
 protocol CameraSubSystem {
-  //   associatedtype DiskOutput: CameraDiskOutputService
-   //  associatedtype Processor =  Void
-    
-     //var displayCoordinator: any CameraDisplayCoordinator {get}
-    //var recordOutput: DiskOutput {get }
-    //var processor: Processor {get}
-   
     func toggleCamera() async  -> Bool
     var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
     func performAction( action: CameraAction) async throws -> Bool

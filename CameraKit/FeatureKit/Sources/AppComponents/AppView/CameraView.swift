@@ -55,7 +55,7 @@ public struct CameraView: View {
                 CameraAuthorizedView(viewData: viewData, viewAction: viewAction)
                     .onAppear(perform: { viewAction.cameraAction(.setup) })
             }
-        }
+        }.aspectRatio(0.5, contentMode: .fit)
         
         .onAppear(perform: {
             viewAction.cameraAction(.permissionSetup)

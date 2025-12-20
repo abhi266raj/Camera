@@ -19,6 +19,8 @@ struct CameraMetalViewer: UIViewRepresentable {
     
     func makeUIView(context: Context) -> UIView {
         viewAction(.attachDisplay(previewView))
+        previewView.setNeedsLayout()
+        previewView.layoutSubviews()
         return previewView
     }
 

@@ -98,8 +98,6 @@ struct BaseConfigBuilder {
         guard let display, let storage, let inputOutput else {return nil}
         return EngineOption.Config(display: display, storage: storage, inputOutput: inputOutput)
     }
-    
-    
 }
 
 extension EngineSpecsImp {
