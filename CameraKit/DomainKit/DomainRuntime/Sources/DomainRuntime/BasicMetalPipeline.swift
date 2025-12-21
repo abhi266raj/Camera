@@ -77,6 +77,16 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
             await self.input.startRunning()
     }
     
+    public func start() async {
+            await self.input.startRunning()
+    }
+    
+    public func stop() async {
+        await self.input.stopRunning()
+    }
+    
+    
+    
     private func setupInputAndOutput() -> Bool {
         guard let videoDevice =  input.videoDevice else {return false}
         guard let audioDevice =  input.audioDevice else {return false}

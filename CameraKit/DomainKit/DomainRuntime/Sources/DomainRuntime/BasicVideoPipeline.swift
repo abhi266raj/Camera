@@ -36,6 +36,14 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
                 await input.startRunning()
     }
     
+    public func start() async {
+            await self.input.startRunning()
+    }
+    
+    public func stop() async {
+        await self.input.stopRunning()
+    }
+    
     @MainActor
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {
         Task {

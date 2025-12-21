@@ -46,6 +46,15 @@ final class BasicPhotoPipeline: NSObject, CameraSubSystem {
             await sessionManager.start()
     }
     
+    public func start() async {
+        await sessionManager.start()
+    }
+    
+    public func stop() async {
+        await sessionManager.stop()
+    }
+    
+    
      public func toggleCamera() async -> Bool {
          let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
          return await sessionManager.toggle(config: config)

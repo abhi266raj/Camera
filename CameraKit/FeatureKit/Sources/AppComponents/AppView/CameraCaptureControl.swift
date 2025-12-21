@@ -21,8 +21,12 @@ struct CameraCaptureControl: ContentView {
     var body: some View {
         VStack(spacing: 10) {
             switch viewData.cameraPhase {
+                
+            case .paused:
+                loadingView
+                Text("Paused")
 
-            case .inactive, .paused, .switching:
+            case .inactive, .switching:
                 loadingView
                 
             case .active(let mode):

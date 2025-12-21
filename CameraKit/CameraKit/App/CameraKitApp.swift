@@ -9,7 +9,8 @@ import SwiftUI
 
 @main
 struct CameraKitApp: App {
-    @State var coordinator = AppCoordinator()
+    @State var coordinator = TabViewAppCoordinator()
+    //AppCoordinator()
     var body: some Scene {
         WindowGroup {
             coordinator.start()

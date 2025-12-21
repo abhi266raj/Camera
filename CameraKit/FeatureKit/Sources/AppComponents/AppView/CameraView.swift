@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AppViewModel
+import CoreKit
 
 
 @Observable final class CameraContentViewData: Sendable {
@@ -53,14 +54,13 @@ public struct CameraView: View {
                 CameraDeniedView()
             case .authorized:
                 CameraAuthorizedView(viewData: viewData, viewAction: viewAction)
-                    .onAppear(perform: { viewAction.cameraAction(.setup) })
+                    .onAppear{ viewAction.cameraAction(.setup)}
+                    .onAppear{ viewAction.cameraAction(.pause)}
+                
             }
         }.aspectRatio(0.5, contentMode: .fit)
-        
-        .onAppear(perform: {
-            viewAction.cameraAction(.permissionSetup)
-        })
         .padding()
+        .onAppear{viewAction.cameraAction(.permissionSetup)}
     }
 
 }

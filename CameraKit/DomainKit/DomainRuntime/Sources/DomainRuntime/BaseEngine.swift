@@ -154,6 +154,10 @@ class BaseEngine {
             await try subSystem.performAction(action: .startRecord)
         case .stopRecording:
             await try subSystem.performAction(action: .stopRecord)
+        case .start:
+            await try subSystem.start()
+        case .pause:
+            await try subSystem.stop()
         }
     }
     

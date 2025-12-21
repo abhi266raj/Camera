@@ -16,7 +16,7 @@ public enum CameraProfile: Hashable, Sendable {
 }
 
 
-public enum CameraPhase {
+public enum CameraPhase: Equatable, Hashable, Sendable {
     case inactive
     case paused
     case switching
@@ -24,14 +24,14 @@ public enum CameraPhase {
 }
 
 // Camera operation mode
-public enum CameraMode: Sendable {
+public enum CameraMode: Sendable, Equatable, Hashable {
     case preview
     case initiatingCapture
     case capture(CaptureType)
 }
 
 // Specific capture type
-public enum CaptureType: Sendable {
+public enum CaptureType: Sendable, Equatable, Hashable {
     case photo
     case video
 }

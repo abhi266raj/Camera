@@ -14,6 +14,8 @@ public protocol Specs {
 }
 
 public enum EngineAction {
+    case start
+    case pause
     case setup
     case toggle
     case takePicture

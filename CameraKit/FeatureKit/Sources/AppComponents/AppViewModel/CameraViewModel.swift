@@ -27,6 +27,7 @@ public enum PermissionStatus {
 }
 
 public enum CameraViewAction: Sendable {
+    case pause
     case toggle
     case setup
     case permissionSetup
@@ -149,6 +150,10 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
             
             case .attachDisplay(let cameraDisplayTarget):
                  await attachDisplay(cameraDisplayTarget)
+                return true
+            case .pause:
+                
+                await try? self.cameraService.perform(.pause)
                 return true
             }
             
