@@ -152,8 +152,10 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
                  await attachDisplay(cameraDisplayTarget)
                 return true
             case .pause:
-                
                 await try? self.cameraService.perform(.pause)
+                Task { @MainActor in
+                    self.viewData.cameraPhase = .paused
+                }
                 return true
             }
             

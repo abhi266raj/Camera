@@ -53,14 +53,24 @@ public struct CameraView: View {
             case .denied:
                 CameraDeniedView()
             case .authorized:
-                CameraAuthorizedView(viewData: viewData, viewAction: viewAction)
-                    .onAppear{ viewAction.cameraAction(.setup)}
-                    .onAppear{ viewAction.cameraAction(.pause)}
+                Group {
+                    if viewData.cameraData.cameraPhase == .paused {
+                        Text ("Paused")
+                        //.onAppear{ viewAction.cameraAction(.setup)}
+                    }else if viewData.cameraData.cameraPhase == .inactive {
+                        Text("Setup")
+                        LoadingView()
+                    }else {
+                        CameraAuthorizedView(viewData: viewData, viewAction: viewAction)
+                        // .onAppear{ viewAction.cameraAction(.setup)}
+                    }
+                }.onAppear{ viewAction.cameraAction(.setup)}
                 
             }
         }.aspectRatio(0.5, contentMode: .fit)
         .padding()
         .onAppear{viewAction.cameraAction(.permissionSetup)}
+        .onDisappear{ viewAction.cameraAction(.pause)}
     }
 
 }
