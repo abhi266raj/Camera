@@ -14,6 +14,8 @@ import AppView
 // MARK: - Camera Component (Child)
 
 
+
+// Could be in seprate moudle.
 final class CameraCoordinator: Identifiable, Hashable, Equatable {
     
     var id:String = UUID().uuidString
@@ -26,14 +28,14 @@ final class CameraCoordinator: Identifiable, Hashable, Equatable {
           hasher.combine(id)
     }
 
-    let viewModelProvider: CameraViewModelProvider
+    let viewModelProvider: CameraViewModelFactory
     
     @MainActor
     lazy var cameraView: some View = {
         makeCameraView()
     }()
 
-    init(viewModelProvider: CameraViewModelProvider) {
+    init(viewModelProvider: CameraViewModelFactory) {
         self.viewModelProvider = viewModelProvider
     }
     
@@ -70,7 +72,7 @@ struct AsyncView<Content: View>: View {
 class AppCoordinator {
     
     var path = NavigationPath()
-    @ObservationIgnored private lazy var domainOutput: DomainOutput = appDependencies.domainOutput
+    @ObservationIgnored private lazy  var viewModelOutput: ViewModelOutput = appDependencies.viewModelOutput
     private let rootDepedency = HomeViewModelDependency()
     private let appDependencies: AppDependencies = AppDependencies()
 
@@ -86,7 +88,7 @@ class AppCoordinator {
         }
         rootDepedency.selectionCooridator.onSelect = {[weak self] type in
             guard let self else  {return}
-            let viewModelProvider = CameraViewModelProviderImpl(dep: self.domainOutput, cameraType: type)
+            let viewModelProvider = viewModelOutput.createCameraViewProvider(for: type)
             let coordinator = CameraCoordinator(viewModelProvider: viewModelProvider)
             self.path.append(coordinator)
         }
