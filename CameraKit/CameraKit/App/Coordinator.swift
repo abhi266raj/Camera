@@ -14,17 +14,32 @@ import AppView
 // MARK: - Camera Component (Child)
 
 
-final class CameraComponentBuilder {
-
-    // Injected service dependencies
-    //let viewModelServiceProvider: CameraViewDependenciesProvider
+final class CameraCoordinator: Identifiable, Hashable, Equatable {
     
-    let viewModelProvider: CameraViewModelProvider
+    var id:String = UUID().uuidString
+    
+    static func == (lhs: CameraCoordinator, rhs: CameraCoordinator) -> Bool {
+          lhs.id == rhs.id
+      }
 
-    init(viewModelProvider: CameraViewModelProvider = AppDependencies.shared.viewModelProvider) {
-        self.viewModelProvider = viewModelProvider
+      func hash(into hasher: inout Hasher) {
+          hasher.combine(id)
     }
 
+    let viewModelProvider: CameraViewModelProvider
+    let cameraType: CameraType
+    
+    @MainActor
+    lazy var cameraView: some View = {
+        makeCameraView(cameraType: cameraType)
+    }()
+
+    init(viewModelProvider: CameraViewModelProvider, cameraType: CameraType) {
+        self.viewModelProvider = viewModelProvider
+        self.cameraType = cameraType
+    }
+    
+   
     @MainActor
     func makeCameraView(cameraType: CameraType = .metal) -> some View {
         let view = AsyncView {
@@ -56,21 +71,15 @@ struct AsyncView<Content: View>: View {
 @Observable
 class AppCoordinator {
     
-    private var componentBuilder: CameraComponentBuilder {
-        CameraComponentBuilder()
-    }
     var path = NavigationPath()
+    
+    let domainDep: DomainOutput
+    var rootDepedency = HomeViewModelDependency()
 
     init() {
+        domainDep = AppDependencies.shared.domainDependency
         
     }
-
-    @MainActor
-    func createView(cameraType: CameraType = .metal) -> some View {
-         componentBuilder.makeCameraView(cameraType: cameraType)
-    }
-    
-    var rootDepedency = HomeViewModelDependency()
     
     @MainActor
     func start() ->  some View {
@@ -79,15 +88,18 @@ class AppCoordinator {
             viewModel.trigger(cameraType)
         }
         rootDepedency.selectionCooridator.onSelect = {[weak self] type in
-            self?.path.append(type)
+            guard let self else  {return}
+            let viewModelProvider = CameraViewModelProviderImpl(dep: self.domainDep)
+            let coordinator = CameraCoordinator(viewModelProvider: viewModelProvider, cameraType: type)
+            self.path.append(coordinator)
         }
         
         return NavigationStack(path: Binding(
             get: { self.path },
             set: { self.path = $0 }
         )) {
-            view.navigationDestination(for: CameraType.self) { type in
-                self.createView(cameraType: type)
+            view.navigationDestination(for: CameraCoordinator.self) { coordinator in
+                coordinator.cameraView
         }
         .navigationTitle("Camera Types")
         

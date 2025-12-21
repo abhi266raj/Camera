@@ -106,9 +106,11 @@ final class AppDependencies {
 
     let platformDependency: PlatfomOutput
     let domainDependency: DomainOutput
-    var viewModelProvider: CameraViewModelProvider {
-        CameraViewModelProviderImpl(dep: domainDependency)
-    }
+//    var viewModelProvider: CameraViewModelProvider {
+//        CameraViewModelProviderImpl(dep: domainDependency)
+//    }
+    
+ //   var viewModelProvider: CameraViewModelProvider
 
     private init() {
         let platformDep = PlatformRuntime.Dependency()
@@ -120,7 +122,7 @@ final class AppDependencies {
         let domainDependency = DomainOutputImpl(domainModule: module)
         self.domainDependency = domainDependency
         self.platformDependency = platformDepImp
-        //self.viewModelProvider = CameraViewModelProviderImpl(dep: domainDependency)
+    //    self.viewModelProvider = CameraViewModelProviderImpl(dep: domainDependency)
     }
 }
 
