@@ -56,13 +56,11 @@ public struct CameraView: View {
                 Group {
                     if viewData.cameraData.cameraPhase == .paused {
                         Text ("Paused")
-                        //.onAppear{ viewAction.cameraAction(.setup)}
                     }else if viewData.cameraData.cameraPhase == .inactive {
                         Text("Setup")
                         LoadingView()
                     }else {
                         CameraAuthorizedView(viewData: viewData, viewAction: viewAction)
-                        // .onAppear{ viewAction.cameraAction(.setup)}
                     }
                 }.onAppear{ viewAction.cameraAction(.setup)}
                 

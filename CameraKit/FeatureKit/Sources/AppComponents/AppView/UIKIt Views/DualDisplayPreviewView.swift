@@ -18,10 +18,16 @@ struct DualCameraViewer: UIViewRepresentable {
     
     func makeUIView(context: Context) -> UIView {
         viewAction(.attachDisplay(previewView))
+        previewView.setNeedsLayout()
+        previewView.layoutIfNeeded()
+        previewView.layoutSubviews()
         return previewView
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
+        previewView.setNeedsLayout()
+        previewView.layoutIfNeeded()
+        previewView.layoutSubviews()
        
     }
 }
@@ -187,11 +193,13 @@ extension DualDisplayPreviewView: DualDisplayLayerTarget {
     @MainActor
     public func addFirstDisplaylayer(_ layer: CALayer) async {
         frontContainerView.layer.addSublayer(layer)
+        frontContainerView.layer.setNeedsDisplay()
     }
     
     @MainActor
     public func addSecondDisplaylayer(_ layer: CALayer) async {
         backContainerView.layer.addSublayer(layer)
+        backContainerView.layer.setNeedsDisplay()
     }
     
     
