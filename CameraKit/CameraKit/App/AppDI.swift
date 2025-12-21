@@ -52,6 +52,8 @@ class ViewModelOutput {
         }
     }
     
+    
+    // Depedency root should only know there are differnt service of differnt camera type
     func createCameraViewProvider(for cameraType: CameraType) -> CameraViewModelFactory {
         let factory = dep.cameraFactory()
         let engine = cameraService(for: cameraType, factory: factory)
@@ -61,33 +63,6 @@ class ViewModelOutput {
 }
 
 
-
-// should be in viewModelModule. To be ractored
-class CameraViewModelFactory {
-    
-    private var permissionService: PermissionService
-    private var cameraEngine: CameraEngine
-    
-    
-    init(permissionService: PermissionService, cameraEngine: CameraEngine, filterCoordinator: FilterCoordinator) {
-        self.permissionService = permissionService
-        self.cameraEngine = cameraEngine
-        self.filterCoordinator = filterCoordinator
-    }
-    
-    private let filterCoordinator: FilterCoordinator
- 
-
-    func cameraViewModel() async  -> any CameraViewModel {
-        return await CameraViewModelImp(permissionService: permissionService, cameraService: cameraEngine)
-    }
-    
-    func filterViewModel() async -> any FilterListViewModel {
-        FilterListViewModelImp(coordinator: filterCoordinator)
-        
-    }
-        
-}
 
 // MARK: - APP ROOT CONTAINER
 

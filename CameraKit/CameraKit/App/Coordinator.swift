@@ -11,62 +11,7 @@ import Observation
 import AppViewModel
 import AppView
 
-// MARK: - Camera Component (Child)
 
-
-
-// Could be in seprate moudle.
-final class CameraCoordinator: Identifiable, Hashable, Equatable {
-    
-    var id:String = UUID().uuidString
-    
-    static func == (lhs: CameraCoordinator, rhs: CameraCoordinator) -> Bool {
-          lhs.id == rhs.id
-      }
-
-      func hash(into hasher: inout Hasher) {
-          hasher.combine(id)
-    }
-
-    let viewModelProvider: CameraViewModelFactory
-    
-    @MainActor
-    lazy var cameraView: some View = {
-        makeCameraView()
-    }()
-
-    init(viewModelProvider: CameraViewModelFactory) {
-        self.viewModelProvider = viewModelProvider
-    }
-    
-   
-    @MainActor
-    func makeCameraView() -> some View {
-        let view = AsyncView {
-            let cameraViewModel = await self.viewModelProvider.cameraViewModel()
-            let filterVM = await self.viewModelProvider.filterViewModel()
-            return CameraView(viewModel: cameraViewModel, filterListViewModel: filterVM)
-        }
-        return view
-    }
-}
-
-struct AsyncView<Content: View>: View {
-    @State private var content: Content?
-    let loader: () async -> Content
-
-    @ViewBuilder
-    var body: some View {
-            if let content = content {
-                content
-            } else {
-                Text("Loading...").task {
-                    content = await loader()
-                }
-            }
-        
-    }
-}
 
 @Observable
 class AppCoordinator {
