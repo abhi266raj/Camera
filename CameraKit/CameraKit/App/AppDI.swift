@@ -24,7 +24,8 @@ protocol ViewModelOutput {
 }
 
 protocol CameraViewModelProvider {
-    func cameraViewModel(for cameraType: CameraType) async  -> any CameraViewModel
+    func cameraViewModel() async  -> any CameraViewModel
+//    func cameraViewModel(for cameraType: CameraType) async  -> any CameraViewModel
     func filterViewModel() async -> any FilterListViewModel
     
 }
@@ -64,10 +65,15 @@ struct CameraDependenciesImpl: ViewModelDependcies {
 class CameraViewModelProviderImpl: CameraViewModelProvider {
     
     var dep: DomainOutput
+    var cameraType: CameraType
     
-    init(dep: DomainOutput) {
+    init(dep: DomainOutput, cameraType: CameraType) {
         self.dep = dep
+        self.cameraType = cameraType
     }
+    
+    
+    
     
     lazy var filterCoordinator = factory.makeFilterCoordinator()
     lazy var factory = dep.cameraFactory()
@@ -86,7 +92,7 @@ class CameraViewModelProviderImpl: CameraViewModelProvider {
         }
     }
 
-    func cameraViewModel(for cameraType: CameraType) async  -> any CameraViewModel {
+    private func cameraViewModel(for cameraType: CameraType) async  -> any CameraViewModel {
         let cameraService = await cameraService(for: cameraType)
         return await CameraViewModelImp(permissionService: dep.permissionService, cameraService: cameraService)
         
@@ -95,6 +101,10 @@ class CameraViewModelProviderImpl: CameraViewModelProvider {
     func filterViewModel() async -> any FilterListViewModel {
         FilterListViewModelImp(coordinator: filterCoordinator)
         
+    }
+    
+    func cameraViewModel() async  -> any CameraViewModel {
+        return await cameraViewModel(for: cameraType)
     }
     
 }

@@ -27,23 +27,21 @@ final class CameraCoordinator: Identifiable, Hashable, Equatable {
     }
 
     let viewModelProvider: CameraViewModelProvider
-    let cameraType: CameraType
     
     @MainActor
     lazy var cameraView: some View = {
-        makeCameraView(cameraType: cameraType)
+        makeCameraView()
     }()
 
-    init(viewModelProvider: CameraViewModelProvider, cameraType: CameraType) {
+    init(viewModelProvider: CameraViewModelProvider) {
         self.viewModelProvider = viewModelProvider
-        self.cameraType = cameraType
     }
     
    
     @MainActor
-    func makeCameraView(cameraType: CameraType = .metal) -> some View {
+    func makeCameraView() -> some View {
         let view = AsyncView {
-            let cameraViewModel = await self.viewModelProvider.cameraViewModel(for: cameraType)
+            let cameraViewModel = await self.viewModelProvider.cameraViewModel()
             let filterVM = await self.viewModelProvider.filterViewModel()
             return CameraView(viewModel: cameraViewModel, filterListViewModel: filterVM)
         }
@@ -89,8 +87,8 @@ class AppCoordinator {
         }
         rootDepedency.selectionCooridator.onSelect = {[weak self] type in
             guard let self else  {return}
-            let viewModelProvider = CameraViewModelProviderImpl(dep: self.domainDep)
-            let coordinator = CameraCoordinator(viewModelProvider: viewModelProvider, cameraType: type)
+            let viewModelProvider = CameraViewModelProviderImpl(dep: self.domainDep, cameraType: type)
+            let coordinator = CameraCoordinator(viewModelProvider: viewModelProvider)
             self.path.append(coordinator)
         }
         
