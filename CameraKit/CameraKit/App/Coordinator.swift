@@ -70,12 +70,11 @@ struct AsyncView<Content: View>: View {
 class AppCoordinator {
     
     var path = NavigationPath()
-    
-    let domainDep: DomainOutput
-    var rootDepedency = HomeViewModelDependency()
+    @ObservationIgnored private lazy var domainOutput: DomainOutput = appDependencies.domainOutput
+    private let rootDepedency = HomeViewModelDependency()
+    private let appDependencies: AppDependencies = AppDependencies()
 
     init() {
-        domainDep = AppDependencies.shared.domainDependency
         
     }
     
@@ -87,7 +86,7 @@ class AppCoordinator {
         }
         rootDepedency.selectionCooridator.onSelect = {[weak self] type in
             guard let self else  {return}
-            let viewModelProvider = CameraViewModelProviderImpl(dep: self.domainDep, cameraType: type)
+            let viewModelProvider = CameraViewModelProviderImpl(dep: self.domainOutput, cameraType: type)
             let coordinator = CameraCoordinator(viewModelProvider: viewModelProvider)
             self.path.append(coordinator)
         }

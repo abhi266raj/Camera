@@ -8,8 +8,6 @@ import AppView
 import PlatformApi
 import PlatformRuntime
 
-
-
 protocol PlatfomOutput {
     var platformFactoy: PlatformFactory {get}
 }
@@ -25,7 +23,6 @@ protocol ViewModelOutput {
 
 protocol CameraViewModelProvider {
     func cameraViewModel() async  -> any CameraViewModel
-//    func cameraViewModel(for cameraType: CameraType) async  -> any CameraViewModel
     func filterViewModel() async -> any FilterListViewModel
     
 }
@@ -72,9 +69,6 @@ class CameraViewModelProviderImpl: CameraViewModelProvider {
         self.cameraType = cameraType
     }
     
-    
-    
-    
     lazy var filterCoordinator = factory.makeFilterCoordinator()
     lazy var factory = dep.cameraFactory()
     
@@ -112,17 +106,12 @@ class CameraViewModelProviderImpl: CameraViewModelProvider {
 // MARK: - APP ROOT CONTAINER
 
 final class AppDependencies {
-    static let shared = AppDependencies()
-
+   
     let platformDependency: PlatfomOutput
-    let domainDependency: DomainOutput
-//    var viewModelProvider: CameraViewModelProvider {
-//        CameraViewModelProviderImpl(dep: domainDependency)
-//    }
-    
- //   var viewModelProvider: CameraViewModelProvider
+    let domainOutput: DomainOutput
 
-    private init() {
+
+    init() {
         let platformDep = PlatformRuntime.Dependency()
         let platformModule = PlatformRuntime.Module(dependency: platformDep)
         let platformdep = platformModule.makePlatformFactory()
@@ -130,9 +119,8 @@ final class AppDependencies {
         let dep = DomainRuntime.Dependency(platformFactoryBuilder: {platformDepImp.platformFactoy})
         let module = DomainRuntime.Module(dependecy: dep)
         let domainDependency = DomainOutputImpl(domainModule: module)
-        self.domainDependency = domainDependency
+        self.domainOutput = domainDependency
         self.platformDependency = platformDepImp
-    //    self.viewModelProvider = CameraViewModelProviderImpl(dep: domainDependency)
     }
 }
 
