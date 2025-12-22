@@ -42,7 +42,7 @@ final public class FilterListViewModelImp: FilterListViewModel, @unchecked Senda
     
     private let coordinator: FilterCoordinator
 
-    public private(set) var items: [TitledContent] = []
+    //public private(set) var items: [TitledContent] = []
     
     @MainActor
     public var viewData: FilterListViewData = FilterListViewData()
@@ -93,17 +93,15 @@ final public class FilterListViewModelImp: FilterListViewModel, @unchecked Senda
     
     @MainActor
     public func refresh() async {
-        items = await coordinator.fetchAll()
-        viewData.filters = items.map {FilterViewData(title: $0.title, id:UUID().uuidString)}
+        let items = await coordinator.fetchAll()
+        viewData.filters = items.map {FilterViewData(title: $0.title, id:$0.id)}
     }
 
 
-    public func selectItem(at index: Int) {
-        guard items.indices.contains(index) else { return }
-        Task {
-            let item = items[index].id
+    public func selectItem(at index: Int) async {
+        guard await viewData.filters.indices.contains(index) else { return }
+            let item = await viewData.filters[index].id
             await try? coordinator.selectFilter(id: item)
-        }
     }
     
     public func trigger(_ action: FilterAction) {
