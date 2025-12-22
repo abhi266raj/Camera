@@ -31,11 +31,13 @@ final public class CameraCoordinator: Identifiable, Hashable, Equatable {
         self.viewModelProvider = viewModelProvider
     }
     
-   
     @MainActor
     private func makeCameraView() -> some View {
             let cameraViewModel = self.viewModelProvider.cameraViewModel()
             let filterVM =  self.viewModelProvider.filterViewModel()
-            return CameraView(viewModel: cameraViewModel, filterListViewModel: filterVM)
+            return CameraView(viewModel: cameraViewModel, filterListViewModel: filterVM).task {
+                await filterVM.activate()
+            }
     }
 }
+

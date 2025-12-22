@@ -11,8 +11,6 @@ import Observation
 import AppViewModel
 import AppView
 
-
-
 @Observable
 class AppCoordinator {
     
