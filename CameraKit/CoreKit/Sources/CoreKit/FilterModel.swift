@@ -8,7 +8,7 @@
 import Foundation
 
 // Protocol for things with a title
-public protocol TitledContent: Identifiable<String> {
+public protocol TitledContent: Identifiable<String>, Sendable {
     var title: String { get }
 }
 

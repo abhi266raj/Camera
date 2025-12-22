@@ -93,8 +93,7 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
         try? cameraService.attachDisplay(target)
     }
     
-    @MainActor public func permissionSetup()  {
-        Task {
+    @MainActor public func permissionSetup() async  {
             if viewData.cameraPermissionState == .unknown {
                 let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()
                 if permission == false {
@@ -103,7 +102,6 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
                     viewData.cameraPermissionState = .authorized
                 }
             }
-        }
     }
     
      public func setup()   {
@@ -124,7 +122,6 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
     public func toggleCamera() async  -> Bool {
         viewData.cameraPhase = .switching
         await try? self.cameraService.perform(.toggle)
-        //let value =  await cameraService.toggleCamera()
         viewData.cameraPhase = .active(cameraMode)
         return true
     }

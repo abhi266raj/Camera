@@ -4,7 +4,7 @@ import CoreKit
 import DomainApi
 
 
-public enum FilterAction {
+public enum FilterAction: Sendable {
     case refresh
     case select(index:Int)
 }
@@ -37,7 +37,6 @@ public protocol FilterListViewModel: ActionableViewModel {
     
 }
 
-
 @Observable
 final public class FilterListViewModelImp: FilterListViewModel, @unchecked Sendable {
     
@@ -47,14 +46,49 @@ final public class FilterListViewModelImp: FilterListViewModel, @unchecked Senda
     
     @MainActor
     public var viewData: FilterListViewData = FilterListViewData()
+    
+    let continuation: AsyncStream<FilterAction>.Continuation
+    
+    @ObservationIgnored
+    var task: Task<Void,Never>? = nil
 
     public init(
         coordinator: FilterCoordinator
     ) {
         self.coordinator = coordinator
-        Task {
-            await refresh()
+        let value = AsyncStream<FilterAction>.make()
+        self.continuation = value.1
+        continuation.yield(.refresh)
+        task = listenStream(stream:value.0)
+    }
+    
+    func listenStream(stream: AsyncStream<FilterAction>) -> Task<Void,Never>? {
+        let task = Task { [weak self] in
+            guard let self else {
+                return
+            }
+            for await action in stream {
+                await self.perform(action)
+            }
         }
+        return task
+    }
+    
+    func perform(_ task: FilterAction) async {
+        switch task {
+        case .refresh:
+            await self.refresh()
+        case .select(let i):
+            await self.selectItem(at: i)
+        }
+        
+    }
+    
+
+    
+    deinit {
+        task?.cancel()
+        
     }
     
     @MainActor
@@ -73,16 +107,6 @@ final public class FilterListViewModelImp: FilterListViewModel, @unchecked Senda
     }
     
     public func trigger(_ action: FilterAction) {
-        switch action {
-        case .refresh:
-                Task { @MainActor in
-                    await self.refresh()
-                }
-            break
-        case .select(let i):
-            selectItem(at: i)
-            break
-        }
+        continuation.yield(action)
     }
 }
-
