@@ -53,12 +53,14 @@ public struct CameraView: View {
             case .denied:
                 CameraDeniedView()
             case .authorized:
-                Group {
+                VStack {
                     if viewData.cameraData.cameraPhase == .paused {
                         Text ("Paused")
                     }else if viewData.cameraData.cameraPhase == .inactive {
+                        Spacer()
                         Text("Setup")
                         LoadingView()
+                        Spacer()
                     }else {
                         CameraAuthorizedView(viewData: viewData, viewAction: viewAction)
                     }

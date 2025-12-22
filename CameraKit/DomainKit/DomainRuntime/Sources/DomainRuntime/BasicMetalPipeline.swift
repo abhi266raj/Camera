@@ -56,9 +56,9 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         super.init()
         bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
-        self.streamTask = Task { @MainActor in
+        self.streamTask = Task {  @MainActor [weak self] in
             for await filter in stream {
-                self.processor.selectedFilter = filter
+                self?.processor.selectedFilter = filter
             }
         }
         

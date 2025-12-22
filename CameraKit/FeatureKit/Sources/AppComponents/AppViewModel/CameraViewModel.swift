@@ -108,6 +108,11 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
     
      public func setup()   {
          Task {
+             Task { @MainActor in
+                 if self.viewData.cameraPhase == .paused {
+                     self.viewData.cameraPhase = .inactive
+                 }
+             }
              await try? self.cameraService.perform(.setup)
              Task { @MainActor in
                  self.viewData.cameraPhase = .active(self.cameraMode)
