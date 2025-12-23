@@ -31,7 +31,7 @@ extension FilterEntity: TitledContent {
     
 }
 
-final public class StaticFilterDataSource {
+final public class StaticFilterDataSource: Sendable {
     
     public init() {
         
@@ -55,14 +55,14 @@ final public class StaticFilterDataSource {
 
 // MARK: - Domain
 
-protocol FilterRepository {
+protocol FilterRepository: Sendable {
     func fetchAll() async -> [TitledContent]
-    func filter(id: String) -> FilterModel?
+    func filter(id: String) async -> FilterModel?
 }
 
 
 
-final class FilterRepositoryImpl: FilterRepository {
+actor FilterRepositoryImpl: FilterRepository {
     private let dataSource: StaticFilterDataSource
     private var filterMap: [String: FilterModel] = [:]
 
@@ -76,7 +76,7 @@ final class FilterRepositoryImpl: FilterRepository {
         return list
     }
 
-    func filter(id: String) -> FilterModel? {
+    func filter(id: String) async -> FilterModel? {
         filterMap[id]
     }
 }
@@ -90,8 +90,8 @@ final class FilterCoordinatorImp: FilterCoordinator {
     }
     
     private let repository: FilterRepository
-    var selectionStream: AsyncStream<FilterModel>
-    var continuation: AsyncStream<FilterModel>.Continuation
+    let selectionStream: AsyncStream<FilterModel>
+    let continuation: AsyncStream<FilterModel>.Continuation
 
     init(repository: FilterRepository) {
         self.repository = repository
@@ -99,8 +99,8 @@ final class FilterCoordinatorImp: FilterCoordinator {
     }
 
     @discardableResult
-    func selectFilter(id: String) -> Bool {
-        guard let filter = repository.filter(id: id) else { return false }
+    func selectFilter(id: String) async -> Bool {
+        guard let filter = await repository.filter(id: id) else { return false }
         continuation.yield(filter)
         
         return true

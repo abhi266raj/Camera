@@ -141,7 +141,7 @@ extension EngineOption.Config {
 
 
 
-class BaseEngine: @unchecked Sendable {
+final class BaseEngine: Sendable {
      public func perform(_ action: EngineAction) async throws {
         switch action {
         case .setup:

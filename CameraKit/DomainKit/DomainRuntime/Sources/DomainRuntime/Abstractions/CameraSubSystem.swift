@@ -24,7 +24,7 @@ protocol CameraRecordingSubSystem {
 }
 
 
-protocol CameraSubSystem {
+protocol CameraSubSystem: Sendable {
     func toggleCamera() async  -> Bool
     var cameraModePublisher: AsyncSequence<CameraMode, Never>  { get }
     func performAction( action: CameraAction) async throws -> Bool

@@ -8,9 +8,9 @@
 
 import CoreKit
 
-public protocol FilterCoordinator {
+public protocol FilterCoordinator: Sendable {
     
     func fetchAll() async -> [TitledContent]
     @discardableResult
-    func selectFilter(id: String) -> Bool
+    func selectFilter(id: String) async -> Bool
 }

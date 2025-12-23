@@ -13,7 +13,7 @@ import PlatformApi
 internal import Combine
 
 /// Basic Camera Pipeline Use UIView and record on camera
-final class BasicPhotoPipeline: NSObject, CameraSubSystem {
+final class BasicPhotoPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
    
     public  let displayCoordinator: any CameraDisplayCoordinator
     

@@ -60,6 +60,7 @@ final public class FilterListViewModelImp: FilterListViewModel {
         stream = value.0
     }
     
+    @MainActor
     public func activate() async {
         trigger(.refresh)
         for await action in stream {
@@ -67,7 +68,7 @@ final public class FilterListViewModelImp: FilterListViewModel {
         }
     }
     
-    
+    @MainActor
     func perform(_ task: FilterAction) async {
         switch task {
         case .refresh:
@@ -77,33 +78,26 @@ final public class FilterListViewModelImp: FilterListViewModel {
         }
     }
     
+    @MainActor
     func refresh() async {
         let items = await coordinator.fetchAll()
         let list = items.map {FilterViewData(title: $0.title, id:$0.id)}
-        @MainActor func updateFilters(viewData: FilterListViewData = self.viewData) {
-            viewData.filters = list
-        }
-        await updateFilters()
-    }
-    
-    @MainActor func updateFilters(items: [TitledContent]) {
-        let list = items.map {FilterViewData(title: $0.title, id:$0.id)}
         viewData.filters = list
     }
-
+    
+   
+    @MainActor
      func fetchId(at index: Int) async -> String? {
-        @MainActor func fetchId(viewData: FilterListViewData = self.viewData) ->String? {
-            guard viewData.filters.indices.contains(index) else { return nil }
-            let item = viewData.filters[index].id
-            return item
-        }
-       return  await fetchId()
+         guard viewData.filters.indices.contains(index) else { return nil }
+         let item = viewData.filters[index].id
+         return item
     }
     
+    @MainActor
     func selectItem(at index: Int) async  {
         let id = await fetchId(at: index)
         guard let id else {return}
-        coordinator.selectFilter(id: id)
+        await coordinator.selectFilter(id: id)
     }
     
     public func trigger(_ action: FilterAction) {
