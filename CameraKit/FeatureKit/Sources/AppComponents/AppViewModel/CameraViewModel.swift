@@ -44,8 +44,11 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
     
     @MainActor public var viewData: CameraViewData = CameraViewData()
     @MainActor private var cameraMode: CameraMode = .preview
-    private let permissionService: PermissionService
+    @MainActor private let permissionService: PermissionService
     private let cameraService:CameraEngine
+    
+    private let continuation: AsyncStream<CameraViewAction>.Continuation
+    private let stream: AsyncStream<CameraViewAction>
     
     
     @MainActor
@@ -53,6 +56,7 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
         self.permissionService = permissionService
        // self.cameraConfig = cameraConfig
         self.cameraService = cameraService
+        (stream,continuation) = AsyncStream<CameraViewAction>.make()
         updateViewData()
         commonInit()
     }
@@ -69,18 +73,32 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
         
     }
     
+    @MainActor
     func commonInit() {
+        Task.immediate {
+            await listenCameraMode()
+        }
+        
+        Task.immediate {
+            await listenStreamAction()
+        }
+    }
+    
+    @MainActor
+    func listenCameraMode() async {
         let stream =  cameraService.cameraModePublisher
-        let task = Task{ @MainActor [weak self]  in
-            for await mode in stream {
-                guard let self else {
-                    return
-                }
-                await self.cameraMode = mode
-                if case .active(_) = self.viewData.cameraPhase {
-                    self.viewData.cameraPhase = .active(mode)
-                }
+        for await mode in stream {
+            await self.cameraMode = mode
+            if case .active(_) = self.viewData.cameraPhase {
+                self.viewData.cameraPhase = .active(mode)
             }
+        }
+        
+    }
+    
+    func listenStreamAction() async {
+        for await action in self.stream {
+            await perform(action)
         }
     }
     
@@ -104,18 +122,16 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
             }
     }
     
-     public func setup()   {
-         Task {
-             Task { @MainActor in
-                 if self.viewData.cameraPhase == .paused {
-                     self.viewData.cameraPhase = .inactive
-                 }
-             }
-             await try? self.cameraService.perform(.setup)
-             Task { @MainActor in
-                 self.viewData.cameraPhase = .active(self.cameraMode)
-             }
-         }
+    @MainActor func setup() async {
+        if self.viewData.cameraPhase == .paused {
+            self.viewData.cameraPhase = .inactive
+        }
+        await performCameraSetup()
+        self.viewData.cameraPhase = .active(self.cameraMode)
+    }
+    
+    func performCameraSetup() async {
+        await try? self.cameraService.perform(.setup)
     }
     
     @MainActor
@@ -134,35 +150,41 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
      
     
     public func trigger(_ action: CameraViewAction)  {
-        Task {
-            switch action {
-            case .toggle:
-                return await toggleCamera()
-                
-            case .setup:
-                await setup()
-                return true
-                
-            case .permissionSetup:
-                await permissionSetup()
-                return true
-                
-            case .capture(let cameraAction):
-                return try await performAction(action: cameraAction)
+        continuation.yield(action)
+    }
+    
+    func perform(_ action: CameraViewAction) async {
+        switch action {
+        case .toggle:
+            await toggleCamera()
             
-            case .attachDisplay(let cameraDisplayTarget):
-                 await attachDisplay(cameraDisplayTarget)
-                return true
-            case .pause:
-                await try? self.cameraService.perform(.pause)
-                Task { @MainActor in
-                    self.viewData.cameraPhase = .paused
-                }
-                return true
-            }
+        case .setup:
+            await setup()
+        
+        case .permissionSetup:
+            await permissionSetup()
+          
+        case .capture(let cameraAction):
+             try? await performAction(action: cameraAction)
             
+        case .attachDisplay(let cameraDisplayTarget):
+            await attachDisplay(cameraDisplayTarget)
+
+        case .pause:
+            await pause()
         }
     }
+    
+    @MainActor
+    func pause() async {
+        await pauseService()
+        self.viewData.cameraPhase = .paused
+    }
+    
+    func pauseService() async {
+        await try? self.cameraService.perform(.pause)
+    }
+    
     
 }
 

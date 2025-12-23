@@ -9,7 +9,6 @@ import DomainApi
 struct PermissionServiceImp: PermissionService {
     public init() {}
     
-    @MainActor
     public func requestCameraAndMicrophoneIfNeeded() async -> Bool {
         let videoPermission = await AVCaptureDevice.requestAccess(for: .video)
         guard videoPermission else { return false }
