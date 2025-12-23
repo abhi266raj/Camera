@@ -40,11 +40,12 @@ public protocol CameraViewModel: ActionableViewModel {
     func trigger(_ action: CameraViewAction)
 }
 
-public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
+
+public final class CameraViewModelImp: CameraViewModel {
     
     @MainActor public var viewData: CameraViewData = CameraViewData()
     @MainActor private var cameraMode: CameraMode = .preview
-    @MainActor private let permissionService: PermissionService
+    private let permissionService: PermissionService
     private let cameraService:CameraEngine
     
     private let continuation: AsyncStream<CameraViewAction>.Continuation
@@ -96,6 +97,7 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
         
     }
     
+    @MainActor
     func listenStreamAction() async {
         for await action in self.stream {
             await perform(action)
@@ -126,26 +128,22 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
         if self.viewData.cameraPhase == .paused {
             self.viewData.cameraPhase = .inactive
         }
-        await performCameraSetup()
+        await try? self.cameraService.perform(.setup)
         self.viewData.cameraPhase = .active(self.cameraMode)
     }
     
-    func performCameraSetup() async {
-        await try? self.cameraService.perform(.setup)
-    }
     
     @MainActor
-    public func toggleCamera() async  -> Bool {
+    public func toggleCamera() async  {
         viewData.cameraPhase = .switching
         await try? self.cameraService.perform(.toggle)
         viewData.cameraPhase = .active(cameraMode)
-        return true
     }
     
-    public func performAction( action: CameraAction) async throws -> Bool {
+    @MainActor
+    public func performAction( action: CameraAction) async throws {
         let map = action.toEngineAction()
         try? await cameraService.perform(map)
-        return true
     }
      
     
@@ -153,6 +151,7 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
         continuation.yield(action)
     }
     
+    @MainActor
     func perform(_ action: CameraViewAction) async {
         switch action {
         case .toggle:
@@ -177,13 +176,11 @@ public final class CameraViewModelImp: CameraViewModel, @unchecked Sendable {
     
     @MainActor
     func pause() async {
-        await pauseService()
+        await try? self.cameraService.perform(.pause)
         self.viewData.cameraPhase = .paused
     }
     
-    func pauseService() async {
-        await try? self.cameraService.perform(.pause)
-    }
+    
     
     
 }
