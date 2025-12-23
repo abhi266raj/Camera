@@ -19,12 +19,17 @@ public struct FilterViewData: TitledContent {
     }
 }
 
-@Observable final public class FilterListViewData: Sendable {
+
+
+@Observable final public class FilterListViewData:  Sendable {
+    
+    @MainActor
     public var count: Int  {
         return filters.count
     }
+    @MainActor
     public var filters: [FilterViewData] = []
-    public init() {
+    nonisolated public init() {
         
     }
 }
@@ -34,7 +39,6 @@ public protocol FilterListViewModel: ActionableViewModel {
     var viewData: FilterListViewData {get}
     func trigger(_ action: FilterAction)
     func activate()  async
-    
 }
 
 @Observable
@@ -42,7 +46,6 @@ final public class FilterListViewModelImp: FilterListViewModel {
     
     private let coordinator: FilterCoordinator
 
-    @MainActor
     public var viewData: FilterListViewData = FilterListViewData()
     
     private let continuation: AsyncStream<FilterAction>.Continuation
@@ -58,11 +61,12 @@ final public class FilterListViewModelImp: FilterListViewModel {
     }
     
     public func activate() async {
-        continuation.yield(.refresh)
+        trigger(.refresh)
         for await action in stream {
             await self.perform(action)
         }
     }
+    
     
     func perform(_ task: FilterAction) async {
         switch task {
@@ -76,7 +80,10 @@ final public class FilterListViewModelImp: FilterListViewModel {
     func refresh() async {
         let items = await coordinator.fetchAll()
         let list = items.map {FilterViewData(title: $0.title, id:$0.id)}
-        await updateFilters(items: items)
+        @MainActor func updateFilters(viewData: FilterListViewData = self.viewData) {
+            viewData.filters = list
+        }
+        await updateFilters()
     }
     
     @MainActor func updateFilters(items: [TitledContent]) {

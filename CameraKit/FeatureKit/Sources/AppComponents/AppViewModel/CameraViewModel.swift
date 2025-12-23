@@ -35,7 +35,7 @@ public enum CameraViewAction: Sendable {
     case attachDisplay(CameraDisplayTarget)
 }
 
-public protocol CameraViewModel: ActionableViewModel, Sendable {
+public protocol CameraViewModel: ActionableViewModel {
     @MainActor var viewData: CameraViewData  {get}
     func trigger(_ action: CameraViewAction)
 }
