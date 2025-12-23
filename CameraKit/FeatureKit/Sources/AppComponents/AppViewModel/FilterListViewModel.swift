@@ -19,7 +19,6 @@ public struct FilterViewData: TitledContent {
     }
 }
 
-@MainActor
 @Observable final public class FilterListViewData: Sendable {
     public var count: Int  {
         return filters.count
@@ -77,12 +76,14 @@ final public class FilterListViewModelImp: FilterListViewModel {
     func refresh() async {
         let items = await coordinator.fetchAll()
         let list = items.map {FilterViewData(title: $0.title, id:$0.id)}
-        @MainActor func updateFilters(viewData: FilterListViewData = self.viewData) {
-            viewData.filters = list
-        }
-        await updateFilters()
+        await updateFilters(items: items)
     }
-   
+    
+    @MainActor func updateFilters(items: [TitledContent]) {
+        let list = items.map {FilterViewData(title: $0.title, id:$0.id)}
+        viewData.filters = list
+    }
+
      func fetchId(at index: Int) async -> String? {
         @MainActor func fetchId(viewData: FilterListViewData = self.viewData) ->String? {
             guard viewData.filters.indices.contains(index) else { return nil }
