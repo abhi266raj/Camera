@@ -88,7 +88,7 @@ final class TabViewAppCoordinator {
         case .settings:
             settingsTab()
         case .emptyView:
-            Text("Hello")
+            GalleryGridView()
         }
         
     }
