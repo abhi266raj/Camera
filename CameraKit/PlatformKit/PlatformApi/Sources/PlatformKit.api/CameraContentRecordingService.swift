@@ -16,7 +16,7 @@ public protocol CameraDiskOutputService {
     func performAction( action: CameraAction) async throws -> Bool
 }
 
-public protocol AVCaptureDiskOutputService: CameraDiskOutputService {
+public protocol AVCaptureDiskOutputService: CameraDiskOutputService, Sendable {
     var availableOutput: [AVCaptureOutput] {get}
 }
 

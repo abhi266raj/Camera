@@ -11,7 +11,7 @@ import PlatformApi
 import CoreKit
 
 
-class CameraLayerDisplayCoordinatorImp: CameraDisplayCoordinator {
+final class CameraLayerDisplayCoordinatorImp: CameraDisplayCoordinator, @unchecked Sendable {
     var previewLayer: AVCaptureVideoPreviewLayer
     
     init(session: AVCaptureSession) {

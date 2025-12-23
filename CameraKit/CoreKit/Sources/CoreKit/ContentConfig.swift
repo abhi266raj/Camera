@@ -5,9 +5,9 @@
 //  Created by Abhiraj on 12/12/25.
 //
 
-public struct ImageCaptureConfig {
+public struct ImageCaptureConfig: Sendable {
     
-    public enum PhotoResolution {
+    public enum PhotoResolution: Sendable {
         case hd720
         case hd1080
         case vga640

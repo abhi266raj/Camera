@@ -11,7 +11,7 @@ import PlatformApi
 import CoreKit
 import UIKit
 
-class CameraMetalDisplayCoordinatorImp: CameraDisplayCoordinator {
+final class CameraMetalDisplayCoordinatorImp: CameraDisplayCoordinator, @unchecked Sendable {
     let builder: () -> UIView
     
     init(builder: @escaping () -> UIView) {

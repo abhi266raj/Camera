@@ -10,7 +10,7 @@ import AVFoundation
 import PlatformApi
 import CoreKit
 
-class MultiCameraDisplayCoordinator: CameraDisplayCoordinator {
+class MultiCameraDisplayCoordinator: CameraDisplayCoordinator, @unchecked Sendable {
     
     public let firstLayer: AVCaptureVideoPreviewLayer
     public let secondLayer: AVCaptureVideoPreviewLayer

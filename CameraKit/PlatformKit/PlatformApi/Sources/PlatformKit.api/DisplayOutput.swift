@@ -20,7 +20,7 @@ public protocol MetalRenderingDelegate: class  {
     func sampleBufferRendered(_ buffer: CMSampleBuffer)
 }
 
-public protocol CameraDisplayCoordinator {
+public protocol CameraDisplayCoordinator: Sendable {
     @MainActor
     func attach(_ target: some CameraDisplayTarget) async throws
 }

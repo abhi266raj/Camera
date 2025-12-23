@@ -6,23 +6,23 @@
 //
 
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 import CoreKit
 import DomainApi
 import PlatformApi
 internal import Combine
 
 /// Basic Camera Pipeline Use UIView and record on camera
-final class BasicPhotoPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
+final class BasicPhotoPipeline: NSObject, CameraSubSystem, Sendable {
    
     public  let displayCoordinator: any CameraDisplayCoordinator
     
-    public var recordOutput: AVCaptureDiskOutputService
+    public let recordOutput: AVCaptureDiskOutputService
     
     private let captureSession: AVCaptureSession
     public let sessionManager: CameraSessionService
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
-    var imageCaptureConfig: ImageCaptureConfig  = ImageCaptureConfig()
+    let imageCaptureConfig: ImageCaptureConfig  = ImageCaptureConfig()
    
     
     public init(platformFactory: PlatformFactory) {

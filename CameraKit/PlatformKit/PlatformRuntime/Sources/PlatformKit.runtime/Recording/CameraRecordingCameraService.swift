@@ -11,7 +11,7 @@ import AVFoundation
 import CoreKit
 import PlatformApi
 
-class CameraRecordingCameraService: AVCaptureDiskOutputService {
+class CameraRecordingCameraService: AVCaptureDiskOutputService, @unchecked Sendable {
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     let videoCaptureOutput:AVCaptureMovieFileOutput
     var fileRecorder: BasicFileRecorder?

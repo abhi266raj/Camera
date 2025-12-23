@@ -5,12 +5,12 @@
 //  Created by Abhiraj on 13/12/25.
 //
 
-import AVFoundation
+@preconcurrency import AVFoundation
 import CoreKit
 import PlatformApi
 
 
-class SingleCameraHandlerImp: SingleCameraHandler {
+final class SingleCameraHandlerImp: SingleCameraHandler, @unchecked Sendable {
     var selectedPosition: AVCaptureDevice.Position = .front
     var selectedVideoDevice: AVCaptureDeviceInput? {
         if selectedPosition == .front {

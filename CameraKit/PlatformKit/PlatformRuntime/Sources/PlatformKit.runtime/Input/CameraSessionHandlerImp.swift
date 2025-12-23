@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 import UIKit
 import PlatformApi
 
-class CameraSessionHandlerImp: CameraSessionHandler, CameraSessionService{
+final class CameraSessionHandlerImp: CameraSessionHandler, CameraSessionService{
     
     let session: AVCaptureSession
     public init(session: AVCaptureSession) {
@@ -122,5 +122,5 @@ class CameraSessionHandlerImp: CameraSessionHandler, CameraSessionService{
         return await update(config: config)
     }
     
-    var inputHandler = SingleCameraHandlerImp()
+    let inputHandler = SingleCameraHandlerImp()
 }

@@ -8,7 +8,7 @@
 import AVFoundation
 import CoreKit
 
-public protocol CameraSessionService {
+public protocol CameraSessionService: Sendable {
     func start() async
     func stop() async
     func update(config: CameraInputConfig) async -> Bool

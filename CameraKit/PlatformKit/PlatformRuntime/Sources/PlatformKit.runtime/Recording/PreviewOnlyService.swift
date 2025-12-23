@@ -8,11 +8,11 @@
 
 import Foundation
 import Combine
-import AVFoundation
+@preconcurrency import AVFoundation
 import CoreKit
 import PlatformApi
 
-class PreviewOnlyService: AVCaptureDiskOutputService {
+class PreviewOnlyService: AVCaptureDiskOutputService, @unchecked Sendable {
     public let cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     public let supportedOutput: CameraAction = []
     
