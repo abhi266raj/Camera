@@ -55,7 +55,7 @@ class SampleBufferCameraRecorderService: SampleBufferDiskOutputService {
         throw CameraAction.ActionError.unsupported
     }
     
-    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        videoOutput.videoRecorder?.appendSampleBuffer(sampleBuffer)
-    }
+//    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+//        videoOutput.videoRecorder?.appendSampleBuffer(sampleBuffer)
+//    }
 }

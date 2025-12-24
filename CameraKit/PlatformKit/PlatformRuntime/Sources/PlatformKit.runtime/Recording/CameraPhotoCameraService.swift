@@ -7,7 +7,7 @@
 
 import Combine
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 internal import Photos
 import CoreKit
 import PlatformApi
@@ -31,9 +31,7 @@ class CameraPhotoCameraService: NSObject, AVCaptureDiskOutputService, @unchecked
         let photoSettings = AVCapturePhotoSettings()
         photoSettings.maxPhotoDimensions = imageCaptureConfig.resolution.maxDimension()
         photoOutput.capturePhoto(with: photoSettings, delegate: self)
-        
-        
-        throw CameraAction.ActionError.unsupported
+        return true
        
     }
     
@@ -42,9 +40,6 @@ class CameraPhotoCameraService: NSObject, AVCaptureDiskOutputService, @unchecked
     }
 }
 
-private struct UnsafePhoto: @unchecked Sendable {
-    let photo: AVCapturePhoto
-}
 
 extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
     
@@ -57,12 +52,9 @@ extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
             return
         }
         
-        
-        
-        let unsafePhoto = UnsafePhoto(photo: photo)
         Task {
             do {
-                try await self.savePhotoToLibrary(unsafePhoto)
+                try await self.savePhotoToLibrary(photo)
                 self.cameraModePublisher.send(.preview)
                 print("Image saved to Photos library")
             } catch {
@@ -73,33 +65,15 @@ extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
     }
     
     /// Async method to request permission and save photo
-    private func savePhotoToLibrary(_ photo: UnsafePhoto) async throws {
-        guard let imageData = photo.photo.fileDataRepresentation() else {
+    private func savePhotoToLibrary(_ photo: AVCapturePhoto) async throws {
+        guard let imageData = photo.fileDataRepresentation() else {
             throw NSError(domain: "CameraService", code: 0,
                           userInfo: [NSLocalizedDescriptionKey: "Failed to get image data"])
         }
+        let mediaSaver = MediaSaver()
+        let request: MediaSaveRequest = .imageData(imageData)
+        try await mediaSaver.save(request)
         
-        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
-        guard status == .authorized else {
-            throw NSError(domain: "CameraService", code: 1,
-                          userInfo: [NSLocalizedDescriptionKey: "Permission denied"])
-        }
-        
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            PHPhotoLibrary.shared().performChanges {
-                let creationRequest = PHAssetCreationRequest.forAsset()
-                creationRequest.addResource(with: .photo, data: imageData, options: nil)
-            } completionHandler: { success, error in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else if success {
-                    continuation.resume()
-                } else {
-                    continuation.resume(throwing: NSError(domain: "CameraService", code: 2,
-                                                          userInfo: [NSLocalizedDescriptionKey: "Unknown error saving photo"]))
-                }
-            }
-        }
     }
 }
 

@@ -41,6 +41,7 @@ public struct CameraAction: OptionSet, Sendable {
     public enum ActionError: Error {
         case invalidInput
         case unsupported
+        case operationError(Error)
     }
     
     public let rawValue: Int

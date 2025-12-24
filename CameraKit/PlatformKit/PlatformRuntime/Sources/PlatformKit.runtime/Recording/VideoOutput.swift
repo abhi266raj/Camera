@@ -11,7 +11,7 @@ import PlatformApi
 
 class VideoOutputImp {
     public var videoRecorder: VideoRecorder?
-    public let videoSaver: VideoSaver  = VideoSaverImp()
+    public let videoSaver: VideoSaver  = MediaSaver()
     public init() {
         
     }
@@ -40,7 +40,6 @@ extension VideoOutputImp: VideoOutput {
             recorder.stopRecording { [videoSaver] url in
                 Task { [videoSaver] in
                     await try? videoSaver.saveVideo(from: url)
-                    //self.videoSaver.save(outputFileURL: url, error: nil)
                     continum.resume()
                 }
             }
