@@ -14,7 +14,6 @@ import PlatformApi
 /// Basic Camera Pipeline Use UIView and record on camera
 class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sendable, CameraRecordingSubSystem {
    
- 
     public let displayCoordinator: any CameraDisplayCoordinator
     private let captureSession: AVCaptureSession
     public var input: CameraInput

@@ -7,8 +7,6 @@
 
 import CoreKit
 
-
-
 public protocol ServiceFactory {
     func makePermissionService() -> PermissionService
 }

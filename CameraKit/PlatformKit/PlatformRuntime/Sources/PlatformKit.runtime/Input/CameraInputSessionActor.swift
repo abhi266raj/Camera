@@ -18,7 +18,7 @@ actor CameraInputSessionActor {
 }
 
 final class CameraUtiltyExecutor: SerialExecutor {
-    let serialQueue = DispatchQueue(label: "com.cameraUtiltyExecutor.serialQueue", qos: .utility) // medium priority
+    let serialQueue = DispatchQueue(label: "com.cameraUtiltyExecutor.serialQueue", qos: .userInteractive)
     public func enqueue(_ job: UnownedJob) {
         serialQueue.async {
             job.runSynchronously(on: self.asUnownedSerialExecutor())

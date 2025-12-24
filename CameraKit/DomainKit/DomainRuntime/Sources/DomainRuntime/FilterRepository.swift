@@ -11,6 +11,7 @@ import CoreImage
 import CoreKit
 import PlatformApi
 import DomainApi
+internal import Synchronization
 
 // MARK: - DataSource
 
@@ -62,9 +63,9 @@ protocol FilterRepository: Sendable {
 
 
 
-actor FilterRepositoryImpl: FilterRepository {
+final class FilterRepositoryImpl: FilterRepository {
     private let dataSource: StaticFilterDataSource
-    private var filterMap: [String: FilterModel] = [:]
+    private let filterMaps = Mutex<[String: FilterModel]>([:])
 
     init(dataSource: StaticFilterDataSource = StaticFilterDataSource()) {
         self.dataSource = dataSource
@@ -72,12 +73,21 @@ actor FilterRepositoryImpl: FilterRepository {
 
     func fetchAll() async -> [TitledContent] {
         let list = await dataSource.loadFilter()
-        list.forEach { filterMap[$0.id] = $0.model }
+        list.forEach { entity in
+            filterMaps.withLock { filterMap in
+                filterMap[entity.id] = entity.model
+            }
+        }
         return list
     }
 
     func filter(id: String) async -> FilterModel? {
-        filterMap[id]
+        var result: FilterModel?
+        filterMaps.withLock { filterMap in
+            result = filterMap[id]
+        }
+        return result
+        
     }
 }
 

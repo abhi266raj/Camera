@@ -54,12 +54,10 @@ final class BasicPhotoPipeline: NSObject, CameraSubSystem, Sendable {
         await sessionManager.stop()
     }
     
-    
      public func toggleCamera() async -> Bool {
          let config = CameraInputConfig(photoResolution: imageCaptureConfig.resolution)
          return await sessionManager.toggle(config: config)
     }
-    
     
     @MainActor
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {
@@ -71,7 +69,6 @@ final class BasicPhotoPipeline: NSObject, CameraSubSystem, Sendable {
 }
 
 extension BasicPhotoPipeline {
-    
     
     var cameraModePublisher: AsyncSequence<CameraMode, Never> {
         return recordOutput.cameraModePublisher.values

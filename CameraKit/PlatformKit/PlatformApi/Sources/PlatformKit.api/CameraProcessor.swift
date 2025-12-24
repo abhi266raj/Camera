@@ -11,11 +11,18 @@ import CoreKit
 
 public protocol CameraProccessor: class {
     func setup(connection: ContentConnection)
-    // func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer
     var selectedFilter: (any FilterModel)? {get set}
 }
 
 public protocol FilterSelectionDelegate: AnyObject {
     func didUpdateSelection(_ filter: FilterModel?)
+}
+
+
+protocol ChainedProcessor {
+    associatedtype Element
+    associatedtype NextProcessor: ChainedProcessor = Self
+    var next: NextProcessor? { get set }
+    func process(_ element: Element)
 }
 

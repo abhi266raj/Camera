@@ -9,7 +9,6 @@ import DomainApi
 import PlatformApi
 import CoreKit
 
-
 public final class CameraFactoryImp: CameraFactory {
     
     let platformFactory: PlatformFactory
