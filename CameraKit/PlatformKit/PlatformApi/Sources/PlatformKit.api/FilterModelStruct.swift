@@ -5,14 +5,11 @@
 //  Created by Abhiraj on 22/10/23.
 //
 
-import Foundation
-import CoreMedia
-import CoreVideo
-import CoreImage
+@preconcurrency import CoreImage.CIImage
 import CoreKit
 
 
-public struct CIFilterModel : @unchecked Sendable, FilterModel {
+public struct CIFilterModel : Sendable, FilterModel {
     public let type: FilterType = .ciFilter
     public let contents: CIFilter
     

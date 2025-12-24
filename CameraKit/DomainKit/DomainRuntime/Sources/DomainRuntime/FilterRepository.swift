@@ -61,8 +61,6 @@ protocol FilterRepository: Sendable {
     func filter(id: String) async -> FilterModel?
 }
 
-
-
 final class FilterRepositoryImpl: FilterRepository {
     private let dataSource: StaticFilterDataSource
     private let filterMaps = Mutex<[String: FilterModel]>([:])
