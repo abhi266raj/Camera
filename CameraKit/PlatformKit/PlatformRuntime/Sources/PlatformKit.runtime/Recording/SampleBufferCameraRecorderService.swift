@@ -14,14 +14,22 @@ import CoreKit
 import PlatformApi
 
 class SampleBufferCameraRecorderService: SampleBufferDiskOutputService {
+    var input: ContentInput
+    
+    var output: ContentOutput? {
+        return videoOutput.videoRecorder
+    }
+    
     public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
     
     let videoOutput: VideoOutput
     
     public let supportedOutput: CameraAction = [.startRecord, .stopRecord]
     
-    public init() {
+    public init(input: ContentInput) {
         self.videoOutput = VideoOutputImp()
+        self.input = input
+        passThroughSetup()
     }
     
     public var availableOutput: [AVCaptureOutput] {

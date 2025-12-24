@@ -35,27 +35,37 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     }
     private let metalRenderingDelegateImp: MetalRenderingDelegateImp
     private var streamTask : Task<Void, Never>?
+    let multiContentInput: MultiContentInput
+    let audioInput = MediaContentInput()
+    //private let videoInput = MediaContentInput()
 
     public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
         let session = AVCaptureSession()
         self.captureSession = session
-        sampleBufferOutputService = platformFactory.makeSampleBufferOutputService()
+        let contentInput = MultiContentInput()
+        contentInput.insert(audioInput)
+        self.multiContentInput = contentInput
+        sampleBufferOutputService = platformFactory.makeSampleBufferOutputService(input: multiContentInput)
         let metalRenderingDelegateImp = MetalRenderingDelegateImp(sampleBufferOutputService: sampleBufferOutputService)
+        let effectProcessor = platformFactory.makeEffectProcessor()
+        
         let viewBuilder: () -> UIView = {
+           
             let metalView = platformFactory.makePreviewMetalTarget()
-            metalView.renderingDelegate = metalRenderingDelegateImp
-            metalRenderingDelegateImp.metalView = metalView
+            let connection = BasicContentConnection(input: metalRenderingDelegateImp.videoInput,output: metalView)
+            effectProcessor.setup(connection: connection)
+            contentInput.insert(metalView)
             return metalView
         }
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator(builder: viewBuilder)
         self.metalRenderingDelegateImp = metalRenderingDelegateImp
         self.input = platformFactory.makeCameraInput()
-        let effectProcessor = platformFactory.makeEffectProcessor()
+       
         self.processor = effectProcessor
         
         super.init()
-        bufferOutput.setSampleBufferDelegate(self, queue: videoQueue)
-        audioOutput.setSampleBufferDelegate(self, queue: audioQueue)
+        bufferOutput.setSampleBufferDelegate(metalRenderingDelegateImp.videoInput, queue: videoQueue)
+        audioOutput.setSampleBufferDelegate(audioInput, queue: audioQueue)
         self.streamTask = Task {  @MainActor [weak self] in
             for await filter in stream {
                 self?.processor.selectedFilter = filter
@@ -130,41 +140,19 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     }
 }
 
-extension BasicMetalPipeline: AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
-    
-    public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if CMSampleBufferGetImageBuffer(sampleBuffer) != nil {
-            let sampleBuffer = processor.process(sampleBuffer: sampleBuffer)
-            self.metalRenderingDelegateImp.metalView?.captureOutput?(output, didOutput: sampleBuffer, from: connection)
-        }else{
-            // Audio delegate record it
-            self.sampleBufferOutputService.appendSampleBuffer(sampleBuffer)
-        }
-      
-    }
-    
-}
 
 
-extension BasicMetalPipeline: MetalRenderingDelegate {
-    func sampleBufferRendered(_ buffer: CMSampleBuffer) {
-        sampleBufferOutputService.appendSampleBuffer(buffer)
-    }
-}
 
-
-class MetalRenderingDelegateImp: MetalRenderingDelegate {
+class MetalRenderingDelegateImp {
+    let videoInput = MediaContentInput()
     let sampleBufferOutputService: SampleBufferDiskOutputService
     var metalView: PreviewMetalTarget?
     
     init(sampleBufferOutputService: SampleBufferDiskOutputService) {
         self.sampleBufferOutputService = sampleBufferOutputService
     }
-    
-    func sampleBufferRendered(_ buffer: CMSampleBuffer) {
-        sampleBufferOutputService.appendSampleBuffer(buffer)
-    }
 }
+
 
 
 

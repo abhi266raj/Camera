@@ -10,7 +10,8 @@ import CoreMedia
 import CoreKit
 
 public protocol CameraProccessor: class {
-    func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer
+    func setup(connection: ContentConnection)
+    // func process(sampleBuffer: CMSampleBuffer) -> CMSampleBuffer
     var selectedFilter: (any FilterModel)? {get set}
 }
 

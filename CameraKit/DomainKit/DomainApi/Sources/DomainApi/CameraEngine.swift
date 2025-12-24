@@ -26,9 +26,8 @@ public enum EngineAction {
 public protocol CameraEngine: Sendable {
     var activeConfig: EngineOption.Config {get}
     func perform(_ action: EngineAction) async throws
-    @MainActor
-    func attachDisplay(_ target: some CameraDisplayTarget) throws
-    var cameraModePublisher: AsyncSequence<CameraMode, Never> { get }
+    func attachDisplay(_ target: some CameraDisplayTarget) async throws
+    var cameraMode: AsyncSequence<CameraMode, Never> { get }
 }
 
 

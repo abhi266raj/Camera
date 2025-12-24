@@ -10,13 +10,30 @@ import CoreMedia
 import CoreKit
 import PlatformApi
 
-class EffectCameraProcessor : CameraProccessor {
+class EffectCameraProcessor: CameraProccessor{
+    var contentProduced: ((CMSampleBuffer) -> Void)?
+    
+    func contentOutput(_ output: any ContentOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: any ContentConnection) {
+        if let contentProduced {
+            let value = process(sampleBuffer: sampleBuffer)
+            contentProduced(sampleBuffer)
+        }
+    }
+    
     
     var filterRender1: CIFilterRenderer = CIFilterRenderer()
     var filterRender2: MetalFilterRenderer = MetalFilterRenderer()
     
     public init() {
         
+    }
+    
+    public func setup(connection: ContentConnection) {
+        connection.input.contentProduced = { [weak self] sampleBuffer in
+            guard let self, let output = connection.output else {return}
+            let value = process(sampleBuffer: sampleBuffer)
+            output.contentOutput(output, didOutput: value, from: connection)
+        }
     }
     
     var selectedFilter: (any FilterModel)? {

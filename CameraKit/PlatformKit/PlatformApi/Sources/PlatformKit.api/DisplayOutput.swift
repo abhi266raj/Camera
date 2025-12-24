@@ -11,7 +11,7 @@ import CoreMedia
 import AVFoundation
 
 
-public protocol PreviewMetalTarget: UIView, AVCaptureVideoDataOutputSampleBufferDelegate {
+public protocol PreviewMetalTarget: UIView, AVCaptureVideoDataOutputSampleBufferDelegate, ContentOutput, ContentInput {
     // var sampleBuffer: CMSampleBuffer? {get set}
     var renderingDelegate:MetalRenderingDelegate? {get set}
 }

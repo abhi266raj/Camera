@@ -20,7 +20,7 @@ public protocol AVCaptureDiskOutputService: CameraDiskOutputService, Sendable {
     var availableOutput: [AVCaptureOutput] {get}
 }
 
-public protocol SampleBufferDiskOutputService: CameraDiskOutputService {
+public protocol SampleBufferDiskOutputService: CameraDiskOutputService, ContentConnection{
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)
 }
 
@@ -36,7 +36,7 @@ public protocol VideoSaver: Sendable {
     func saveVideo(from url: URL) async throws
 }
 
-public protocol VideoRecorder {
+public protocol VideoRecorder: ContentOutput {
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)
     func stopRecording(completion: @escaping (URL) -> Void)
 }

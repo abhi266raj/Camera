@@ -55,7 +55,6 @@ public final class CameraViewModelImp: CameraViewModel {
     @MainActor
     public init(permissionService: PermissionService, cameraService: CameraEngine) {
         self.permissionService = permissionService
-       // self.cameraConfig = cameraConfig
         self.cameraService = cameraService
         (stream,continuation) = AsyncStream<CameraViewAction>.make()
         updateViewData()
@@ -87,7 +86,7 @@ public final class CameraViewModelImp: CameraViewModel {
     
     @MainActor
     func listenCameraMode() async {
-        let stream =  cameraService.cameraModePublisher
+        let stream =  cameraService.cameraMode
         for await mode in stream {
             await self.cameraMode = mode
             if case .active(_) = self.viewData.cameraPhase {
@@ -109,19 +108,20 @@ public final class CameraViewModelImp: CameraViewModel {
     }
     
     @MainActor
-    public func attachDisplay(_ target: CameraDisplayTarget) {
-        try? cameraService.attachDisplay(target)
+    public func attachDisplay(_ target: CameraDisplayTarget) async
+    {
+        try? await cameraService.attachDisplay(target)
     }
     
     @MainActor public func permissionSetup() async  {
-            if viewData.cameraPermissionState == .unknown {
-                let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()
-                if permission == false {
-                    viewData.cameraPermissionState = .denied
-                }else {
-                    viewData.cameraPermissionState = .authorized
-                }
+        if viewData.cameraPermissionState == .unknown {
+            let permission = await permissionService.requestCameraAndMicrophoneIfNeeded()
+            if permission == false {
+                viewData.cameraPermissionState = .denied
+            }else {
+                viewData.cameraPermissionState = .authorized
             }
+        }
     }
     
     @MainActor func setup() async {

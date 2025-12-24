@@ -206,7 +206,7 @@ extension BaseEngine: CameraEngine {
 extension BaseEngine: EngineInternal  {
 
     
-    public var cameraModePublisher: AsyncSequence<CameraMode, Never> {
+    public var cameraMode: AsyncSequence<CameraMode, Never> {
         return subSystem.cameraModePublisher
     }
         

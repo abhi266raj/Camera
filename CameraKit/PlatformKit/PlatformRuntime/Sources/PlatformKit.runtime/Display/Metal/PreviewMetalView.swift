@@ -14,7 +14,13 @@ import PlatformApi
 import AVFoundation
 
 
- class PreviewMetalView: MTKView, PreviewMetalTarget {
+class PreviewMetalView: MTKView, @preconcurrency PreviewMetalTarget {
+    var contentProduced: ((CMSampleBuffer) -> Void)?
+    
+    nonisolated func contentOutput(_ output: any PlatformApi.ContentOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: any PlatformApi.ContentConnection) {
+         self.sampleBuffer = sampleBuffer
+    }
+    
     
     weak public var renderingDelegate:MetalRenderingDelegate?
     
@@ -440,6 +446,7 @@ import AVFoundation
                     CMSampleBufferGetSampleTimingInfo(sampleBuffer, at: 0, timingInfoOut: &timingInfo)
                     _ = CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: newPixelBuffer, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: formatDescription, sampleTiming: &timingInfo, sampleBufferOut: &newSampleBuffer)
                     if let newSampleBuffer {
+                        self?.contentProduced?(newSampleBuffer)
                         self?.renderingDelegate?.sampleBufferRendered(newSampleBuffer)
                     }
                     counter1 -= 1

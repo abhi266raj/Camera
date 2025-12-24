@@ -12,6 +12,10 @@ import CoreMedia
 import PlatformApi
 
 class VideoRecorderImp: VideoRecorder {
+    func contentOutput(_ output: any ContentOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: any ContentConnection) {
+        appendSampleBuffer(sampleBuffer)
+    }
+    
     var isRecording: Bool = false
     private var videoWriter: AVAssetWriter?
     private var videoWriterInput: AVAssetWriterInput?
