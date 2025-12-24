@@ -15,7 +15,7 @@ import CoreKit
 enum AppTab: Hashable, Identifiable {
     case camera(CameraType)
     case settings
-    case emptyView
+    case gallery
     
     var id: Self { self }
 
@@ -23,17 +23,20 @@ enum AppTab: Hashable, Identifiable {
         switch self {
         case .camera(let type): return type.title
         case .settings: return "Settings"
-        case .emptyView: return "Empty"
+        case .gallery: return "Gallery"
         }
     }
 
     var systemImage: String {
-        switch self {
-        case .camera: return "camera"
-        case .settings: return "gearshape"
-        case .emptyView: return "empty"
-        }
-    }
+          switch self {
+          case .camera(.basicPhoto): return "camera"
+          case .camera(.basicVideo): return "video"
+          case .camera(.metal): return "camera.aperture"
+          case .camera(.multicam): return "camera.viewfinder"
+          case .settings: return "gearshape"
+          case .gallery: return "photo.on.rectangle"
+          }
+      }
 }
 
 @Observable
@@ -58,7 +61,7 @@ final class TabViewAppCoordinator {
     }
     
     init() {
-        let tabs = [AppTab.emptyView, AppTab.camera(.basicPhoto), AppTab.camera(.metal), AppTab.camera(.basicVideo), AppTab.camera(.multicam)]
+        let tabs = [AppTab.gallery, AppTab.camera(.basicPhoto), AppTab.camera(.metal), AppTab.camera(.basicVideo), AppTab.camera(.multicam)]
         self.selectedTab = tabs.first!
         self.tabs = tabs
     }
@@ -87,7 +90,7 @@ final class TabViewAppCoordinator {
 
         case .settings:
             settingsTab()
-        case .emptyView:
+        case .gallery:
             GalleryGridView()
         }
         

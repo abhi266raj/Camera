@@ -21,7 +21,11 @@ public struct GalleryGridView: View {
                 LazyVGrid(columns: columns, spacing: 8) {
                     ForEach(viewModel.assets, id: \.localIdentifier) { asset in
                         GalleryThumbnailView(asset: asset)
-                            .frame(height: 100)
+                            .frame(width: 100, height: 100) 
+                            .aspectRatio(1, contentMode: .fit)
+                            .clipped()
+                            
+                            //.frame(height: 100)
                     }
                 }
             }
@@ -68,13 +72,14 @@ struct GalleryThumbnailView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
+                    .clipped()
             } else {
                 LoadingView()
                 Rectangle()
                     .fill(.secondary.opacity(0.2))
             }
         }
-        .task(id: asset.localIdentifier) {
+        .task(id: asset.localIdentifier, priority:.background) {
             await loadThumbnail()
         }
         .clipped()
@@ -82,7 +87,7 @@ struct GalleryThumbnailView: View {
     
     private func loadThumbnail() async {
         let manager = PHImageManager.default()
-        let size = CGSize(width: 200, height: 200)
+        let size = CGSize(width: 900, height:900)
         
         var didResume = false
         
