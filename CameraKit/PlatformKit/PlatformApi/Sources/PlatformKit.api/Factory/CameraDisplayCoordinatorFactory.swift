@@ -17,6 +17,7 @@ public protocol PlatformFactory {
     
     func makePassThroughDiskRecordingService() -> AVCaptureDiskOutputService
     func makePhotoClickWorker() -> PhotoClickWorker
+    func makeBasicVideoRecordWorker() -> BasicVideoRecordWorker
     func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> AVCaptureDiskOutputService
     func makeSampleBufferOutputService(input: ContentInput) -> SampleBufferDiskOutputService
     

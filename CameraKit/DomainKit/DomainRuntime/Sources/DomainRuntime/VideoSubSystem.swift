@@ -1,8 +1,8 @@
 //
-//  BasicPhotoPipeline.swift
+//  VideoSubSystem.swift
 //  CameraKit
 //
-//  Created by Abhiraj on 08/10/23.
+//  Created by Abhiraj on 25/12/25.
 //
 
 import Foundation
@@ -13,27 +13,27 @@ import PlatformApi
 internal import Combine
 internal import Synchronization
 
-final class PhotoSubSystem: NSObject, CameraSubSystem, Sendable {
+final class VideoSubSystem: NSObject, CameraSubSystem, Sendable {
    
     public  let displayCoordinator: any CameraDisplayCoordinator
     
-    public let recordOutput: PhotoClickWorker
+    public let recordOutput: BasicVideoRecordWorker
     
     private let captureSession: AVCaptureSession
     public let sessionManager: CameraSessionService
-    let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
-    let imageCaptureConfig: ImageCaptureConfig  = ImageCaptureConfig()
+    let videoOutput: AVCaptureMovieFileOutput = AVCaptureMovieFileOutput()
     let inputDevice: CameraInput
     let sessionState: SessionState = SessionState()
     let sessionConfig: SessionConfig = SessionConfig()
     let continuation: Mutex<AsyncStream<CameraMode>.Continuation?> = Mutex(nil)
+    private let supportedOutput: CameraAction = [.startRecord, .stopRecord]
    
     
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
         displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
-        recordOutput = platformFactory.makePhotoClickWorker()
+        recordOutput = platformFactory.makeBasicVideoRecordWorker()
         inputDevice = platformFactory.makeCameraInput()
         sessionManager = platformFactory.makeSessionService()
         if let videoDevice = inputDevice.backCamera {
@@ -42,9 +42,8 @@ final class PhotoSubSystem: NSObject, CameraSubSystem, Sendable {
     }
     
     public func setup() async {
-        sessionConfig.videoResolution = CameraInputConfig(photoResolution: imageCaptureConfig.resolution).dimensions
         sessionConfig.videoDevice = sessionState.selectedVideoDevice
-        sessionConfig.contentOutput = [photoOutput]
+        sessionConfig.contentOutput = [videoOutput]
         if let _ = await try? sessionManager.apply(sessionConfig, session: captureSession) {
             await captureSession.startRunning()
         }
@@ -76,7 +75,7 @@ final class PhotoSubSystem: NSObject, CameraSubSystem, Sendable {
     
 }
 
-extension PhotoSubSystem {
+extension VideoSubSystem {
     
     var cameraModePublisher: AsyncSequence<CameraMode, Never> {
         let value = AsyncStream<CameraMode>.make()
@@ -85,18 +84,29 @@ extension PhotoSubSystem {
     }
     
     func performAction( action: CameraAction) async throws -> Bool {
-        guard action == .photo else {
+        
+        guard self.supportedOutput.contains(action) else {
             throw CameraAction.ActionError.invalidInput
         }
-        
-        continuation.withLock { $0?.yield(.capture(.photo))}
-        defer {
-            continuation.withLock { $0?.yield(.preview)}
+        if action == .startRecord {
+            continuation.withLock { $0?.yield(.initiatingCapture)}
+            let stream = await recordOutput.startRecording(videoOutput, url: nil)
+            continuation.withLock { $0?.yield(.capture(.video))}
+            Task.immediate {
+                for try await result in stream {
+                    try await recordOutput.saveVideoToLibrary(result)
+                }
+            }
+            return true
+        }else if action == .stopRecord {
+            continuation.withLock { $0?.yield(.initiatingCapture)}
+            defer {
+                continuation.withLock { $0?.yield(.preview)}
+            }
+            try recordOutput.stopRecording(output: videoOutput)
+            return true
         }
-        let stream = await recordOutput.clickPhoto(photoOutput, imageCaptureConfig: imageCaptureConfig)
-        for try await result in stream {
-             try await recordOutput.savePhotoToLibrary(result)
-        }
+            throw CameraAction.ActionError.unsupported
         return true
     }
     

@@ -26,6 +26,10 @@ final class PlatformFactoryImp: PlatformFactory {
         CameraPhotoCameraService()
     }
     
+    func makeBasicVideoRecordWorker() -> any BasicVideoRecordWorker {
+        VideoRecordWorkerImp()
+    }
+    
     func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> any AVCaptureDiskOutputService {
         CameraRecordingCameraService(videoCaptureOutput: videoCaptureOutput)
     }

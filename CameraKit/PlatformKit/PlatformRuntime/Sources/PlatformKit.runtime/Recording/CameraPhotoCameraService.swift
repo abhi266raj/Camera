@@ -13,7 +13,6 @@ import CoreKit
 import PlatformApi
 internal import Synchronization
 
-
 final class CameraPhotoCameraService: NSObject, Sendable {
     let continuationMutex:  Mutex<AsyncThrowingStream<AVCapturePhoto, Error>.Continuation?> = Mutex(nil)
     var continuation:AsyncThrowingStream<AVCapturePhoto, Error>.Continuation? {
@@ -82,4 +81,3 @@ extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
         
     }
 }
-

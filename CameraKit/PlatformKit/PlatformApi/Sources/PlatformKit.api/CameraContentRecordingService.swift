@@ -25,6 +25,12 @@ public protocol PhotoClickWorker: Sendable {
     func savePhotoToLibrary(_ photo: AVCapturePhoto) async throws
 }
 
+public protocol BasicVideoRecordWorker: Sendable {
+    func startRecording(_ output: AVCaptureMovieFileOutput, url: URL?) async -> AsyncThrowingStream<URL, Error>
+    func stopRecording(output: AVCaptureMovieFileOutput) throws
+    func saveVideoToLibrary(_ outputFileURL: URL) async throws
+}
+
 
 public protocol SampleBufferDiskOutputService: CameraDiskOutputService, ContentConnection{
    // func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)

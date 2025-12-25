@@ -188,9 +188,7 @@ final class BaseEngine: Sendable {
             let specification = EngineSpecsImp.videoCamEngineSpecs()
             self.activeConfig = specification.allConfig[0]
             self.specs = specification
-            self.subSystem = BasicVideoPipeline(platformFactory: platfomFactory)
-            
-            
+            self.subSystem = VideoSubSystem(platformFactory: platfomFactory)
         case .filter:
             let specification = EngineSpecsImp.filterCamEngineSpecs()
             self.activeConfig = specification.allConfig[0]
