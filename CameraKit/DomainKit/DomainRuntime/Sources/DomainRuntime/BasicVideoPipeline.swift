@@ -31,7 +31,6 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
 
     public func setup() async {
                 let _  = setupInputAndOutput()
-                // input.session = captureSession
                 await captureSession.startRunning()
     }
     

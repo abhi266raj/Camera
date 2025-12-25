@@ -11,32 +11,45 @@ import Foundation
 internal import Photos
 import CoreKit
 import PlatformApi
+internal import Synchronization
 
-class CameraPhotoCameraService: NSObject, AVCaptureDiskOutputService, @unchecked Sendable {
-    public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
-    
-    var photoOutput:AVCapturePhotoOutput
-    public let imageCaptureConfig: ImageCaptureConfig
-    
-     public init(imageCaptureConfig:ImageCaptureConfig) {
-        self.imageCaptureConfig = imageCaptureConfig
-        self.photoOutput = AVCapturePhotoOutput()
-    }
-    
-    public func performAction(action: CameraAction) async throws -> Bool {
-        guard action == .photo else {
-            throw CameraAction.ActionError.invalidInput
+
+final class CameraPhotoCameraService: NSObject, Sendable {
+    let continuationMutex:  Mutex<AsyncThrowingStream<AVCapturePhoto, Error>.Continuation?> = Mutex(nil)
+    var continuation:AsyncThrowingStream<AVCapturePhoto, Error>.Continuation? {
+        get {
+            var result:AsyncThrowingStream<AVCapturePhoto, Error>.Continuation? = nil
+            continuationMutex.withLock {result = $0}
+            return result
         }
-        cameraModePublisher.send(.capture(.photo))
-        let photoSettings = AVCapturePhotoSettings()
-        photoSettings.maxPhotoDimensions = imageCaptureConfig.resolution.maxDimension()
-        photoOutput.capturePhoto(with: photoSettings, delegate: self)
-        return true
-       
+        set {
+            continuationMutex.withLock{$0 = newValue}
+        }
     }
     
-    public var availableOutput: [AVCaptureOutput] {
-        return [photoOutput]
+    override public init() {
+        
+    }
+}
+
+extension CameraPhotoCameraService: PhotoClickWorker {
+    
+    enum PhotoClickError: Error {
+        case ongoing
+    }
+    
+    func clickPhoto(_ output: AVCapturePhotoOutput, imageCaptureConfig:ImageCaptureConfig) async -> AsyncThrowingStream<AVCapturePhoto, Error> {
+        let stream = AsyncThrowingStream<AVCapturePhoto, Error> { continuation in
+            guard self.continuation == nil else {
+                continuation.finish(throwing: PhotoClickError.ongoing)
+                return
+            }
+            self.continuation = continuation
+            let photoSettings = AVCapturePhotoSettings()
+            photoSettings.maxPhotoDimensions = imageCaptureConfig.resolution.maxDimension()
+            output.capturePhoto(with: photoSettings, delegate: self)
+        }
+        return stream
     }
 }
 
@@ -48,24 +61,17 @@ extension CameraPhotoCameraService: AVCapturePhotoCaptureDelegate {
                      error: Error?)
     {
         guard error == nil else {
-            cameraModePublisher.send(.preview)
+            continuation?.finish(throwing: error)
             return
         }
         
-        Task {
-            do {
-                try await self.savePhotoToLibrary(photo)
-                self.cameraModePublisher.send(.preview)
-                print("Image saved to Photos library")
-            } catch {
-                self.cameraModePublisher.send(.preview)
-                print("Failed to save photo: \(error.localizedDescription)")
-            }
-        }
+        continuation?.yield(photo)
+        continuation?.finish()
+        continuation = nil
     }
     
     /// Async method to request permission and save photo
-    private func savePhotoToLibrary(_ photo: AVCapturePhoto) async throws {
+     func savePhotoToLibrary(_ photo: AVCapturePhoto) async throws {
         guard let imageData = photo.fileDataRepresentation() else {
             throw NSError(domain: "CameraService", code: 0,
                           userInfo: [NSLocalizedDescriptionKey: "Failed to get image data"])

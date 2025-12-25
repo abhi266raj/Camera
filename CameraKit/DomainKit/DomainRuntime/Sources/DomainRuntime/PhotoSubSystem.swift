@@ -13,12 +13,11 @@ import PlatformApi
 internal import Combine
 internal import Synchronization
 
-/// Basic Camera Pipeline Use UIView and record on camera
-final class BasicPhotoPipeline: NSObject, CameraSubSystem, Sendable {
+final class PhotoSubSystem: NSObject, CameraSubSystem, Sendable {
    
     public  let displayCoordinator: any CameraDisplayCoordinator
     
-    public let recordOutput: AVCaptureDiskOutputService
+    public let recordOutput: PhotoClickWorker
     
     private let captureSession: AVCaptureSession
     public let sessionManager: CameraSessionService
@@ -27,13 +26,14 @@ final class BasicPhotoPipeline: NSObject, CameraSubSystem, Sendable {
     let inputDevice: CameraInput
     let sessionState: SessionState = SessionState()
     let sessionConfig: SessionConfig = SessionConfig()
+    let continuation: Mutex<AsyncStream<CameraMode>.Continuation?> = Mutex(nil)
    
     
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
         displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
-        recordOutput = platformFactory.makePhotoOutputService(imageCaptureConfig: imageCaptureConfig)
+        recordOutput = platformFactory.makePhotoClickWorker()
         inputDevice = platformFactory.makeCameraInput()
         sessionManager = platformFactory.makeSessionService()
         if let videoDevice = inputDevice.backCamera {
@@ -42,10 +42,9 @@ final class BasicPhotoPipeline: NSObject, CameraSubSystem, Sendable {
     }
     
     public func setup() async {
-        imageCaptureConfig.resolution.maxDimension()
         sessionConfig.videoResolution = CameraInputConfig(photoResolution: imageCaptureConfig.resolution).dimensions
         sessionConfig.videoDevice = sessionState.selectedVideoDevice
-        sessionConfig.contentOutput = recordOutput.availableOutput
+        sessionConfig.contentOutput = [photoOutput]
         if let _ = await try? sessionManager.apply(sessionConfig, session: captureSession) {
             await captureSession.startRunning()
         }
@@ -77,18 +76,30 @@ final class BasicPhotoPipeline: NSObject, CameraSubSystem, Sendable {
     
 }
 
-extension BasicPhotoPipeline {
+extension PhotoSubSystem {
     
     var cameraModePublisher: AsyncSequence<CameraMode, Never> {
-        return recordOutput.cameraModePublisher.values
+        let value = AsyncStream<CameraMode>.make()
+        continuation.withLock { $0 = value.1}
+        return value.0
     }
     
     func performAction( action: CameraAction) async throws -> Bool {
-        return try await recordOutput.performAction(action:action)
+        guard action == .photo else {
+            throw CameraAction.ActionError.invalidInput
+        }
+        
+        continuation.withLock { $0?.yield(.capture(.photo))}
+        let stream = await recordOutput.clickPhoto(photoOutput, imageCaptureConfig: imageCaptureConfig)
+        for try await result in stream {
+             try await recordOutput.savePhotoToLibrary(result)
+        }
+        continuation.withLock { $0?.yield(.preview)}
+        return true
     }
     
     
-    func toggledDevice() -> [AVCaptureDeviceInput] {
+    private func toggledDevice() -> [AVCaptureDeviceInput] {
         if sessionState.selectedVideoDevice.first?.device.uniqueID == inputDevice.frontCamera?.device.uniqueID {
             return [inputDevice.backCamera].compactMap { $0 }
         }else {

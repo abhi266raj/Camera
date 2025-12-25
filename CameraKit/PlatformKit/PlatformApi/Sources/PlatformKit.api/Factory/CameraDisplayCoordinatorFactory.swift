@@ -16,7 +16,7 @@ public protocol PlatformFactory {
     func makeVideoLayerDisplayCoordinator(avcaptureSession: AVCaptureSession) -> CameraDisplayCoordinator
     
     func makePassThroughDiskRecordingService() -> AVCaptureDiskOutputService
-    func makePhotoOutputService(imageCaptureConfig:ImageCaptureConfig) -> AVCaptureDiskOutputService
+    func makePhotoClickWorker() -> PhotoClickWorker
     func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> AVCaptureDiskOutputService
     func makeSampleBufferOutputService(input: ContentInput) -> SampleBufferDiskOutputService
     

@@ -22,8 +22,8 @@ final class PlatformFactoryImp: PlatformFactory {
         PreviewMetalView(frame: .zero)
     }
     
-    func makePhotoOutputService(imageCaptureConfig:ImageCaptureConfig) -> any AVCaptureDiskOutputService {
-        CameraPhotoCameraService(imageCaptureConfig: imageCaptureConfig)
+    func makePhotoClickWorker() -> any PhotoClickWorker {
+        CameraPhotoCameraService()
     }
     
     func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> any AVCaptureDiskOutputService {

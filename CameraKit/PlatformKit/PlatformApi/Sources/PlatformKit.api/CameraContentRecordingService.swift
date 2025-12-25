@@ -20,6 +20,12 @@ public protocol AVCaptureDiskOutputService: CameraDiskOutputService, Sendable {
     var availableOutput: [AVCaptureOutput] {get}
 }
 
+public protocol PhotoClickWorker: Sendable {
+    func clickPhoto(_ output: AVCapturePhotoOutput, imageCaptureConfig:ImageCaptureConfig) async -> AsyncThrowingStream<AVCapturePhoto, Error>
+    func savePhotoToLibrary(_ photo: AVCapturePhoto) async throws
+}
+
+
 public protocol SampleBufferDiskOutputService: CameraDiskOutputService, ContentConnection{
    // func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)
 }

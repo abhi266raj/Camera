@@ -178,7 +178,7 @@ final class BaseEngine: Sendable {
             let specification = EngineSpecsImp.photoEngineSpecs()
             self.activeConfig = specification.allConfig[0]
             self.specs = specification
-            self.subSystem = BasicPhotoPipeline(platformFactory: platfomFactory)
+            self.subSystem = PhotoSubSystem(platformFactory: platfomFactory)
         case .multiCam:
             let specification = EngineSpecsImp.multiCamEngineSpecs()
             self.activeConfig = specification.allConfig[0]
