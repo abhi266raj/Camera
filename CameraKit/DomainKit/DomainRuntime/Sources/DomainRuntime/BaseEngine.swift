@@ -212,9 +212,8 @@ extension BaseEngine: EngineInternal  {
         return subSystem.cameraModePublisher
     }
         
-    @MainActor
-    public func attachDisplay(_ target: some CoreKit.CameraDisplayTarget) throws {
-        try subSystem.attachDisplay(target)
+    public func attachDisplay(_ target: some CoreKit.CameraDisplayTarget) async throws {
+        try await subSystem.attachDisplay(target)
     }
     
 }

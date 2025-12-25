@@ -99,12 +99,17 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraRe
     @MainActor
     public func updatePort(front:AVCaptureInput.Port, back: AVCaptureInput.Port) {
         captureSession.beginConfiguration()
-//        let frontConnection = AVCaptureConnection(inputPort: front, videoPreviewLayer: displayCoordinator.firstLayer)
-//        let backConnection = AVCaptureConnection(inputPort: back, videoPreviewLayer: displayCoordinator.secondLayer)
-//        captureSession.removeConnection(displayCoordinator.firstLayer.connection!)
-//        captureSession.removeConnection(displayCoordinator.secondLayer.connection!)
-//        captureSession.addConnection(frontConnection)
-//        captureSession.addConnection(backConnection)
+        let connection = captureSession.connections
+        let port0 = connection[0].inputPorts[0]
+        let layer0 = connection[0].videoPreviewLayer!
+        let port1 = connection[1].inputPorts[0]
+        let layer1 = connection[1].videoPreviewLayer!
+        captureSession.removeConnection(connection[0])
+        captureSession.removeConnection(connection[1])
+        let frontConnection = AVCaptureConnection(inputPort: port0, videoPreviewLayer: layer1)
+        let backConnection = AVCaptureConnection(inputPort: port1, videoPreviewLayer: layer0)
+        captureSession.addConnection(frontConnection)
+        captureSession.addConnection(backConnection)
         captureSession.commitConfiguration()
     }
     

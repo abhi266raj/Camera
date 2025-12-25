@@ -14,12 +14,10 @@ import PlatformApi
 final class CameraInputImp: CameraInput, Sendable {
     
     
-    public  init() {
+    init() {
         
     }
-    
-
-    
+        
     var audioDevice: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(for: .audio)
         guard let device else {return nil}

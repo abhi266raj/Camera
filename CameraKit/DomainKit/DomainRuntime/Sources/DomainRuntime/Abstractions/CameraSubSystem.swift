@@ -31,8 +31,7 @@ protocol CameraSubSystem: Sendable {
     func setup() async
     func start() async
     func stop() async
-    @MainActor
-    func attachDisplay(_ target: some CameraDisplayTarget) throws
+    func attachDisplay(_ target: some CameraDisplayTarget) async throws
 }
 
 extension CameraInputSubSystem  {
@@ -42,13 +41,6 @@ extension CameraInputSubSystem  {
     }
 }
 
-extension CameraSubSystem {
-    
-    func attachDisplay(_ target: some CameraDisplayTarget) throws {
-        throw DisplayAttachError.invalidInput
-    }
-    
-}
 
 extension CameraRecordingSubSystem {
     
