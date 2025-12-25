@@ -30,15 +30,12 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     let audioQueue = DispatchQueue(label: "audioQueue")
     let processor: CameraProccessor
     public  let displayCoordinator: any CameraDisplayCoordinator
-    private var metalView: PreviewMetalTarget? {
-        return metalRenderingDelegateImp.metalView
-    }
     private let metalRenderingDelegateImp: MetalRenderingDelegateImp
     private var streamTask : Task<Void, Never>?
     let multiContentInput: MultiContentInput
     let audioInput = MediaContentInput()
-    //private let videoInput = MediaContentInput()
 
+    
     public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
         let session = AVCaptureSession()
         self.captureSession = session
@@ -83,22 +80,21 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     
     public func setup() async {
             let _  = self.setupInputAndOutput()
-            self.input.session = self.captureSession
-            await self.input.startRunning()
+            await captureSession.startRunning()
     }
     
     public func start() async {
-            await self.input.startRunning()
+            await captureSession.startRunning()
     }
     
     public func stop() async {
-        await self.input.stopRunning()
+        await captureSession.stopRunning()
     }
     
     
     
     private func setupInputAndOutput() -> Bool {
-        guard let videoDevice =  input.videoDevice else {return false}
+        guard let videoDevice =  input.frontCamera else {return false}
         guard let audioDevice =  input.audioDevice else {return false}
         captureSession.beginConfiguration()
         defer {
@@ -146,7 +142,6 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
 class MetalRenderingDelegateImp {
     let videoInput = MediaContentInput()
     let sampleBufferOutputService: SampleBufferDiskOutputService
-    var metalView: PreviewMetalTarget?
     
     init(sampleBufferOutputService: SampleBufferDiskOutputService) {
         self.sampleBufferOutputService = sampleBufferOutputService

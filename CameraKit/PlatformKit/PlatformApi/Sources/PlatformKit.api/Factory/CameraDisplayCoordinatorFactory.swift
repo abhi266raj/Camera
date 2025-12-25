@@ -22,7 +22,7 @@ public protocol PlatformFactory {
     
     func makeCameraInput() -> CameraInput
     
-    func makeSessionService(session: AVCaptureSession) -> CameraSessionService
+    func makeSessionService() -> CameraSessionService
     
     func makeEffectProcessor() -> CameraProccessor
     

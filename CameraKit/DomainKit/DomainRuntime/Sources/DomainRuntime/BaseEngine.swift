@@ -158,6 +158,8 @@ final class BaseEngine: Sendable {
             await try subSystem.start()
         case .pause:
             await try subSystem.stop()
+        case .prepareForRecording:
+            return 
         }
     }
     

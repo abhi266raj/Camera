@@ -23,7 +23,7 @@ class CameraPhotoCameraService: NSObject, AVCaptureDiskOutputService, @unchecked
         self.photoOutput = AVCapturePhotoOutput()
     }
     
-    public func performAction(action: CameraAction) throws -> Bool {
+    public func performAction(action: CameraAction) async throws -> Bool {
         guard action == .photo else {
             throw CameraAction.ActionError.invalidInput
         }

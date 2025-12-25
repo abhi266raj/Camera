@@ -19,6 +19,7 @@ public enum EngineAction {
     case setup
     case toggle
     case takePicture
+    case prepareForRecording
     case startRecording
     case stopRecording
 }

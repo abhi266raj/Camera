@@ -42,17 +42,16 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraRe
     //@CameraInputSessionActor
     private func setupInput() async {
         let _  = self.setupInputAndOutput()
-        input.session = captureSession
-        await input.startRunning()
+        await captureSession.startRunning()
         
     }
     
     public func start() async {
-            await self.input.startRunning()
+            await captureSession.startRunning()
     }
     
     public func stop() async {
-        await self.input.stopRunning()
+        await captureSession.stopRunning()
     }
     
     var ports:[AVCaptureInput.Port] = []

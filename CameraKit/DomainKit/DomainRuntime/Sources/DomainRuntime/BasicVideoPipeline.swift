@@ -31,16 +31,16 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
 
     public func setup() async {
                 let _  = setupInputAndOutput()
-                input.session = captureSession
-                await input.startRunning()
+                // input.session = captureSession
+                await captureSession.startRunning()
     }
     
     public func start() async {
-            await self.input.startRunning()
+            await captureSession.startRunning()
     }
     
     public func stop() async {
-        await self.input.stopRunning()
+        await captureSession.stopRunning()
     }
     
     @MainActor
@@ -51,7 +51,7 @@ class BasicVideoPipeline: CameraInputSubSystem , CameraSubSystem, @unchecked Sen
     }
     
     private func setupInputAndOutput() -> Bool {
-        guard let videoDevice =  input.videoDevice else {return false}
+        guard let videoDevice =  input.frontCamera else {return false}
         guard let audioDevice =  input.audioDevice else {return false}
         captureSession.beginConfiguration()
         defer {

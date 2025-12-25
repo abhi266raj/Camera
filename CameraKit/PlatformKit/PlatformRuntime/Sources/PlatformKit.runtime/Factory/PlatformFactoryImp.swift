@@ -35,8 +35,8 @@ final class PlatformFactoryImp: PlatformFactory {
         effectProcessor
     }
     
-    func makeSessionService(session: AVCaptureSession) -> any CameraSessionService {
-        CameraSessionHandlerImp(session: session)
+    func makeSessionService() -> any CameraSessionService {
+        CameraSessionHandlerImp()
     }
     
     public init() {}

@@ -8,27 +8,42 @@
 import AVFoundation
 import CoreKit
 
-public protocol CameraSessionService: Sendable {
-    func start() async
-    func stop() async
-    func update(config: CameraInputConfig) async -> Bool
-    func setup(input: [AVCaptureInput], output: [AVCaptureOutput], config: CameraInputConfig) async -> Bool
-    func toggle(config: CameraInputConfig) async -> Bool
-}
 
-
-public protocol CameraInput {
-    var session: AVCaptureSession? {get set}
-    func startRunning() async
-    func stopRunning() async
-    
+public protocol CameraInput: Sendable {
     var audioDevice: AVCaptureDeviceInput? {get}
-    var videoDevice: AVCaptureDeviceInput? {get}
-    
-    func toggleCamera() async -> Bool 
     var frontCamera: AVCaptureDeviceInput? {get}
     var backCamera: AVCaptureDeviceInput? {get}
 }
+
+public class SessionConfig: @unchecked Sendable {
+    public var videoDevice: [AVCaptureDeviceInput] = []
+    public var audioDevice: [AVCaptureDeviceInput] = []
+    public var videoResolution: CMVideoDimensions? = nil
+    public var contentOutput: [AVCaptureOutput] = []
+    
+    public init() {
+        
+    }
+}
+
+public class SessionState: @unchecked Sendable {
+    public var selectedVideoDevice: [AVCaptureDeviceInput] = []
+    
+    public init() {
+        
+    }
+    
+    public func update(_ device:[AVCaptureDeviceInput]) async {
+        await selectedVideoDevice = device
+    }
+}
+
+
+public protocol CameraSessionService: Sendable {
+    func apply(_ config: SessionConfig, session: AVCaptureSession) async throws
+}
+
+
 
 
  private extension ImageCaptureConfig.PhotoResolution {

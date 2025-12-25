@@ -37,7 +37,8 @@ protocol CameraSubSystem: Sendable {
 
 extension CameraInputSubSystem  {
     func toggleCamera() async  -> Bool {
-        return await input.toggleCamera()
+        return false
+        //return await input.toggleCamera()
     }
 }
 

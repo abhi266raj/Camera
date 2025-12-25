@@ -5,10 +5,8 @@
 //  Created by Abhiraj on 06/12/25.
 //
 
-import Foundation
-import AVFoundation
-import PlatformApi
-internal import Photos
+@preconcurrency import AVFoundation
+internal import Synchronization
 
 class BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
     
@@ -45,34 +43,82 @@ class BasicFileRecorder: NSObject, AVCaptureFileOutputRecordingDelegate {
             return
         }
         
-        // Request permission to access the photo library.
-        PHPhotoLibrary.requestAuthorization { status in
-            if status == .authorized {
-                // If permission is granted, save the video to the gallery.
-                PHPhotoLibrary.shared().performChanges {
-                    let request = PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputFileURL)
-                    request?.creationDate = Date()
-                } completionHandler: { success, error in
-                    if success {
-                        // Video saved successfully.
-                        print("Video saved to the gallery.")
-                    } else if let error = error {
-                        // Handle the error, e.g., display an error message.
-                        print("Error saving video to the gallery: \(error.localizedDescription)")
-                    }
-                    
-                    // Optionally, you can delete the temporary file.
-                    do {
-                        try FileManager.default.removeItem(at: outputFileURL)
-                    } catch {
-                        print("Error deleting temporary file: \(error.localizedDescription)")
-                    }
-                }
-            } else {
-                // Handle the case where permission is denied.
-                print("Permission to access the photo library denied.")
-            }
+        Task{
+            let mediaSaver = MediaSaver()
+            let request: MediaSaveRequest = .video(outputFileURL)
+            try await mediaSaver.save(request)
         }
     }
     
+}
+
+enum RecordingError: Error, Sendable {
+    case alreadyRecording
+    case notRecording
+}
+
+enum RecordingEvent: Sendable {
+    case started
+    case finished(URL)
+    case failed(Error)
+}
+
+protocol VideoRecordingAdapter: Sendable {
+    func startRecording(to url: URL) throws -> AsyncStream<RecordingEvent>
+    func stopRecording() throws
+}
+
+final class AVFoundationVideoRecordingAdapter: NSObject, VideoRecordingAdapter, AVCaptureFileOutputRecordingDelegate {
+
+    private let fileOutput: AVCaptureMovieFileOutput
+    private let continuation = Mutex<AsyncStream<RecordingEvent>.Continuation?>(nil)
+
+    init(fileOutput: AVCaptureMovieFileOutput) {
+        self.fileOutput = fileOutput
+        super.init()
+    }
+
+    func startRecording(to url: URL) throws -> AsyncStream<RecordingEvent> {
+        guard !fileOutput.isRecording else {
+            throw RecordingError.alreadyRecording
+        }
+        
+        
+        return AsyncStream { streamContinuation in
+            self.continuation.withLock { $0 = streamContinuation }
+
+            fileOutput.startRecording(to: url, recordingDelegate: self)
+            streamContinuation.yield(.started)
+
+            streamContinuation.onTermination = { termination in
+                if termination == .cancelled {
+                    try? self.stopRecording()
+                }
+            }
+        }
+    }
+
+    func stopRecording() throws {
+        guard fileOutput.isRecording else {
+            throw RecordingError.notRecording
+        }
+        fileOutput.stopRecording()
+    }
+
+    func fileOutput(
+        _ output: AVCaptureFileOutput,
+        didFinishRecordingTo outputFileURL: URL,
+        from connections: [AVCaptureConnection],
+        error: Error?
+    ) {
+        continuation.withLock { cont in
+            if let error {
+                cont?.yield(.failed(error))
+            } else {
+                cont?.yield(.finished(outputFileURL))
+            }
+            cont?.finish()
+            cont = nil
+        }
+    }
 }

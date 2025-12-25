@@ -9,11 +9,6 @@ import AVFoundation
 import CoreKit
 import PlatformApi
 
-protocol CameraSessionHandler {
-    associatedtype InputHandler: CameraHardwareHandler
-    var inputHandler: InputHandler {get}
-}
-
 protocol CameraHardwareHandler {
     
 }

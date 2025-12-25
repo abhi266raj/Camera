@@ -11,7 +11,7 @@ import UIKit
 import PlatformApi
 
 
-private class ConfigurableCameraInputImp: CameraInput {
+private class ConfigurableCameraInputImp: CameraInput, @unchecked Sendable {
     
     public var session: AVCaptureSession?
     

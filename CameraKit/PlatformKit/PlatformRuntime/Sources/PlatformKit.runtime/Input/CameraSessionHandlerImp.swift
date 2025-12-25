@@ -10,117 +10,81 @@ import Foundation
 import UIKit
 import PlatformApi
 
-final class CameraSessionHandlerImp: CameraSessionHandler, CameraSessionService{
-    
-    let session: AVCaptureSession
-    public init(session: AVCaptureSession) {
-        self.session = session
+final class CameraSessionHandlerImp:  CameraSessionService{
+    public init() {
     }
-    public func start() async {
-        session.startRunning()
-    }
+}
+
+
+extension CameraSessionHandlerImp {
     
-    public func stop() async {
-        session.stopRunning()
+    enum SessionHandlerError: Error {
+        case InvalidConfig
     }
     
-    public func update(config: CameraInputConfig) async -> Bool {
+    func apply(_ config: SessionConfig, session: AVCaptureSession) async throws {
         session.beginConfiguration()
         defer {
             session.commitConfiguration()
         }
-        return await updateWithoutCommit(config: config)
         
+        removeOldContent(session)
         
-    }
-    
-    func updateWithoutCommit(config: CameraInputConfig) async -> Bool {
-        guard let deviceInput = inputHandler.selectedVideoDevice else {
-            return false
-        }
-        
-        if let dimension = config.dimensions {
-            let device = deviceInput.device
-            let matched = device.formats.first {
-                $0.supportedMaxPhotoDimensions.contains { $0.width == dimension.width &&
-                    $0.height == dimension.height }
-            }
-            
-            guard let format = matched else { return false }
-            do {
-                try device.lockForConfiguration()
-                device.activeFormat = format
-                device.unlockForConfiguration()
-            } catch {
-                return false
-            }
-        }
-        
-        
-        
-        if let videoInput = session.inputs.first(where: { ($0 as? AVCaptureDeviceInput)?.device.hasMediaType(.video) ?? false }) as? AVCaptureDeviceInput {
-            session.removeInput(videoInput)
-        }
-        if session.canAddInput(deviceInput) {
-            session.addInput(deviceInput)
-        }
-        
-        return true
-    }
-    
-    
-    public func setup(input: [AVCaptureInput], output: [AVCaptureOutput], config: CameraInputConfig) async -> Bool {
-        session.beginConfiguration()
-        defer {
-            session.commitConfiguration()
-        }
-        guard let videoDevice = inputHandler.selectedVideoDevice else {
-            return false
-        }
-        guard let audioDevice = inputHandler.audioDevice else {
-            return false
-        }
-        
-        if session.canAddInput(videoDevice) {
-            session.addInput(videoDevice)
-        }else{
-            return false
-        }
-        
-        if session.canAddInput(audioDevice) {
-            session.addInput(audioDevice)
-        }else{
-            return false
-        }
-        
-        for item in input {
+        for item in config.videoDevice {
             if session.canAddInput(item) {
                 session.addInput(item)
             }else{
-                return false
+                throw SessionHandlerError.InvalidConfig
+            }
+
+        }
+        
+        for item in config.audioDevice {
+            if session.canAddInput(item) {
+                session.addInput(item)
+            }else{
+                throw SessionHandlerError.InvalidConfig
             }
         }
         
-        for item in output {
+        for item in config.contentOutput{
             if session.canAddOutput(item) {
                 session.addOutput(item)
             }else{
-                return false
+                throw SessionHandlerError.InvalidConfig
             }
         }
         
-        return await updateWithoutCommit(config: config)
+        if let dimension = config.videoResolution {
+            for item in config.videoDevice {
+                try update(device: item.device, dimension: dimension)
+            }
+        }
         
     }
     
-    public func toggle(config: CameraInputConfig) async -> Bool {
-        if inputHandler.selectedPosition == .front {
-            inputHandler.selectedPosition = .back
-        }else {
-            inputHandler.selectedPosition = .front
+    private func removeOldContent(_ session: AVCaptureSession) {
+        for item in session.inputs {
+            session.removeInput(item)
         }
-        return await update(config: config)
+        
+        for item in session.outputs {
+            session.removeOutput(item)
+        }
     }
     
-    let inputHandler = SingleCameraHandlerImp()
+    private func update(device: AVCaptureDevice, dimension: CMVideoDimensions)  throws{
+        let matched = device.formats.first {
+            $0.supportedMaxPhotoDimensions.contains { $0.width == dimension.width &&
+                $0.height == dimension.height }
+        }
+        
+        guard let format = matched else { throw SessionHandlerError.InvalidConfig }
+        
+        try device.lockForConfiguration()
+        device.activeFormat = format
+        device.unlockForConfiguration()
+    }
+    
+    
 }

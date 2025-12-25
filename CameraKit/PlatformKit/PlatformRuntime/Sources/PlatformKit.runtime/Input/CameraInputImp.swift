@@ -11,23 +11,14 @@ import UIKit
 import PlatformApi
 
 
-class CameraInputImp: CameraInput {
+final class CameraInputImp: CameraInput, Sendable {
     
-    public var session: AVCaptureSession?
     
     public  init() {
         
     }
     
-    @CameraInputSessionActor
-    public func startRunning() {
-        session?.startRunning()
-    }
-    
-    @CameraInputSessionActor
-    public func stopRunning() {
-        session?.stopRunning()
-    }
+
     
     var audioDevice: AVCaptureDeviceInput? {
         let device =  AVCaptureDevice.default(for: .audio)
@@ -38,13 +29,6 @@ class CameraInputImp: CameraInput {
         }catch {
             return nil
         }
-    }
-    
-    
-    var selectedPosition: AVCaptureDevice.Position = .front
-    
-    var videoDevice:  AVCaptureDeviceInput? {
-        frontCamera
     }
     
     var frontCamera: AVCaptureDeviceInput? {
@@ -68,35 +52,5 @@ class CameraInputImp: CameraInput {
             return nil
         }
     }
-    
-    
-    @CameraInputSessionActor
-    public func toggleCamera()  async -> Bool {
-       
-        var camera = frontCamera
-        if selectedPosition == .front {
-            camera = backCamera
-            self.selectedPosition = .back
-        }else {
-            self.selectedPosition = .front
-        }
         
-       
-        guard let camera, let session else {
-            return false
-        }
-        session.beginConfiguration()
-        defer {
-            session.commitConfiguration()
-        }
-        if let videoInput = session.inputs.first(where: { ($0 as? AVCaptureDeviceInput)?.device.hasMediaType(.video) ?? false }) as? AVCaptureDeviceInput {
-            session.removeInput(videoInput)
-        }
-        if session.canAddInput(camera) {
-            session.addInput(camera)
-        }
-        
-        return true
-    }
-    
 }
