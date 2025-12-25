@@ -15,10 +15,10 @@ public protocol PlatformFactory {
     func makeMultiCameraDisplayCoordinator(avcaptureSession:AVCaptureMultiCamSession) -> CameraDisplayCoordinator
     func makeVideoLayerDisplayCoordinator(avcaptureSession: AVCaptureSession) -> CameraDisplayCoordinator
     
-    func makePassThroughDiskRecordingService() -> AVCaptureDiskOutputService
+    // func makePassThroughDiskRecordingService() -> AVCaptureDiskOutputService
     func makePhotoClickWorker() -> PhotoClickWorker
     func makeBasicVideoRecordWorker() -> BasicVideoRecordWorker
-    func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> AVCaptureDiskOutputService
+    // func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> AVCaptureDiskOutputService
     func makeSampleBufferOutputService(input: ContentInput) -> SampleBufferDiskOutputService
     
     func makeCameraInput() -> CameraInput

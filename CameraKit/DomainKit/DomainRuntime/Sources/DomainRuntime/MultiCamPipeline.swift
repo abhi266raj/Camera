@@ -12,19 +12,19 @@ internal import Photos
 import CoreKit
 import DomainApi
 import PlatformApi
+internal import Combine
 
 /// Multi Camera Pipeline Use UIView and record on camera
-class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraRecordingSubSystem {
-    
+class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
+
     public var input: CameraInput
-    public let recordOutput: CameraDiskOutputService
+    // public let recordOutput: CameraDiskOutputService
     public let displayCoordinator: any CameraDisplayCoordinator
     private let captureSession: AVCaptureMultiCamSession
     
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureMultiCamSession()
         self.captureSession = session
-        recordOutput = platformFactory.makePassThroughDiskRecordingService()
         displayCoordinator = platformFactory.makeMultiCameraDisplayCoordinator(avcaptureSession: session)
         self.input = platformFactory.makeCameraInput()
         super.init()
@@ -119,6 +119,15 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraRe
         Task {
             await try displayCoordinator.attach(target)
         }
+    }
+    
+    var cameraModePublisher: AsyncSequence<CameraMode, Never> {
+        let mode = CameraMode.preview
+        return Just(mode).values
+    }
+    
+    func performAction( action: CameraAction) async throws -> Bool {
+        return false
     }
     
 }

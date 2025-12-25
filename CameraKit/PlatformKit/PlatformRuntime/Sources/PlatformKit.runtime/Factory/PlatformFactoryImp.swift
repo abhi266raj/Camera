@@ -30,10 +30,10 @@ final class PlatformFactoryImp: PlatformFactory {
         VideoRecordWorkerImp()
     }
     
-    func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> any AVCaptureDiskOutputService {
-        CameraRecordingCameraService(videoCaptureOutput: videoCaptureOutput)
-    }
-    
+//    func makeVideoOutputService(videoCaptureOutput: AVCaptureMovieFileOutput) -> any AVCaptureDiskOutputService {
+//        CameraRecordingCameraService(videoCaptureOutput: videoCaptureOutput)
+//    }
+//    
     lazy var effectProcessor = EffectCameraProcessor()
     func makeEffectProcessor() -> any CameraProccessor {
         effectProcessor
@@ -58,9 +58,9 @@ final class PlatformFactoryImp: PlatformFactory {
         CameraLayerDisplayCoordinatorImp(session: avcaptureSession)
     }
     
-    func makePassThroughDiskRecordingService() -> any AVCaptureDiskOutputService {
-        PreviewOnlyService()
-    }
+//    func makePassThroughDiskRecordingService() -> any AVCaptureDiskOutputService {
+//        PreviewOnlyService()
+//    }
     
     func makeCameraInput() -> any CameraInput {
         CameraInputImp()

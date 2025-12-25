@@ -16,10 +16,6 @@ public protocol CameraDiskOutputService {
     func performAction( action: CameraAction) async throws -> Bool
 }
 
-public protocol AVCaptureDiskOutputService: CameraDiskOutputService, Sendable {
-    var availableOutput: [AVCaptureOutput] {get}
-}
-
 public protocol PhotoClickWorker: Sendable {
     func clickPhoto(_ output: AVCapturePhotoOutput, imageCaptureConfig:ImageCaptureConfig) async -> AsyncThrowingStream<AVCapturePhoto, Error>
     func savePhotoToLibrary(_ photo: AVCapturePhoto) async throws

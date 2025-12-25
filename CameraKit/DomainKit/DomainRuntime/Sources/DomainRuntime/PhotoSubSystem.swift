@@ -67,11 +67,8 @@ final class PhotoSubSystem: NSObject, CameraSubSystem, Sendable {
          return true
     }
     
-    @MainActor
-    public func attachDisplay(_ target: some CameraDisplayTarget) throws {
-        Task {
-            await try displayCoordinator.attach(target)
-        }
+    public func attachDisplay(_ target: some CameraDisplayTarget) async throws {
+        await try displayCoordinator.attach(target)
     }
     
 }
