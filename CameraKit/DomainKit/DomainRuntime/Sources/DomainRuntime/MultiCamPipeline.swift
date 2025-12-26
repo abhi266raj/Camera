@@ -5,7 +5,7 @@
 //  Created by Abhiraj on 09/12/25.
 //
 
-import AVFoundation
+internal import AVFoundation
 import CoreKit
 import DomainApi
 import PlatformApi

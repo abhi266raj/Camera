@@ -5,7 +5,7 @@
 //  Created by Abhiraj on 25/12/25.
 //
 
-@preconcurrency import AVFoundation
+@preconcurrency internal import AVFoundation
 import CoreKit
 import DomainApi
 import PlatformApi
