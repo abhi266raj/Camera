@@ -11,11 +11,6 @@ import Foundation
 import AVFoundation
 
 
-public protocol CameraDiskOutputService {
-    var cameraModePublisher: CurrentValueSubject<CameraMode, Never> { get }
-    func performAction( action: CameraAction) async throws -> Bool
-}
-
 public protocol PhotoClickWorker: Sendable {
     func clickPhoto(_ output: AVCapturePhotoOutput, imageCaptureConfig:ImageCaptureConfig) async -> AsyncThrowingStream<AVCapturePhoto, Error>
     func savePhotoToLibrary(_ photo: AVCapturePhoto) async throws
@@ -28,8 +23,10 @@ public protocol BasicVideoRecordWorker: Sendable {
 }
 
 
-public protocol SampleBufferDiskOutputService: CameraDiskOutputService, ContentConnection{
-   // func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)
+public protocol SampleBufferDiskOutputService:  ContentConnection{
+    func startRecording(url: URL?) async -> AsyncThrowingStream<URL, Error>
+    func stopRecording() async  throws
+    func saveVideoToLibrary(_ outputFileURL: URL) async throws
 }
 
 public protocol VideoOutput {
@@ -44,6 +41,6 @@ public protocol VideoSaver: Sendable {
 }
 
 public protocol VideoRecorder: ContentOutput {
-   //  func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)
+    func startRecording()
     func stopRecording(completion: @escaping (URL) -> Void)
 }

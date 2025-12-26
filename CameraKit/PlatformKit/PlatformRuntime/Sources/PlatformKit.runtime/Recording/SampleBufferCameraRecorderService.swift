@@ -13,49 +13,66 @@ import Combine
 import CoreKit
 import PlatformApi
 
+private enum VideoRecordError: Error {
+    case ongoing
+    case notRecording
+}
+
 class SampleBufferCameraRecorderService: SampleBufferDiskOutputService {
+    
     var input: ContentInput
+    var continuation:AsyncThrowingStream<URL, Error>.Continuation?
     
     var output: ContentOutput? {
-        return videoOutput.videoRecorder
+        return videoRecorder
     }
     
-    public var cameraModePublisher = CurrentValueSubject<CameraMode, Never>(.preview)
-    
-    let videoOutput: VideoOutput
-    
-    public let supportedOutput: CameraAction = [.startRecord, .stopRecord]
+    var videoRecorder: VideoRecorder? = nil
     
     public init(input: ContentInput) {
-        self.videoOutput = VideoOutputImp()
         self.input = input
         passThroughSetup()
     }
     
-    public var availableOutput: [AVCaptureOutput] {
-        return []
-    }
+   
     
-    public func performAction(action: CameraAction) async throws -> Bool {
-        guard self.supportedOutput.contains(action) else {
-            throw CameraAction.ActionError.invalidInput
+    
+    func startRecording(url: URL?) async -> AsyncThrowingStream<URL, Error> {
+        let url = url ?? NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("A \(UUID().uuidString).mov")!
+        let stream = AsyncThrowingStream<URL, Error> { continuation in
+            guard self.continuation == nil else {
+               continuation.finish(throwing: VideoRecordError.ongoing)
+                return
+            }
+            self.continuation = continuation
+            let recorder = VideoRecorderImp(outputURL: url)
+            recorder.startRecording()
+            videoRecorder = recorder
         }
+        return stream
+       
         
-        if action == .startRecord {
-            cameraModePublisher.send(.initiatingCapture)
-           await videoOutput.startRecord()
-            cameraModePublisher.send(.capture(.video))
-            return true
-        }else if action == .stopRecord {
-            cameraModePublisher.send(.initiatingCapture)
-            await videoOutput.stopRecord()
-            cameraModePublisher.send(.preview)
-            return true
+    }
+    func stopRecording() async throws  {
+        guard let continuation, let videoRecorder else {
+            throw VideoRecordError.notRecording
         }
-        throw CameraAction.ActionError.unsupported
+       
+        let url = await withCheckedContinuation { continum in
+            videoRecorder.stopRecording { url in
+                continum.resume(returning: url)
+            }
+        }
+        continuation.yield(url)
+        continuation.finish()
+        self.continuation = nil
+        self.videoRecorder = nil
     }
     
-//    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-//        videoOutput.videoRecorder?.appendSampleBuffer(sampleBuffer)
-//    }
+    func saveVideoToLibrary(_ outputFileURL: URL) async throws {
+        let mediaSaver = MediaSaver()
+        let request: MediaSaveRequest = .video(outputFileURL)
+        try await mediaSaver.save(request)
+    }
+
 }

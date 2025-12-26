@@ -12,17 +12,15 @@ import CoreKit
 import PlatformApi
 import DomainApi
 internal import UIKit
+internal import Synchronization
 
 /// Basic Camera Pipeline Use UIView and record on camera
 class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
-    private let captureSession: AVCaptureSession
-    public var recordOutput: CameraDiskOutputService {
-        sampleBufferOutputService
-    }
-    
+    private let captureSession: AVCaptureSession    
     private let sampleBufferOutputService: SampleBufferDiskOutputService
     private let sessionManager: CameraSessionService
+    private let supportedOutput: CameraAction = [.startRecord, .stopRecord]
 
     private(set) var input: CameraInput
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
@@ -37,6 +35,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     let audioInput = MediaContentInput()
     let sessionState: SessionState = SessionState()
     let sessionConfig: SessionConfig = SessionConfig()
+    let continuation: Mutex<AsyncStream<CameraMode>.Continuation?> = Mutex(nil)
 
     
     public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
@@ -128,11 +127,36 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     }
     
     var cameraModePublisher: AsyncSequence<CameraMode, Never> {
-        return recordOutput.cameraModePublisher.values
+        let value = AsyncStream<CameraMode>.make()
+        continuation.withLock { $0 = value.1}
+        return value.0
     }
     
     func performAction( action: CameraAction) async throws -> Bool {
-        return try await recordOutput.performAction(action:action)
+        
+        guard self.supportedOutput.contains(action) else {
+            throw CameraAction.ActionError.invalidInput
+        }
+        if action == .startRecord {
+            continuation.withLock { $0?.yield(.initiatingCapture)}
+            let stream = await sampleBufferOutputService.startRecording(url: nil)
+            continuation.withLock { $0?.yield(.capture(.video))}
+            Task.immediate {
+                for try await result in stream {
+                    try await sampleBufferOutputService.saveVideoToLibrary(result)
+                }
+            }
+            return true
+        }else if action == .stopRecord {
+            continuation.withLock { $0?.yield(.initiatingCapture)}
+            defer {
+                continuation.withLock { $0?.yield(.preview)}
+            }
+            try await sampleBufferOutputService.stopRecording()
+            return true
+        }
+            throw CameraAction.ActionError.unsupported
+        return true
     }
 }
 
