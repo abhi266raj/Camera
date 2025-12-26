@@ -5,14 +5,10 @@
 //  Created by Abhiraj on 09/12/25.
 //
 
-import Foundation
 import AVFoundation
-internal import UIKit
-internal import Photos
 import CoreKit
 import DomainApi
 import PlatformApi
-internal import Combine
 
 /// Multi Camera Pipeline Use UIView and record on camera
 class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
@@ -122,8 +118,9 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     }
     
     var cameraModePublisher: AsyncSequence<CameraMode, Never> {
-        let mode = CameraMode.preview
-        return Just(mode).values
+        AsyncStream { continuation in
+            continuation.yield(.preview)
+        }
     }
     
     func performAction( action: CameraAction) async throws -> Bool {
