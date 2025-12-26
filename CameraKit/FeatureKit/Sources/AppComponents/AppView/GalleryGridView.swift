@@ -44,9 +44,14 @@ final class GalleryViewModel: @unchecked Sendable  {
     var assets: [PHAsset] = []
 
     func load() async {
-        let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-        guard status == .authorized || status == .limited else { return }
-        fetchAssets()
+        var status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        if status == .notDetermined {
+            status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+        }
+        guard status == .authorized || status == .limited else {
+            fetchAssets()
+            return
+        }
     }
 
     private func fetchAssets() {

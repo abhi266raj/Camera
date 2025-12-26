@@ -20,7 +20,7 @@ final class PhotoSubSystem: NSObject, CameraSubSystem, Sendable {
     public let recordOutput: PhotoClickWorker
     
     private let captureSession: AVCaptureSession
-    public let sessionManager: CameraSessionService
+    private let sessionManager: CameraSessionService
     let photoOutput: AVCapturePhotoOutput = AVCapturePhotoOutput()
     let imageCaptureConfig: ImageCaptureConfig  = ImageCaptureConfig()
     let inputDevice: CameraInput

@@ -11,9 +11,9 @@ import DomainApi
 internal import Combine
 internal import CoreMedia
 
-protocol CameraInputSubSystem {
-    var input:CameraInput {get}
-}
+//protocol CameraInputSubSystem {
+//    var input:CameraInput {get}
+//}
 
 protocol CameraEffectSubSystem {
     var processor: CameraProccessor {get}
@@ -34,12 +34,11 @@ protocol CameraSubSystem: Sendable {
     func attachDisplay(_ target: some CameraDisplayTarget) async throws
 }
 
-extension CameraInputSubSystem  {
-    func toggleCamera() async  -> Bool {
-        return false
-        //return await input.toggleCamera()
-    }
-}
+//extension CameraInputSubSystem  {
+//    func toggleCamera() async  -> Bool {
+//        return false
+//    }
+//}
 
 
 extension CameraRecordingSubSystem {

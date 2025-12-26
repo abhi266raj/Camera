@@ -14,14 +14,15 @@ import DomainApi
 internal import UIKit
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraInputSubSystem, CameraEffectSubSystem, CameraRecordingSubSystem {
-            
+class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraEffectSubSystem, CameraRecordingSubSystem {
+    
     private let captureSession: AVCaptureSession
     public var recordOutput: CameraDiskOutputService {
         sampleBufferOutputService
     }
     
     private let sampleBufferOutputService: SampleBufferDiskOutputService
+    private let sessionManager: CameraSessionService
 
     private(set) var input: CameraInput
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
@@ -34,6 +35,8 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     private var streamTask : Task<Void, Never>?
     let multiContentInput: MultiContentInput
     let audioInput = MediaContentInput()
+    let sessionState: SessionState = SessionState()
+    let sessionConfig: SessionConfig = SessionConfig()
 
     
     public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
@@ -45,9 +48,10 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         sampleBufferOutputService = platformFactory.makeSampleBufferOutputService(input: multiContentInput)
         let metalRenderingDelegateImp = MetalRenderingDelegateImp(sampleBufferOutputService: sampleBufferOutputService)
         let effectProcessor = platformFactory.makeEffectProcessor()
+        sessionManager = platformFactory.makeSessionService()
         
         let viewBuilder: () -> UIView = {
-           
+            
             let metalView = platformFactory.makePreviewMetalTarget()
             let connection = BasicContentConnection(input: metalRenderingDelegateImp.videoInput,output: metalView)
             effectProcessor.setup(connection: connection)
@@ -57,7 +61,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator(builder: viewBuilder)
         self.metalRenderingDelegateImp = metalRenderingDelegateImp
         self.input = platformFactory.makeCameraInput()
-       
+        
         self.processor = effectProcessor
         
         super.init()
@@ -69,6 +73,14 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
             }
         }
         
+        if let videoDevice = input.backCamera {
+            sessionState.selectedVideoDevice = [videoDevice]
+        }
+        bufferOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
+        sessionConfig.contentOutput = [bufferOutput,audioOutput]
+        sessionConfig.audioDevice = [input.audioDevice].flatMap{$0}
+        sessionConfig.videoDevice = sessionState.selectedVideoDevice
+        
     }
     
     @MainActor func handleFilter(stream: AsyncStream<FilterModel>, processor: CameraProccessor?) async {
@@ -79,8 +91,9 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     }
     
     public func setup() async {
-            let _  = self.setupInputAndOutput()
+        if let _ = await try? sessionManager.apply(sessionConfig, session: captureSession) {
             await captureSession.startRunning()
+        }
     }
     
     public func start() async {
@@ -93,45 +106,61 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     
     
     
-    private func setupInputAndOutput() -> Bool {
-        guard let videoDevice =  input.frontCamera else {return false}
-        guard let audioDevice =  input.audioDevice else {return false}
-        captureSession.beginConfiguration()
-        defer {
-            captureSession.commitConfiguration()
-        }
-        if captureSession.canAddInput(videoDevice) {
-            captureSession.addInput(videoDevice)
-        }else{
-            return false
-        }
-        
-        if captureSession.canAddInput(audioDevice) {
-            captureSession.addInput(audioDevice)
-        }else{
-            return false
-        }
-        
-        if captureSession.canAddOutput(bufferOutput) {
-            bufferOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
-            captureSession.addOutput(bufferOutput)
-        }else {
-            return false
-        }
-        
-        if captureSession.canAddOutput(audioOutput) {
-            captureSession.addOutput(audioOutput)
-        }else {
-            return false
-        }
-        
-        return true
-    }
+//    private func setupInputAndOutput() -> Bool {
+//        guard let videoDevice =  input.frontCamera else {return false}
+//        guard let audioDevice =  input.audioDevice else {return false}
+//        captureSession.beginConfiguration()
+//        defer {
+//            captureSession.commitConfiguration()
+//        }
+//        if captureSession.canAddInput(videoDevice) {
+//            captureSession.addInput(videoDevice)
+//        }else{
+//            return false
+//        }
+//        
+//        if captureSession.canAddInput(audioDevice) {
+//            captureSession.addInput(audioDevice)
+//        }else{
+//            return false
+//        }
+//        
+//        if captureSession.canAddOutput(bufferOutput) {
+//            bufferOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
+//            captureSession.addOutput(bufferOutput)
+//        }else {
+//            return false
+//        }
+//        
+//        if captureSession.canAddOutput(audioOutput) {
+//            captureSession.addOutput(audioOutput)
+//        }else {
+//            return false
+//        }
+//        
+//        return true
+ //   }
     
     @MainActor
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {
         Task {
             await try displayCoordinator.attach(target)
+        }
+    }
+    
+    public func toggleCamera() async -> Bool {
+        let device = toggledDevice()
+        await sessionState.update(device)
+        sessionConfig.videoDevice = sessionState.selectedVideoDevice
+        await try? sessionManager.apply(sessionConfig, session: captureSession)
+        return true
+   }
+    
+    private func toggledDevice() -> [AVCaptureDeviceInput] {
+        if sessionState.selectedVideoDevice.first?.device.uniqueID == input.frontCamera?.device.uniqueID {
+            return [input.backCamera].compactMap { $0 }
+        }else {
+            return  [input.frontCamera].compactMap { $0 }
         }
     }
 }
