@@ -5,13 +5,10 @@
 //  Created by Abhiraj on 08/10/23.
 //
 
-import Foundation
 import AVFoundation
-internal import CoreMedia
 import CoreKit
 import PlatformApi
 import DomainApi
-internal import UIKit
 internal import Synchronization
 
 /// Basic Camera Pipeline Use UIView and record on camera
@@ -21,15 +18,11 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     private let sampleBufferOutputService: SampleBufferVideoRecordingWorker
     private let sessionManager: CameraSessionService
     private let supportedOutput: CameraAction = [.startRecord, .stopRecord]
-
-    private(set) var input: CameraInput
+    private let input: CameraInput
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
-    let videoQueue = DispatchQueue(label: "videoQueue")
-    let audioQueue = DispatchQueue(label: "audioQueue")
     let processor: CameraProccessor
-    public  let displayCoordinator: any SampleBufferDisplayCoordinator
-    private var streamTask : Task<Void, Never>?
+    private  let displayCoordinator: any SampleBufferDisplayCoordinator
     let multiContentInput: MultiContentInput
     let audioInput = MediaContentInput()
     let sessionState: SessionState = SessionState()
@@ -48,16 +41,18 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         bufferCameraInput = MediaContentInput()
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator()
         input = platformFactory.makeCameraInput()
-        
         super.init()
+        commonInit()
+        Task.immediate {
+            await handleFilter(stream: stream)
+        }
+    }
+    
+    private func commonInit() {
+        let videoQueue = DispatchQueue(label: "videoQueue")
+        let audioQueue = DispatchQueue(label: "audioQueue")
         bufferOutput.setSampleBufferDelegate(bufferCameraInput, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(audioInput, queue: audioQueue)
-        self.streamTask = Task {  @MainActor [weak self] in
-            for await filter in stream {
-                self?.processor.selectedFilter = filter
-            }
-        }
-        
         if let videoDevice = input.backCamera {
             sessionState.selectedVideoDevice = [videoDevice]
         }
@@ -70,7 +65,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
     
     
-    @MainActor func handleFilter(stream: AsyncStream<FilterModel>, processor: CameraProccessor?) async {
+    func handleFilter(stream: AsyncStream<FilterModel>) async {
         for await filter in stream {
             self.processor.selectedFilter = filter
         }
@@ -104,7 +99,6 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
                 self.processor.setup(connection: connection)
             }
         }
-        
     }
     
     public func toggleCamera() async -> Bool {
