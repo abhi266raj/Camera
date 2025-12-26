@@ -8,13 +8,6 @@
 import CoreKit
 import PlatformApi
 import DomainApi
-internal import Combine
-internal import CoreMedia
-
-
-protocol CameraRecordingSubSystem {
-    var recordOutput: CameraDiskOutputService {get}
-}
 
 
 protocol CameraSubSystem: Sendable {
@@ -26,23 +19,3 @@ protocol CameraSubSystem: Sendable {
     func stop() async
     func attachDisplay(_ target: some CameraDisplayTarget) async throws
 }
-
-//extension CameraInputSubSystem  {
-//    func toggleCamera() async  -> Bool {
-//        return false
-//    }
-//}
-
-
-extension CameraRecordingSubSystem {
-    
-    var cameraModePublisher: AsyncSequence<CameraMode, Never> {
-        return recordOutput.cameraModePublisher.values
-    }
-    
-    func performAction( action: CameraAction) async throws -> Bool {
-        return try await recordOutput.performAction(action:action)
-    }
-    
-}
-

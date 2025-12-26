@@ -14,7 +14,7 @@ import DomainApi
 internal import UIKit
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraRecordingSubSystem {
+class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
     private let captureSession: AVCaptureSession
     public var recordOutput: CameraDiskOutputService {
@@ -125,6 +125,14 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
         }else {
             return  [input.frontCamera].compactMap { $0 }
         }
+    }
+    
+    var cameraModePublisher: AsyncSequence<CameraMode, Never> {
+        return recordOutput.cameraModePublisher.values
+    }
+    
+    func performAction( action: CameraAction) async throws -> Bool {
+        return try await recordOutput.performAction(action:action)
     }
 }
 
