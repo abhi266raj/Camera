@@ -48,9 +48,8 @@ final class GalleryViewModel: @unchecked Sendable  {
         if status == .notDetermined {
             status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
         }
-        guard status == .authorized || status == .limited else {
+        if status == .authorized || status == .limited {
             fetchAssets()
-            return
         }
     }
 

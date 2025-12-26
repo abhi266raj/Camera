@@ -14,7 +14,7 @@ import DomainApi
 internal import UIKit
 
 /// Basic Camera Pipeline Use UIView and record on camera
-class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraEffectSubSystem, CameraRecordingSubSystem {
+class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, CameraRecordingSubSystem {
     
     private let captureSession: AVCaptureSession
     public var recordOutput: CameraDiskOutputService {
@@ -103,43 +103,6 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable, Camera
     public func stop() async {
         await captureSession.stopRunning()
     }
-    
-    
-    
-//    private func setupInputAndOutput() -> Bool {
-//        guard let videoDevice =  input.frontCamera else {return false}
-//        guard let audioDevice =  input.audioDevice else {return false}
-//        captureSession.beginConfiguration()
-//        defer {
-//            captureSession.commitConfiguration()
-//        }
-//        if captureSession.canAddInput(videoDevice) {
-//            captureSession.addInput(videoDevice)
-//        }else{
-//            return false
-//        }
-//        
-//        if captureSession.canAddInput(audioDevice) {
-//            captureSession.addInput(audioDevice)
-//        }else{
-//            return false
-//        }
-//        
-//        if captureSession.canAddOutput(bufferOutput) {
-//            bufferOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
-//            captureSession.addOutput(bufferOutput)
-//        }else {
-//            return false
-//        }
-//        
-//        if captureSession.canAddOutput(audioOutput) {
-//            captureSession.addOutput(audioOutput)
-//        }else {
-//            return false
-//        }
-//        
-//        return true
- //   }
     
     @MainActor
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {

@@ -11,13 +11,6 @@ import DomainApi
 internal import Combine
 internal import CoreMedia
 
-//protocol CameraInputSubSystem {
-//    var input:CameraInput {get}
-//}
-
-protocol CameraEffectSubSystem {
-    var processor: CameraProccessor {get}
-}
 
 protocol CameraRecordingSubSystem {
     var recordOutput: CameraDiskOutputService {get}
