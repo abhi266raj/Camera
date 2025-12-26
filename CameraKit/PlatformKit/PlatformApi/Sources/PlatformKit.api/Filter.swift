@@ -25,3 +25,15 @@ public protocol FilterModel: Sendable {
     var type: FilterType {get}
     var contents: Filter {get}
 }
+
+public protocol FilterModelSelectionReciever: Sendable {
+    var selectionStream: AsyncStream<FilterModel> { get }
+}
+
+public protocol FilterModelSelectionSender: Sendable {
+    func send(model: FilterModel)
+}
+
+
+public protocol FilterModelSelectionStream: FilterModelSelectionReciever,  FilterModelSelectionSender  {
+}

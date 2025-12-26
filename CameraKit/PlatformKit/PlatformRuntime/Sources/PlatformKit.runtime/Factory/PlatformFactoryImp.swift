@@ -14,7 +14,7 @@ import UIKit
 
 
 final class PlatformFactoryImp: PlatformFactory {
-    func makeSampleBufferOutputService(input: ContentInput) -> any SampleBufferVideoRecordingWorker {
+    func makeSampleBufferOutputService(input: ContentProducer) -> any SampleBufferVideoRecordingWorker {
         SampleBufferVideoRecordingWorkerImp(input: input)
     }
     
@@ -59,4 +59,9 @@ final class PlatformFactoryImp: PlatformFactory {
     func makeCameraInput() -> any CameraInput {
         CameraInputImp()
     }
+    
+    func makeFilterModelSelection() -> FilterModelSelectionStream {
+        FilterModelSelectionStreamImpl()
+    }
+    
 }

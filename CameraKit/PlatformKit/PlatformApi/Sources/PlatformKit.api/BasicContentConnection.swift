@@ -8,10 +8,10 @@
 import AVFoundation
 
 public class BasicContentConnection: ContentConnection {
-    public var input: any ContentInput
-    public var output: (any ContentOutput)?
+    public var input: any ContentProducer
+    public var output: (any ContentReciever)?
     
-    public init(input: any ContentInput, output: (any ContentOutput)?) {
+    public init(input: any ContentProducer, output: (any ContentReciever)?) {
         self.input = input
         self.output = output
         passThroughSetup()
@@ -28,7 +28,7 @@ public extension ContentConnection {
     
 }
 
-public class MediaContentInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, ContentInput {
+public class MediaContentInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, ContentProducer {
     public var contentProduced: ((CMSampleBuffer) -> Void)?
     override public init() {
         

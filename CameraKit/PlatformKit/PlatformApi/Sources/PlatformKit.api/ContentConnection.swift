@@ -7,30 +7,30 @@
 
 import CoreMedia
 
-public protocol ContentInput: class {
+public protocol ContentProducer: class {
     var contentProduced: ((CMSampleBuffer) -> Void)? { get set }
 }
 
-public protocol ContentOutput: class {
+public protocol ContentReciever: class {
     func contentOutput(
-        _ output: ContentOutput,
+        _ output: ContentReciever,
         didOutput sampleBuffer: CMSampleBuffer,
         from connection: ContentConnection
     )
 }
 
 public protocol ContentConnection: class {
-    var input: ContentInput { get }
-    var output: ContentOutput? { get }
+    var input: ContentProducer { get }
+    var output: ContentReciever? { get }
 }
 
-public class MultiContentInput: ContentInput {
+public class MultiContentInput: ContentProducer {
     
     
     public init() {
         
     }
-    private var inputs: [ContentInput] = []
+    private var inputs: [ContentProducer] = []
     public var contentProduced: ((CMSampleBuffer) -> Void)?  {
         didSet {
             for input in inputs {
@@ -39,7 +39,7 @@ public class MultiContentInput: ContentInput {
         }
     }
     
-    public func insert(_ input: ContentInput) {
+    public func insert(_ input: ContentProducer) {
         input.contentProduced = contentProduced
         inputs.append(input)
     }

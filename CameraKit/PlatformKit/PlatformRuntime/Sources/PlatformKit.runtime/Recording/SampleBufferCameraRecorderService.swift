@@ -20,16 +20,16 @@ private enum VideoRecordError: Error {
 
 class SampleBufferVideoRecordingWorkerImp: SampleBufferVideoRecordingWorker {
     
-    var input: ContentInput
+    var input: ContentProducer
     var continuation:AsyncThrowingStream<URL, Error>.Continuation?
     
-    var output: ContentOutput? {
+    var output: ContentReciever? {
         return videoRecorder
     }
     
     var videoRecorder: VideoRecorder? = nil
     
-    public init(input: ContentInput) {
+    public init(input: ContentProducer) {
         self.input = input
         passThroughSetup()
     }

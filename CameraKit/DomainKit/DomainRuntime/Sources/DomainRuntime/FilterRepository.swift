@@ -5,7 +5,7 @@
 //  Created by Abhiraj on 03/12/25.
 //
 
-import CoreImage
+internal import CoreImage
 import CoreKit
 import PlatformApi
 import DomainApi
@@ -96,18 +96,17 @@ final class FilterCoordinatorImp: FilterCoordinator {
     }
     
     private let repository: FilterRepository
-    let selectionStream: AsyncStream<FilterModel>
-    let continuation: AsyncStream<FilterModel>.Continuation
+    let selectionSender: FilterModelSelectionSender
 
-    init(repository: FilterRepository) {
+    init(repository: FilterRepository, sender: FilterModelSelectionSender) {
         self.repository = repository
-        (selectionStream, continuation) = AsyncStream<FilterModel>.make()
+        self.selectionSender = sender
     }
 
     @discardableResult
     func selectFilter(id: String) async -> Bool {
         guard let filter = await repository.filter(id: id) else { return false }
-        continuation.yield(filter)
+        selectionSender.send(model: filter)
         
         return true
     }

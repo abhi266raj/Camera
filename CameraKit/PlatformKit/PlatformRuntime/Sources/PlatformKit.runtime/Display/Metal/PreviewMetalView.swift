@@ -17,7 +17,7 @@ import AVFoundation
 class PreviewMetalView: MTKView, @preconcurrency PreviewMetalTarget {
     var contentProduced: ((CMSampleBuffer) -> Void)?
     
-    nonisolated func contentOutput(_ output: any PlatformApi.ContentOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: any PlatformApi.ContentConnection) {
+    nonisolated func contentOutput(_ output: any PlatformApi.ContentReciever, didOutput sampleBuffer: CMSampleBuffer, from connection: any PlatformApi.ContentConnection) {
          self.sampleBuffer = sampleBuffer
     }
     

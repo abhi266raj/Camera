@@ -12,13 +12,10 @@ import CoreKit
 public final class CameraFactoryImp: CameraFactory {
     
     let platformFactory: PlatformFactory
-    var filterCoordinatorImp: FilterCoordinatorImp?
+    lazy var modelSelection = platformFactory.makeFilterModelSelection()
 
     public func makeCameraEngine(profile: CameraProfile) -> any CameraEngine {
-        makeFilterCoordinator()
-        guard let filterCoordinatorImp else {fatalError()}
-        let stream = filterCoordinatorImp.selectionStream
-        return BaseEngine(profile: profile, platfomFactory:platformFactory, stream: stream )
+        return BaseEngine(profile: profile, platfomFactory:platformFactory, selectionReciever: modelSelection)
     }
     
     
@@ -31,12 +28,8 @@ public final class CameraFactoryImp: CameraFactory {
     }
     
     public func makeFilterCoordinator() -> any FilterCoordinator {
-        if let filterCoordinatorImp {
-            return  filterCoordinatorImp
-        }
         let repo = makeFilterRepository()
-        let result =  FilterCoordinatorImp(repository: repo)
-        self.filterCoordinatorImp = result
+        let result = FilterCoordinatorImp(repository: repo, sender: modelSelection)
         return result
     }
 }

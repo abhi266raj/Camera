@@ -14,7 +14,6 @@ import PlatformApi
 class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
 
     public var input: CameraInput
-    // public let recordOutput: CameraDiskOutputService
     public let displayCoordinator: any CameraDisplayCoordinator
     private let captureSession: AVCaptureMultiCamSession
     
@@ -27,8 +26,7 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         
         
     }
-    
-    // @CameraInputSessionActor
+
     public func setup() async {
        // Task{ @CameraInputSessionActor  in
             await self.setupInput()

@@ -19,7 +19,7 @@ public protocol PlatformFactory {
     func makePhotoClickWorker() -> PhotoClickWorker
     func makeBasicVideoRecordWorker() -> BasicVideoRecordWorker
     
-    func makeSampleBufferOutputService(input: ContentInput) -> SampleBufferVideoRecordingWorker
+    func makeSampleBufferOutputService(input: ContentProducer) -> SampleBufferVideoRecordingWorker
     
     func makeCameraInput() -> CameraInput
     
@@ -28,4 +28,6 @@ public protocol PlatformFactory {
     func makeEffectProcessor() -> CameraProccessor
     
     func makePreviewMetalTarget() -> PreviewMetalTarget
+    
+    func makeFilterModelSelection() -> FilterModelSelectionStream
 }

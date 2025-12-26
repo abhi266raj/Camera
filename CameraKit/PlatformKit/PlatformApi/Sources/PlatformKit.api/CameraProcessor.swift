@@ -14,10 +14,6 @@ public protocol CameraProccessor: class {
     var selectedFilter: (any FilterModel)? {get set}
 }
 
-public protocol FilterSelectionDelegate: AnyObject {
-    func didUpdateSelection(_ filter: FilterModel?)
-}
-
 
 protocol ChainedProcessor {
     associatedtype Element

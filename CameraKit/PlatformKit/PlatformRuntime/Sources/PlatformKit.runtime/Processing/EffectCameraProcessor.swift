@@ -5,7 +5,6 @@
 //  Created by Abhiraj on 14/10/23.
 //
 
-import Foundation
 import CoreMedia
 import CoreKit
 import PlatformApi
@@ -13,7 +12,7 @@ import PlatformApi
 class EffectCameraProcessor: CameraProccessor{
     var contentProduced: ((CMSampleBuffer) -> Void)?
     
-    func contentOutput(_ output: any ContentOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: any ContentConnection) {
+    func contentOutput(_ output: any ContentReciever, didOutput sampleBuffer: CMSampleBuffer, from connection: any ContentConnection) {
         if let contentProduced {
             let value = process(sampleBuffer: sampleBuffer)
             contentProduced(sampleBuffer)
@@ -92,11 +91,7 @@ class EffectCameraProcessor: CameraProccessor{
         return sampleBuffer
     }
     
-    
-    func didUpdateSelection(_ filter: FilterModel?) {
-        self.selectedFilter = filter
-    }
-    
+   
     
     
 }

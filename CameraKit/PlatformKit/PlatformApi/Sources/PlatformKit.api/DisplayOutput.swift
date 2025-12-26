@@ -11,7 +11,7 @@ import CoreMedia
 import AVFoundation
 
 
-public protocol PreviewMetalTarget: UIView, AVCaptureVideoDataOutputSampleBufferDelegate, ContentOutput, ContentInput {
+public protocol PreviewMetalTarget: UIView, AVCaptureVideoDataOutputSampleBufferDelegate, ContentReciever, ContentProducer {
     var renderingDelegate:MetalRenderingDelegate? {get set}
 }
 
@@ -25,8 +25,8 @@ public protocol CameraDisplayCoordinator: Sendable {
 }
 
 public protocol SampleBufferDisplayCoordinator : CameraDisplayCoordinator {
-    @MainActor func getBufferProvider() -> ContentInput?
-    @MainActor func getBufferReciever() -> ContentOutput?
+    @MainActor func getBufferProvider() -> ContentProducer?
+    @MainActor func getBufferReciever() -> ContentReciever?
 }
 
 

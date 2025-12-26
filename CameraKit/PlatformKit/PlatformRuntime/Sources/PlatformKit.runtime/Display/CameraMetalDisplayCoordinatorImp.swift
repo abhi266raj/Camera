@@ -13,11 +13,11 @@ import UIKit
 
 final class CameraMetalDisplayCoordinatorImp: SampleBufferDisplayCoordinator, Sendable {
     
-    @MainActor func getBufferProvider() -> ContentInput? {
+    @MainActor func getBufferProvider() -> ContentProducer? {
         previewMetalView
     }
     
-    @MainActor func getBufferReciever() -> ContentOutput? {
+    @MainActor func getBufferReciever() -> ContentReciever? {
         previewMetalView
     }
     

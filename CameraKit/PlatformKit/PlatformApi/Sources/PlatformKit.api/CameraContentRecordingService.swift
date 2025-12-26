@@ -29,7 +29,7 @@ public protocol SampleBufferVideoRecordingWorker:  ContentConnection{
     func saveVideoToLibrary(_ outputFileURL: URL) async throws
 }
 
-public protocol VideoRecorder: ContentOutput {
+public protocol VideoRecorder: ContentReciever {
     func startRecording()
     func stopRecording(completion: @escaping (URL) -> Void)
 }

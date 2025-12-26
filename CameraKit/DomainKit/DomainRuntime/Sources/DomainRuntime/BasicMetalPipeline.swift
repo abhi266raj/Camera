@@ -63,13 +63,10 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         
     }
     
-    
-    
     func handleFilter(stream: AsyncStream<FilterModel>) async {
         for await filter in stream {
             self.processor.selectedFilter = filter
         }
-        
     }
     
     public func setup() async {
