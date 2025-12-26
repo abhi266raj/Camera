@@ -18,7 +18,7 @@ internal import Synchronization
 class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
     private let captureSession: AVCaptureSession    
-    private let sampleBufferOutputService: SampleBufferDiskOutputService
+    private let sampleBufferOutputService: SampleBufferVideoRecordingWorker
     private let sessionManager: CameraSessionService
     private let supportedOutput: CameraAction = [.startRecord, .stopRecord]
 
@@ -28,43 +28,29 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     let videoQueue = DispatchQueue(label: "videoQueue")
     let audioQueue = DispatchQueue(label: "audioQueue")
     let processor: CameraProccessor
-    public  let displayCoordinator: any CameraDisplayCoordinator
-    private let metalRenderingDelegateImp: MetalRenderingDelegateImp
+    public  let displayCoordinator: any SampleBufferDisplayCoordinator
     private var streamTask : Task<Void, Never>?
     let multiContentInput: MultiContentInput
     let audioInput = MediaContentInput()
     let sessionState: SessionState = SessionState()
     let sessionConfig: SessionConfig = SessionConfig()
     let continuation: Mutex<AsyncStream<CameraMode>.Continuation?> = Mutex(nil)
+    let bufferCameraInput: MediaContentInput
 
     
     public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
         let session = AVCaptureSession()
-        self.captureSession = session
-        let contentInput = MultiContentInput()
-        contentInput.insert(audioInput)
-        self.multiContentInput = contentInput
+        captureSession = session
+        multiContentInput = MultiContentInput()
         sampleBufferOutputService = platformFactory.makeSampleBufferOutputService(input: multiContentInput)
-        let metalRenderingDelegateImp = MetalRenderingDelegateImp(sampleBufferOutputService: sampleBufferOutputService)
-        let effectProcessor = platformFactory.makeEffectProcessor()
+        processor = platformFactory.makeEffectProcessor()
         sessionManager = platformFactory.makeSessionService()
-        
-        let viewBuilder: () -> UIView = {
-            
-            let metalView = platformFactory.makePreviewMetalTarget()
-            let connection = BasicContentConnection(input: metalRenderingDelegateImp.videoInput,output: metalView)
-            effectProcessor.setup(connection: connection)
-            contentInput.insert(metalView)
-            return metalView
-        }
-        displayCoordinator = platformFactory.makeMetalDisplayCoordinator(builder: viewBuilder)
-        self.metalRenderingDelegateImp = metalRenderingDelegateImp
-        self.input = platformFactory.makeCameraInput()
-        
-        self.processor = effectProcessor
+        bufferCameraInput = MediaContentInput()
+        displayCoordinator = platformFactory.makeMetalDisplayCoordinator()
+        input = platformFactory.makeCameraInput()
         
         super.init()
-        bufferOutput.setSampleBufferDelegate(metalRenderingDelegateImp.videoInput, queue: videoQueue)
+        bufferOutput.setSampleBufferDelegate(bufferCameraInput, queue: videoQueue)
         audioOutput.setSampleBufferDelegate(audioInput, queue: audioQueue)
         self.streamTask = Task {  @MainActor [weak self] in
             for await filter in stream {
@@ -81,6 +67,8 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         sessionConfig.videoDevice = sessionState.selectedVideoDevice
         
     }
+    
+    
     
     @MainActor func handleFilter(stream: AsyncStream<FilterModel>, processor: CameraProccessor?) async {
         for await filter in stream {
@@ -107,7 +95,16 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {
         Task {
             await try displayCoordinator.attach(target)
+            if let videoInput = displayCoordinator.getBufferProvider() {
+                multiContentInput.insert(videoInput)
+                multiContentInput.insert(audioInput)
+            }
+            if let output = displayCoordinator.getBufferReciever() {
+                let connection = BasicContentConnection(input: bufferCameraInput,output: output)
+                self.processor.setup(connection: connection)
+            }
         }
+        
     }
     
     public func toggleCamera() async -> Bool {
@@ -157,18 +154,6 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         }
             throw CameraAction.ActionError.unsupported
         return true
-    }
-}
-
-
-
-
-class MetalRenderingDelegateImp {
-    let videoInput = MediaContentInput()
-    let sampleBufferOutputService: SampleBufferDiskOutputService
-    
-    init(sampleBufferOutputService: SampleBufferDiskOutputService) {
-        self.sampleBufferOutputService = sampleBufferOutputService
     }
 }
 

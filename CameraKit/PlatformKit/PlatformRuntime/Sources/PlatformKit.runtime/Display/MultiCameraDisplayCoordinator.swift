@@ -6,11 +6,11 @@
 //
 
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 import PlatformApi
 import CoreKit
 
-class MultiCameraDisplayCoordinator: CameraDisplayCoordinator, @unchecked Sendable {
+final class MultiCameraDisplayCoordinator: CameraDisplayCoordinator, Sendable {
     
     public let firstLayer: AVCaptureVideoPreviewLayer
     public let secondLayer: AVCaptureVideoPreviewLayer

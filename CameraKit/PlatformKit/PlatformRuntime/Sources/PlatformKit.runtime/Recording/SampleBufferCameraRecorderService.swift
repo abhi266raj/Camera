@@ -1,5 +1,5 @@
 //
-//  SampleBufferCameraRecorderService.swift
+//  SampleBufferVideoRecordingWorkerImp.swift
 //  CameraKit
 //
 //  Created by Abhiraj on 05/12/25.
@@ -18,7 +18,7 @@ private enum VideoRecordError: Error {
     case notRecording
 }
 
-class SampleBufferCameraRecorderService: SampleBufferDiskOutputService {
+class SampleBufferVideoRecordingWorkerImp: SampleBufferVideoRecordingWorker {
     
     var input: ContentInput
     var continuation:AsyncThrowingStream<URL, Error>.Continuation?

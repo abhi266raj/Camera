@@ -78,9 +78,3 @@ final class MediaSaver: Sendable {
         }
     }
 }
-
-extension MediaSaver: VideoSaver {
-    func saveVideo(from url: URL) async throws {
-        try  await save(.video(url))
-    }
-}

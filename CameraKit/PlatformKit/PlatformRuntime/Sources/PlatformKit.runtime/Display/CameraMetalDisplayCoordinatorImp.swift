@@ -11,11 +11,19 @@ import PlatformApi
 import CoreKit
 import UIKit
 
-final class CameraMetalDisplayCoordinatorImp: CameraDisplayCoordinator, @unchecked Sendable {
-    let builder: () -> UIView
+final class CameraMetalDisplayCoordinatorImp: SampleBufferDisplayCoordinator, Sendable {
     
-    init(builder: @escaping () -> UIView) {
-        self.builder = builder
+    @MainActor func getBufferProvider() -> ContentInput? {
+        previewMetalView
+    }
+    
+    @MainActor func getBufferReciever() -> ContentOutput? {
+        previewMetalView
+    }
+    
+    @MainActor var previewMetalView: PreviewMetalView?
+    
+    init() {
     }
     
     @MainActor
@@ -31,7 +39,7 @@ final class CameraMetalDisplayCoordinatorImp: CameraDisplayCoordinator, @uncheck
     
     @MainActor
     func attach(_ target:CameraDisplayMetalTarget) async throws {
-        let metalView = builder()
-        await target.metalView = metalView
+        self.previewMetalView = PreviewMetalView(frame: .zero)
+        await target.metalView = previewMetalView
     }
 }

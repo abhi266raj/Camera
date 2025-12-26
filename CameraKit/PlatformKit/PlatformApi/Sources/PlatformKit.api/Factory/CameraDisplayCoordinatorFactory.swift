@@ -11,16 +11,15 @@ import CoreKit
 
 public protocol PlatformFactory {
     
-    func makeMetalDisplayCoordinator(builder: @escaping () -> UIView) -> CameraDisplayCoordinator
+    func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator
     func makeMultiCameraDisplayCoordinator(avcaptureSession:AVCaptureMultiCamSession) -> CameraDisplayCoordinator
     func makeVideoLayerDisplayCoordinator(avcaptureSession: AVCaptureSession) -> CameraDisplayCoordinator
     
     
     func makePhotoClickWorker() -> PhotoClickWorker
     func makeBasicVideoRecordWorker() -> BasicVideoRecordWorker
-    func makeAdvancedVideoRecordWorker() -> VideoOutput
     
-    func makeSampleBufferOutputService(input: ContentInput) -> SampleBufferDiskOutputService
+    func makeSampleBufferOutputService(input: ContentInput) -> SampleBufferVideoRecordingWorker
     
     func makeCameraInput() -> CameraInput
     

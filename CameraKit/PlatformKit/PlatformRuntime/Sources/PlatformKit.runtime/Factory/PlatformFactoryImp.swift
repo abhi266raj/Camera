@@ -14,8 +14,8 @@ import UIKit
 
 
 final class PlatformFactoryImp: PlatformFactory {
-    func makeSampleBufferOutputService(input: ContentInput) -> any SampleBufferDiskOutputService {
-        SampleBufferCameraRecorderService(input: input)
+    func makeSampleBufferOutputService(input: ContentInput) -> any SampleBufferVideoRecordingWorker {
+        SampleBufferVideoRecordingWorkerImp(input: input)
     }
     
     func makePreviewMetalTarget() -> any PreviewMetalTarget {
@@ -30,9 +30,6 @@ final class PlatformFactoryImp: PlatformFactory {
         VideoRecordWorkerImp()
     }
     
-    func makeAdvancedVideoRecordWorker() -> VideoOutput {
-        VideoOutputImp()
-    }
     
     lazy var effectProcessor = EffectCameraProcessor()
     func makeEffectProcessor() -> any CameraProccessor {
@@ -45,8 +42,8 @@ final class PlatformFactoryImp: PlatformFactory {
     
     public init() {}
     
-    func makeMetalDisplayCoordinator(builder: @escaping () -> UIView) -> CameraDisplayCoordinator {
-        return CameraMetalDisplayCoordinatorImp(builder: builder)
+    func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator {
+        return CameraMetalDisplayCoordinatorImp()
     }
     
     func makeMultiCameraDisplayCoordinator(avcaptureSession: AVCaptureMultiCamSession) -> CameraDisplayCoordinator {

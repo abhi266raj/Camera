@@ -23,21 +23,10 @@ public protocol BasicVideoRecordWorker: Sendable {
 }
 
 
-public protocol SampleBufferDiskOutputService:  ContentConnection{
+public protocol SampleBufferVideoRecordingWorker:  ContentConnection{
     func startRecording(url: URL?) async -> AsyncThrowingStream<URL, Error>
     func stopRecording() async  throws
     func saveVideoToLibrary(_ outputFileURL: URL) async throws
-}
-
-public protocol VideoOutput {
-    func startRecord() async
-    func stopRecord() async
-    var videoSaver: VideoSaver {get}
-    var videoRecorder: VideoRecorder? {get}
-}
-
-public protocol VideoSaver: Sendable {
-    func saveVideo(from url: URL) async throws
 }
 
 public protocol VideoRecorder: ContentOutput {
