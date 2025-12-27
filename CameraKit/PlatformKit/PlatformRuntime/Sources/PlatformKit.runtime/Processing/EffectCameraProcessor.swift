@@ -10,6 +10,8 @@ import CoreKit
 import PlatformApi
 
 class EffectCameraProcessor: CameraProccessor{
+    typealias ConnectionType = CMSampleBuffer
+    
     var contentProduced: ((CMSampleBuffer) -> Void)?
     
     func contentOutput(_ output: any ContentReciever, didOutput sampleBuffer: CMSampleBuffer, from connection: any ContentConnection) {
@@ -35,7 +37,7 @@ class EffectCameraProcessor: CameraProccessor{
 //        }
 //    }
     
-    public func setUpConnection(_ producer: any ContentProducer, reciever: (any ContentReciever)?) {
+    public func setUpConnection<Producer: ContentProducer, Consumer:ContentReciever>(_ producer: Producer, reciever: Consumer?) where Producer.Content == CMSampleBuffer, Consumer.Content == CMSampleBuffer{
         producer.contentProduced = { [weak self] sampleBuffer in
             guard let self, let reciever = reciever else {return}
             let value = process(sampleBuffer: sampleBuffer)

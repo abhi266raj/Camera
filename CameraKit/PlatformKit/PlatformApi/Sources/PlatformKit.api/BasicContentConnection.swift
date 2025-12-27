@@ -22,13 +22,16 @@ import AVFoundation
 //    }
 //}
 
-public extension ContentConnection {
-    func passThroughSetup(_ producer: ContentProducer, reciever: ContentReciever?) {
+public extension ContentConnection  {
+    
+    func passThroughSetup<Producer, Consumer>(_ producer: Producer, reciever: Consumer?) where Producer : ContentProducer, Consumer: ContentReciever, Producer.Content == CMSampleBuffer, Consumer.Content == CMSampleBuffer  {
         producer.contentProduced = { [weak self, weak reciever] buffer in
             guard let self, let reciever else {return}
             reciever.contentOutput(reciever, didOutput: buffer, from: self)
         }
+        
     }
+
     
 }
 
