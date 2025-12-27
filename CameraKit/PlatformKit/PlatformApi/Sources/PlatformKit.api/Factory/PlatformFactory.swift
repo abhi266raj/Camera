@@ -12,7 +12,7 @@ import CoreKit
 public protocol PlatformFactory {
     
     func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator
-    func makeMultiCameraDisplayCoordinator(avcaptureSession:AVCaptureMultiCamSession) -> CameraDisplayCoordinator
+    func makeMultiCameraDisplayCoordinator() -> CameraSessionDisplayCoordinator
     func makeVideoLayerDisplayCoordinator() -> CameraSessionDisplayCoordinator
     
     

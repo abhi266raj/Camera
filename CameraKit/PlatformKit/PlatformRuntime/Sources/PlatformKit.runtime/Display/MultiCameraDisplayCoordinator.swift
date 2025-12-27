@@ -10,11 +10,24 @@ import Foundation
 import PlatformApi
 import CoreKit
 
-final class MultiCameraDisplayCoordinator: CameraDisplayCoordinator, Sendable {
+final class MultiCameraDisplayCoordinator: CameraSessionDisplayCoordinator, Sendable {
+    func updateSession(session: AVCaptureSession) {
+        firstLayer.session = session
+        secondLayer.session = session
+    }
+    
     
     public let firstLayer: AVCaptureVideoPreviewLayer
     public let secondLayer: AVCaptureVideoPreviewLayer
     public let session: AVCaptureSession
+    
+    init() {
+        self.session = AVCaptureMultiCamSession()
+        self.firstLayer = AVCaptureVideoPreviewLayer(sessionWithNoConnection: session)
+        self.secondLayer = AVCaptureVideoPreviewLayer(sessionWithNoConnection: session)
+        firstLayer.videoGravity = .resizeAspectFill
+        secondLayer.videoGravity = .resizeAspectFill
+    }
     
     
     init(session: AVCaptureMultiCamSession) {

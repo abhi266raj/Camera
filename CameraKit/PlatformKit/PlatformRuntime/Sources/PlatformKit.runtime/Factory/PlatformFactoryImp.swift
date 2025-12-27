@@ -46,8 +46,8 @@ final class PlatformFactoryImp: PlatformFactory {
         return CameraMetalDisplayCoordinatorImp()
     }
     
-    func makeMultiCameraDisplayCoordinator(avcaptureSession: AVCaptureMultiCamSession) -> CameraDisplayCoordinator {
-        MultiCameraDisplayCoordinator(session: avcaptureSession)
+    func makeMultiCameraDisplayCoordinator() -> CameraSessionDisplayCoordinator {
+        MultiCameraDisplayCoordinator()
         
     }
     

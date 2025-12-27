@@ -14,13 +14,13 @@ import PlatformApi
 class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
 
     public var input: CameraInput
-    public let displayCoordinator: any CameraDisplayCoordinator
+    public let displayCoordinator: any CameraSessionDisplayCoordinator
     private let captureSession: AVCaptureMultiCamSession
     
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureMultiCamSession()
         self.captureSession = session
-        displayCoordinator = platformFactory.makeMultiCameraDisplayCoordinator(avcaptureSession: session)
+        displayCoordinator = platformFactory.makeMultiCameraDisplayCoordinator()
         self.input = platformFactory.makeCameraInput()
         super.init()
         
@@ -80,18 +80,16 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         guard backCamera.ports.count > 0, frontCamera.ports.count > 0 else {
             return false
         }
-        ports = [backCamera.ports[0], frontCamera.ports[0]]
         return true
     }
     
     public func toggleCamera() async -> Bool {
-        ports.swapAt(0, 1)
-        await updatePort(front: ports[0], back: ports[1])
+        await updatePort()
         return true
     }
     
     @MainActor
-    public func updatePort(front:AVCaptureInput.Port, back: AVCaptureInput.Port) {
+    public func updatePort() {
         captureSession.beginConfiguration()
         let connection = captureSession.connections
         let port0 = connection[0].inputPorts[0]
@@ -111,6 +109,7 @@ class MultiCamPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     @MainActor
     public func attachDisplay(_ target: some CameraDisplayTarget) throws {
         Task {
+            displayCoordinator.updateSession(session: captureSession)
             await try displayCoordinator.attach(target)
         }
     }
