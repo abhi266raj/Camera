@@ -17,7 +17,7 @@ public class Module {
         self.dependency = dependency
     }
     
-    public func makePlatformFactory() -> PlatformFactory {
+    public func makePlatformFactory() -> PlatformFactory<CMSampleBuffer> {
         return PlatformFactoryImp()
     }
     

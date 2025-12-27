@@ -18,7 +18,7 @@ public protocol ContentReciever<Content>: class {
         didRecieved: Content)
 }
 
-public protocol ContentConnection: class {
+public protocol ContentConnection<ConnectionType>: class {
     associatedtype ConnectionType
     func createConnection(producer: ContentProducer<ConnectionType>, reciever: ContentReciever<ConnectionType>?)
 }

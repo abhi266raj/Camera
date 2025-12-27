@@ -7,8 +7,9 @@
 
 import CoreKit
 
-public protocol PlatformFactory {
-    func makeMetalDisplayCoordinator<ContentInput>() -> SampleBufferDisplayCoordinator<ContentInput>
+public protocol PlatformFactory<MetalContentInput> {
+    associatedtype MetalContentInput
+    func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator<MetalContentInput>
     func makeMultiCameraDisplayCoordinator() -> CameraSessionDisplayCoordinator
     func makeVideoLayerDisplayCoordinator() -> CameraSessionDisplayCoordinator
     
@@ -16,13 +17,13 @@ public protocol PlatformFactory {
     func makePhotoClickWorker() -> PhotoClickWorker
     func makeBasicVideoRecordWorker() -> BasicVideoRecordWorker
     
-    func makeSampleBufferOutputService<ContentInput>() -> SampleBufferVideoRecordingWorker<ContentInput>
+    func makeSampleBufferOutputService() -> SampleBufferVideoRecordingWorker<MetalContentInput>
     
     func makeCameraInput() -> CameraInput
     
     func makeSessionService() -> CameraSessionService
     
-    func makeEffectProcessor<ContentInput>() -> CameraProccessor<ContentInput>
+    func makeEffectProcessor() -> CameraProccessor<MetalContentInput>
     
     func makePreviewMetalTarget() -> PreviewMetalTarget
     

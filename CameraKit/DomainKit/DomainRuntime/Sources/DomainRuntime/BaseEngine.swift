@@ -8,6 +8,7 @@
 import CoreKit
 import PlatformApi
 import DomainApi
+import CoreMedia
 
 
 protocol EngineInternal {
@@ -173,7 +174,7 @@ final class BaseEngine: Sendable {
     public let activeConfig: EngineOption.Config
     let subSystem: CameraSubSystem
         
-    init (profile: CameraProfile, platfomFactory: PlatformFactory, selectionReciever: FilterModelSelectionReciever ) {
+    init (profile: CameraProfile, platfomFactory: PlatformFactory<CMSampleBuffer>, selectionReciever: FilterModelSelectionReciever ) {
         switch profile {
         case .simplephoto:
             let specification = EngineSpecsImp.photoEngineSpecs()

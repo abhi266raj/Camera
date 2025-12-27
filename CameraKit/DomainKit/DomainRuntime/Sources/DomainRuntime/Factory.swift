@@ -8,10 +8,11 @@
 import DomainApi
 import PlatformApi
 import CoreKit
+import CoreMedia
 
 public final class CameraFactoryImp: CameraFactory {
     
-    let platformFactory: PlatformFactory
+    let platformFactory: PlatformFactory<CMSampleBuffer>
     lazy var modelSelection = platformFactory.makeFilterModelSelection()
 
     public func makeCameraEngine(profile: CameraProfile) -> any CameraEngine {
@@ -19,7 +20,7 @@ public final class CameraFactoryImp: CameraFactory {
     }
     
     
-    public init(platformFactory: @escaping (() -> PlatformFactory)) {
+    public init(platformFactory: @escaping (() -> PlatformFactory<CMSampleBuffer>)) {
         self.platformFactory = platformFactory()
     }
     

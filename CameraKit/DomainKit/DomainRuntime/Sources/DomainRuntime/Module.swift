@@ -7,6 +7,7 @@
 
 import DomainApi
 import PlatformApi
+import CoreMedia
 
 public struct Module {
     let dependecy: Dependency
@@ -25,7 +26,7 @@ public struct Module {
     
     
 }
-public typealias  PlatformFactoryBuilder =  () -> PlatformFactory
+public typealias  PlatformFactoryBuilder =  () -> PlatformFactory<CMSampleBuffer>
 public struct Dependency {
     let platformFactoryBuilder:PlatformFactoryBuilder
     

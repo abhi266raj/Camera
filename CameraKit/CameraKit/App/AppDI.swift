@@ -7,14 +7,15 @@ import AppViewModel
 import AppView
 import PlatformApi
 import PlatformRuntime
+import CoreMedia
 
 
 
 // Should be more as project grows
 class PlatformOutput {
-    var platformFactoy: PlatformFactory
+    var platformFactoy: any PlatformFactory<CMSampleBuffer>
     
-    init(platformFactoy: PlatformFactory) {
+    init(platformFactoy: any PlatformFactory<CMSampleBuffer>) {
         self.platformFactoy = platformFactoy
     }
 }

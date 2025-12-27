@@ -15,8 +15,9 @@ import CoreMedia
 
 
 final class PlatformFactoryImp: PlatformFactory {
-    func makeSampleBufferOutputService<ContentInput>() -> SampleBufferVideoRecordingWorker<ContentInput> {
-        SampleBufferVideoRecordingWorkerImp()  as! SampleBufferVideoRecordingWorker<ContentInput>
+    typealias MetalContentInput = CMSampleBuffer
+    func makeSampleBufferOutputService() -> SampleBufferVideoRecordingWorker<MetalContentInput> {
+        SampleBufferVideoRecordingWorkerImp() 
     }
     
     func makePreviewMetalTarget() -> any PreviewMetalTarget {
@@ -32,8 +33,8 @@ final class PlatformFactoryImp: PlatformFactory {
     }
     
         
-    func makeEffectProcessor<ContentInput>() -> CameraProccessor<ContentInput> {
-        EffectCameraProcessor() as! CameraProccessor<ContentInput>
+    func makeEffectProcessor() -> CameraProccessor<MetalContentInput> {
+        EffectCameraProcessor()
     }
     
     func makeSessionService() -> any CameraSessionService {
@@ -60,7 +61,8 @@ final class PlatformFactoryImp: PlatformFactory {
         FilterModelSelectionStreamImpl()
     }
     
-    func makeMetalDisplayCoordinator<ContentInput>() -> SampleBufferDisplayCoordinator<ContentInput> {
-            return CameraMetalDisplayCoordinatorImp() as! SampleBufferDisplayCoordinator<ContentInput>
+    
+    func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator<MetalContentInput> {
+            return CameraMetalDisplayCoordinatorImp()
     }
 }

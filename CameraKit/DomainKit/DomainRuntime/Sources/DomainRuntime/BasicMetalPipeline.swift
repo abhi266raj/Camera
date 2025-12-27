@@ -31,7 +31,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     let bufferCameraInput: MediaContentInput
 
     
-    public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
+    public init(platformFactory: PlatformFactory<CMSampleBuffer>, stream: AsyncStream<FilterModel>) {
         let session = AVCaptureSession()
         captureSession = session
       //  multiContentInput = MultiContentInput()
