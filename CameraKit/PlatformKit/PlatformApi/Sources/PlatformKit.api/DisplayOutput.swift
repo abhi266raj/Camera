@@ -24,6 +24,10 @@ public protocol CameraDisplayCoordinator: Sendable {
     func attach(_ target: some CameraDisplayTarget) async throws
 }
 
+public protocol CameraSessionDisplayCoordinator: CameraDisplayCoordinator {
+    func updateSession(session: AVCaptureSession)
+}
+
 public protocol SampleBufferDisplayCoordinator : CameraDisplayCoordinator {
     @MainActor func getBufferProvider() -> ContentProducer?
     @MainActor func getBufferReciever() -> ContentReciever?

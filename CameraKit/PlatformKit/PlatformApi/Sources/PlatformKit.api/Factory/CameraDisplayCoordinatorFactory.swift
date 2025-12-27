@@ -13,7 +13,7 @@ public protocol PlatformFactory {
     
     func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator
     func makeMultiCameraDisplayCoordinator(avcaptureSession:AVCaptureMultiCamSession) -> CameraDisplayCoordinator
-    func makeVideoLayerDisplayCoordinator(avcaptureSession: AVCaptureSession) -> CameraDisplayCoordinator
+    func makeVideoLayerDisplayCoordinator() -> CameraSessionDisplayCoordinator
     
     
     func makePhotoClickWorker() -> PhotoClickWorker

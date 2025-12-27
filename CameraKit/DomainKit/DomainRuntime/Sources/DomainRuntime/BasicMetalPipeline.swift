@@ -5,7 +5,7 @@
 //  Created by Abhiraj on 08/10/23.
 //
 
-internal import AVFoundation
+@preconcurrency internal import AVFoundation
 import CoreKit
 import PlatformApi
 import DomainApi
@@ -23,7 +23,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let processor: CameraProccessor
     private  let displayCoordinator: any SampleBufferDisplayCoordinator
-    let multiContentInput: MultiContentInput
+   // let multiContentInput: MultiContentInput
     let audioInput = MediaContentInput()
     let sessionState: SessionState = SessionState()
     let sessionConfig: SessionConfig = SessionConfig()
@@ -34,7 +34,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     public init(platformFactory: PlatformFactory, stream: AsyncStream<FilterModel>) {
         let session = AVCaptureSession()
         captureSession = session
-        multiContentInput = MultiContentInput()
+      //  multiContentInput = MultiContentInput()
         sampleBufferOutputService = platformFactory.makeSampleBufferOutputService()
         processor = platformFactory.makeEffectProcessor()
         sessionManager = platformFactory.makeSessionService()

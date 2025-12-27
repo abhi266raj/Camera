@@ -13,7 +13,7 @@ internal import Synchronization
 
 final class VideoSubSystem: NSObject, CameraSubSystem, Sendable {
    
-    public  let displayCoordinator: any CameraDisplayCoordinator
+    public  let displayCoordinator: any CameraSessionDisplayCoordinator
     
     public let recordOutput: BasicVideoRecordWorker
     
@@ -30,7 +30,7 @@ final class VideoSubSystem: NSObject, CameraSubSystem, Sendable {
     public init(platformFactory: PlatformFactory) {
         let session = AVCaptureSession()
         self.captureSession = session
-        displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator(avcaptureSession: session)
+        displayCoordinator = platformFactory.makeVideoLayerDisplayCoordinator()
         recordOutput = platformFactory.makeBasicVideoRecordWorker()
         inputDevice = platformFactory.makeCameraInput()
         sessionManager = platformFactory.makeSessionService()
@@ -65,6 +65,7 @@ final class VideoSubSystem: NSObject, CameraSubSystem, Sendable {
     }
     
     public func attachDisplay(_ target: some CameraDisplayTarget) async throws {
+        displayCoordinator.updateSession(session: captureSession)
         await try displayCoordinator.attach(target)
     }
     

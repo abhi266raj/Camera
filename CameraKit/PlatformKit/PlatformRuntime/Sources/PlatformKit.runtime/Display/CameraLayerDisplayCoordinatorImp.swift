@@ -6,13 +6,24 @@
 //
 
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 import PlatformApi
 import CoreKit
 
 
-final class CameraLayerDisplayCoordinatorImp: CameraDisplayCoordinator, @unchecked Sendable {
-    var previewLayer: AVCaptureVideoPreviewLayer
+final class CameraLayerDisplayCoordinatorImp: CameraSessionDisplayCoordinator, Sendable {
+    let previewLayer: AVCaptureVideoPreviewLayer
+    
+    
+    init() {
+        self.previewLayer = AVCaptureVideoPreviewLayer()
+        self.previewLayer.videoGravity = .resizeAspectFill
+    }
+    
+    func updateSession(session: AVCaptureSession) {
+        self.previewLayer.session = session
+    }
+    
     
     init(session: AVCaptureSession) {
         self.previewLayer = AVCaptureVideoPreviewLayer(session: session)

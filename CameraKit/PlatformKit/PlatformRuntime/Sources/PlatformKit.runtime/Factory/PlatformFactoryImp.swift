@@ -51,8 +51,8 @@ final class PlatformFactoryImp: PlatformFactory {
         
     }
     
-    func makeVideoLayerDisplayCoordinator(avcaptureSession: AVCaptureSession) -> CameraDisplayCoordinator {
-        CameraLayerDisplayCoordinatorImp(session: avcaptureSession)
+    func makeVideoLayerDisplayCoordinator() -> CameraSessionDisplayCoordinator {
+        CameraLayerDisplayCoordinatorImp()
     }
     
     
