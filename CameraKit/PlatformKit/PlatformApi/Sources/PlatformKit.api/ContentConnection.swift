@@ -5,9 +5,6 @@
 //  Created by Abhiraj on 24/12/25.
 //
 
-import CoreMedia
-
-
 public protocol ContentProducer<Content>: class {
     associatedtype Content
     var contentProduced: ((Content) -> Void)? { get set }
@@ -26,5 +23,17 @@ public protocol ContentReciever<Content>: class {
 public protocol ContentConnection: class {
     associatedtype ConnectionType
     func createConnection(producer: ContentProducer<ConnectionType>, reciever: ContentReciever<ConnectionType>?)
+}
+
+public protocol MetalDisplayContent {
+    
+}
+
+public protocol VideoRecordingContent {
+    
+}
+
+public protocol AudioRecordingContent{
+    
 }
 

@@ -24,8 +24,8 @@ public class MediaContentInput: NSObject, AVCaptureAudioDataOutputSampleBufferDe
         
     }
     
+    
     public func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         contentProduced?(sampleBuffer)
     }
-    
 }
