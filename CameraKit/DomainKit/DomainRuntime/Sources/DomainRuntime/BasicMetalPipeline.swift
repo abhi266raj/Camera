@@ -35,7 +35,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         let session = AVCaptureSession()
         captureSession = session
         multiContentInput = MultiContentInput()
-        sampleBufferOutputService = platformFactory.makeSampleBufferOutputService(input: multiContentInput)
+        sampleBufferOutputService = platformFactory.makeSampleBufferOutputService()
         processor = platformFactory.makeEffectProcessor()
         sessionManager = platformFactory.makeSessionService()
         bufferCameraInput = MediaContentInput()
@@ -88,13 +88,18 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         Task {
             await try displayCoordinator.attach(target)
             if let videoInput = displayCoordinator.getBufferProvider() {
-                multiContentInput.insert(videoInput)
-                multiContentInput.insert(audioInput)
+                // Sample buffer will have its own reciver
+                sampleBufferOutputService.setUpConnection(videoInput, reciever: nil)
+                sampleBufferOutputService.setUpConnection(audioInput, reciever: nil)
+                //multiContentInput.insert(videoInput)
+               // multiContentInput.insert(audioInput)
             }
             if let output = displayCoordinator.getBufferReciever() {
-                let connection = BasicContentConnection(input: bufferCameraInput,output: output)
-                self.processor.setup(connection: connection)
+                self.processor.setUpConnection(bufferCameraInput, reciever: output)
             }
+            
+            
+            
         }
     }
     

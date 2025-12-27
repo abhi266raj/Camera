@@ -27,11 +27,19 @@ class EffectCameraProcessor: CameraProccessor{
         
     }
     
-    public func setup(connection: ContentConnection) {
-        connection.input.contentProduced = { [weak self] sampleBuffer in
-            guard let self, let output = connection.output else {return}
+//    public func setup(connection: ContentConnection) {
+//        connection.input.contentProduced = { [weak self] sampleBuffer in
+//            guard let self, let output = connection.output else {return}
+//            let value = process(sampleBuffer: sampleBuffer)
+//            output.contentOutput(output, didOutput: value, from: connection)
+//        }
+//    }
+    
+    public func setUpConnection(_ producer: any ContentProducer, reciever: (any ContentReciever)?) {
+        producer.contentProduced = { [weak self] sampleBuffer in
+            guard let self, let reciever = reciever else {return}
             let value = process(sampleBuffer: sampleBuffer)
-            output.contentOutput(output, didOutput: value, from: connection)
+            reciever.contentOutput(reciever, didOutput: value, from: self)
         }
     }
     

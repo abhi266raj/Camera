@@ -9,8 +9,7 @@ import Foundation
 import CoreMedia
 import CoreKit
 
-public protocol CameraProccessor: class {
-    func setup(connection: ContentConnection)
+public protocol CameraProccessor: class, ContentConnection{
     var selectedFilter: (any FilterModel)? {get set}
 }
 

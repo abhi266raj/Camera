@@ -19,7 +19,7 @@ public protocol PlatformFactory {
     func makePhotoClickWorker() -> PhotoClickWorker
     func makeBasicVideoRecordWorker() -> BasicVideoRecordWorker
     
-    func makeSampleBufferOutputService(input: ContentProducer) -> SampleBufferVideoRecordingWorker
+    func makeSampleBufferOutputService() -> SampleBufferVideoRecordingWorker
     
     func makeCameraInput() -> CameraInput
     

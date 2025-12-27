@@ -20,8 +20,8 @@ public protocol ContentReciever: class {
 }
 
 public protocol ContentConnection: class {
-    var input: ContentProducer { get }
-    var output: ContentReciever? { get }
+   
+    func setUpConnection(_ producer: ContentProducer, reciever: ContentReciever?)
 }
 
 public class MultiContentInput: ContentProducer {

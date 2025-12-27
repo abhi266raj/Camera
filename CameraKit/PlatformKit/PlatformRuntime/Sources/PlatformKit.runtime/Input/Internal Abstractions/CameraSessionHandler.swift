@@ -9,12 +9,12 @@ import AVFoundation
 import CoreKit
 import PlatformApi
 
-protocol CameraHardwareHandler {
-    
-}
- 
-protocol SingleCameraHandler: CameraHardwareHandler {
-    var selectedPosition: AVCaptureDevice.Position {set get}
-    var audioDevice: AVCaptureDeviceInput? {get}
-    var selectedVideoDevice: AVCaptureDeviceInput? {get}
-}
+//protocol CameraHardwareHandler {
+//    
+//}
+// 
+//protocol SingleCameraHandler: CameraHardwareHandler {
+//    var selectedPosition: AVCaptureDevice.Position {set get}
+//    var audioDevice: AVCaptureDeviceInput? {get}
+//    var selectedVideoDevice: AVCaptureDeviceInput? {get}
+//}

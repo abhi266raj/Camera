@@ -8,7 +8,6 @@ import Foundation
 import AVFoundation
 import PlatformApi
 import CoreKit
-import UIKit
 
 
 public class Module {

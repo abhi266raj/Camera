@@ -14,8 +14,8 @@ import UIKit
 
 
 final class PlatformFactoryImp: PlatformFactory {
-    func makeSampleBufferOutputService(input: ContentProducer) -> any SampleBufferVideoRecordingWorker {
-        SampleBufferVideoRecordingWorkerImp(input: input)
+    func makeSampleBufferOutputService() -> any SampleBufferVideoRecordingWorker {
+        SampleBufferVideoRecordingWorkerImp()
     }
     
     func makePreviewMetalTarget() -> any PreviewMetalTarget {

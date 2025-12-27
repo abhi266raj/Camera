@@ -19,8 +19,11 @@ private enum VideoRecordError: Error {
 }
 
 class SampleBufferVideoRecordingWorkerImp: SampleBufferVideoRecordingWorker {
+    func setUpConnection(_ producer: any PlatformApi.ContentProducer, reciever: (any PlatformApi.ContentReciever)?) {
+        passThroughSetup(producer, reciever: output)
+    }
     
-    var input: ContentProducer
+    
     var continuation:AsyncThrowingStream<URL, Error>.Continuation?
     
     var output: ContentReciever? {
@@ -29,9 +32,7 @@ class SampleBufferVideoRecordingWorkerImp: SampleBufferVideoRecordingWorker {
     
     var videoRecorder: VideoRecorder? = nil
     
-    public init(input: ContentProducer) {
-        self.input = input
-        passThroughSetup()
+    public init() {
     }
     
    
