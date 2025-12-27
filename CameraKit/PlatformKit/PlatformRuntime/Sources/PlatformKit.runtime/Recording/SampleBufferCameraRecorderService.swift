@@ -19,19 +19,10 @@ private enum VideoRecordError: Error {
 }
 
 class SampleBufferVideoRecordingWorkerImp: SampleBufferVideoRecordingWorker {
-   
-    
-    func connect(producer:AnyProducer<CMSampleBuffer>, reciever: AnyReciever<CMSampleBuffer>?) {
-        let receiver:VideoRecorderImp? = nil
-        passThroughSetup(producer: producer.content, reciever: output)
-        //passThroughSetup(producer, reciever: reciever)
-        //passThroughSetup(producer, reciever: receiver)
+    func createConnection(producer: any ContentProducer<CMSampleBuffer>, reciever: (any ContentReciever<CMSampleBuffer>)?) {
+        passThroughSetup(producer: producer, reciever: output)
     }
-    
-    typealias ConnectionType = CMSampleBuffer
-
-    
-    
+        
     var continuation:AsyncThrowingStream<URL, Error>.Continuation?
     
     var output: ContentReciever<CMSampleBuffer>? {

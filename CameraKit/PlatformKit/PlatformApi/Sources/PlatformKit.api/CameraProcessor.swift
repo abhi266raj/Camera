@@ -10,6 +10,7 @@ import CoreMedia
 import CoreKit
 
 public protocol CameraProccessor: class, ContentConnection{
+    typealias ConnectionType = CMSampleBuffer
     var selectedFilter: (any FilterModel)? {get set}
 }
 

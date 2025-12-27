@@ -24,6 +24,7 @@ public protocol BasicVideoRecordWorker: Sendable {
 
 
 public protocol SampleBufferVideoRecordingWorker:  ContentConnection{
+    typealias ConnectionType = CMSampleBuffer
     func startRecording(url: URL?) async -> AsyncThrowingStream<URL, Error>
     func stopRecording() async  throws
     func saveVideoToLibrary(_ outputFileURL: URL) async throws
