@@ -7,7 +7,6 @@
 
 import UIKit
 import CoreKit
-import CoreMedia
 import AVFoundation
 
 
@@ -24,9 +23,10 @@ public protocol CameraSessionDisplayCoordinator: CameraDisplayCoordinator {
     func updateSession(session: AVCaptureSession)
 }
 
-public protocol SampleBufferDisplayCoordinator : CameraDisplayCoordinator {
-    @MainActor func getBufferProvider() -> ContentProducer<CMSampleBuffer>?
-    @MainActor func getBufferReciever() -> ContentReciever<CMSampleBuffer>?
+public protocol SampleBufferDisplayCoordinator<ContentType> : CameraDisplayCoordinator {
+    associatedtype ContentType
+    @MainActor func getBufferProvider() -> ContentProducer<ContentType>?
+    @MainActor func getBufferReciever() -> ContentReciever<ContentType>?
 }
 
 

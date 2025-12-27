@@ -5,13 +5,10 @@
 //  Created by Abhiraj on 16/12/25.
 //
 
-import AVFoundation
-import UIKit
 import CoreKit
 
 public protocol PlatformFactory {
-    
-    func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator
+    func makeMetalDisplayCoordinator<ContentInput>() -> SampleBufferDisplayCoordinator<ContentInput>
     func makeMultiCameraDisplayCoordinator() -> CameraSessionDisplayCoordinator
     func makeVideoLayerDisplayCoordinator() -> CameraSessionDisplayCoordinator
     
@@ -19,7 +16,7 @@ public protocol PlatformFactory {
     func makePhotoClickWorker() -> PhotoClickWorker
     func makeBasicVideoRecordWorker() -> BasicVideoRecordWorker
     
-    func makeSampleBufferOutputService() -> SampleBufferVideoRecordingWorker
+    func makeSampleBufferOutputService<ContentInput>() -> SampleBufferVideoRecordingWorker<ContentInput>
     
     func makeCameraInput() -> CameraInput
     

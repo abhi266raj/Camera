@@ -15,8 +15,8 @@ import CoreMedia
 
 
 final class PlatformFactoryImp: PlatformFactory {
-    func makeSampleBufferOutputService() -> any SampleBufferVideoRecordingWorker {
-        SampleBufferVideoRecordingWorkerImp()
+    func makeSampleBufferOutputService<ContentInput>() -> SampleBufferVideoRecordingWorker<ContentInput> {
+        SampleBufferVideoRecordingWorkerImp()  as! SampleBufferVideoRecordingWorker<ContentInput>
     }
     
     func makePreviewMetalTarget() -> any PreviewMetalTarget {
@@ -32,11 +32,8 @@ final class PlatformFactoryImp: PlatformFactory {
     }
     
         
-    func makeEffectProcessor<ProcessorInput>() -> CameraProccessor<ProcessorInput> {
-        if ProcessorInput.self == CMSampleBuffer.self {
-            return EffectCameraProcessor() as! CameraProccessor<ProcessorInput>
-        }
-        fatalError("Unsupported ProcessorInput type")
+    func makeEffectProcessor<ContentInput>() -> CameraProccessor<ContentInput> {
+        EffectCameraProcessor() as! CameraProccessor<ContentInput>
     }
     
     func makeSessionService() -> any CameraSessionService {
@@ -44,10 +41,6 @@ final class PlatformFactoryImp: PlatformFactory {
     }
     
     public init() {}
-    
-    func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator {
-        return CameraMetalDisplayCoordinatorImp()
-    }
     
     func makeMultiCameraDisplayCoordinator() -> CameraSessionDisplayCoordinator {
         MultiCameraDisplayCoordinator()
@@ -67,4 +60,7 @@ final class PlatformFactoryImp: PlatformFactory {
         FilterModelSelectionStreamImpl()
     }
     
+    func makeMetalDisplayCoordinator<ContentInput>() -> SampleBufferDisplayCoordinator<ContentInput> {
+            return CameraMetalDisplayCoordinatorImp() as! SampleBufferDisplayCoordinator<ContentInput>
+    }
 }

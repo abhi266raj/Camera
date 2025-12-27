@@ -20,8 +20,8 @@ public protocol BasicVideoRecordWorker: Sendable {
 }
 
 
-public protocol SampleBufferVideoRecordingWorker:  ContentConnection{
-    typealias ConnectionType = CMSampleBuffer
+public protocol SampleBufferVideoRecordingWorker<ConnectionType>: ContentConnection {
+    associatedtype ConnectionType
     func startRecording(url: URL?) async -> AsyncThrowingStream<URL, Error>
     func stopRecording() async  throws
     func saveVideoToLibrary(_ outputFileURL: URL) async throws
@@ -32,3 +32,4 @@ public protocol VideoRecorder: ContentReciever<CMSampleBuffer> {
     func startRecording()
     func stopRecording(completion: @escaping (URL) -> Void)
 }
+

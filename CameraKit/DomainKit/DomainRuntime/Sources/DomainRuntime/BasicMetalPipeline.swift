@@ -15,14 +15,14 @@ internal import Synchronization
 class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     
     private let captureSession: AVCaptureSession    
-    private let sampleBufferOutputService: SampleBufferVideoRecordingWorker
+    private let sampleBufferOutputService: SampleBufferVideoRecordingWorker<CMSampleBuffer>
     private let sessionManager: CameraSessionService
     private let supportedOutput: CameraAction = [.startRecord, .stopRecord]
     private let input: CameraInput
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let processor: CameraProccessor<CMSampleBuffer>
-    private  let displayCoordinator: any SampleBufferDisplayCoordinator
+    private  let displayCoordinator: any SampleBufferDisplayCoordinator<CMSampleBuffer>
    // let multiContentInput: MultiContentInput
     let audioInput = MediaContentInput()
     let sessionState: SessionState = SessionState()
