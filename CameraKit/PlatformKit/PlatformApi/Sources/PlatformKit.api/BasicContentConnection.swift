@@ -23,19 +23,17 @@ import AVFoundation
 //}
 
 public extension ContentConnection  {
-    
-    func passThroughSetup<Producer, Consumer>(_ producer: Producer, reciever: Consumer?) where Producer : ContentProducer, Consumer: ContentReciever, Producer.Content == CMSampleBuffer, Consumer.Content == CMSampleBuffer  {
-        producer.contentProduced = { [weak self, weak reciever] buffer in
-            guard let self, let reciever else {return}
-            reciever.contentOutput(reciever, didOutput: buffer, from: self)
-        }
         
+    func passThroughSetup(producer: ContentProducer<ConnectionType>, reciever: ContentReciever<ConnectionType>?) {
+                producer.contentProduced = { [weak self, weak reciever] buffer in
+                    guard let self, let reciever else {return}
+                    reciever.contentOutput(reciever, didOutput: buffer, from: self)
+                }
     }
-
-    
 }
 
 public class MediaContentInput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate, AVCaptureVideoDataOutputSampleBufferDelegate, ContentProducer {
+    public typealias Content = CMSampleBuffer
     public var contentProduced: ((CMSampleBuffer) -> Void)?
     override public init() {
         
@@ -45,4 +43,11 @@ public class MediaContentInput: NSObject, AVCaptureAudioDataOutputSampleBufferDe
         contentProduced?(sampleBuffer)
     }
     
+}
+
+public class EmptyVideoOutput: ContentReciever {
+    public func contentOutput(_ output: any ContentReciever, didOutput sampleBuffer: CMSampleBuffer, from connection: any ContentConnection) {
+    }
+    
+    public typealias Content = CMSampleBuffer
 }

@@ -25,8 +25,8 @@ public protocol CameraSessionDisplayCoordinator: CameraDisplayCoordinator {
 }
 
 public protocol SampleBufferDisplayCoordinator : CameraDisplayCoordinator {
-    @MainActor func getBufferProvider() -> ContentProducer?
-    @MainActor func getBufferReciever() -> ContentReciever?
+    @MainActor func getBufferProvider() -> ContentProducer<CMSampleBuffer>?
+    @MainActor func getBufferReciever() -> ContentReciever<CMSampleBuffer>?
 }
 
 

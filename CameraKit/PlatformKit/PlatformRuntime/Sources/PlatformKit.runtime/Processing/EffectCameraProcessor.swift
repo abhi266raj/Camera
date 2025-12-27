@@ -10,6 +10,15 @@ import CoreKit
 import PlatformApi
 
 class EffectCameraProcessor: CameraProccessor{
+    typealias Content = CMSampleBuffer
+    func connect(producer: AnyProducer<CMSampleBuffer>, reciever: AnyReciever<CMSampleBuffer>?) {
+        producer.content.contentProduced = { [weak self] sampleBuffer in
+            guard let self, let reciever = reciever else {return}
+            let value = process(sampleBuffer: sampleBuffer)
+            reciever.content.contentOutput(reciever.content, didOutput: value, from: self)
+        }
+    }
+    
     typealias ConnectionType = CMSampleBuffer
     
     var contentProduced: ((CMSampleBuffer) -> Void)?

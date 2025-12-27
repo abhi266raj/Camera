@@ -89,13 +89,16 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
             await try displayCoordinator.attach(target)
             if let videoInput = displayCoordinator.getBufferProvider() {
                 // Sample buffer will have its own reciver
-                sampleBufferOutputService.setUpConnection(videoInput, reciever: nil)
-                sampleBufferOutputService.setUpConnection(audioInput, reciever: nil)
+                let output: EmptyVideoOutput? = nil
+                sampleBufferOutputService.connect(producer: videoInput.asAnyProducer(), reciever: nil)
+                sampleBufferOutputService.connect(producer: audioInput.asAnyProducer(), reciever: nil)
+                //sampleBufferOutputService.setUpConnection(videoInput, reciever: output)
+                //sampleBufferOutputService.setUpConnection(audioInput, reciever: output)
                 //multiContentInput.insert(videoInput)
                // multiContentInput.insert(audioInput)
             }
             if let output = displayCoordinator.getBufferReciever() {
-                self.processor.setUpConnection(bufferCameraInput, reciever: output)
+                self.processor.connect(producer: bufferCameraInput.asAnyProducer(), reciever: output.asAnyReciever())
             }
             
             

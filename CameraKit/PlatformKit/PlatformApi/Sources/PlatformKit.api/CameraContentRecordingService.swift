@@ -29,7 +29,8 @@ public protocol SampleBufferVideoRecordingWorker:  ContentConnection{
     func saveVideoToLibrary(_ outputFileURL: URL) async throws
 }
 
-public protocol VideoRecorder: ContentReciever {
+public protocol VideoRecorder: ContentReciever<CMSampleBuffer> {
+    typealias Content = CMSampleBuffer
     func startRecording()
     func stopRecording(completion: @escaping (URL) -> Void)
 }
