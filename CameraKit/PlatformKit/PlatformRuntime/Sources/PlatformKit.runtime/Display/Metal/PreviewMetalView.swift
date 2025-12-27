@@ -22,7 +22,7 @@ class PreviewMetalView: MTKView, @preconcurrency PreviewMetalTarget {
     }
     
     
-    weak public var renderingDelegate:MetalRenderingDelegate?
+   //  weak public var renderingDelegate:MetalRenderingDelegate?
     
     enum Rotation: Int {
         case rotate0Degrees
@@ -447,7 +447,7 @@ class PreviewMetalView: MTKView, @preconcurrency PreviewMetalTarget {
                     _ = CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: newPixelBuffer, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: formatDescription, sampleTiming: &timingInfo, sampleBufferOut: &newSampleBuffer)
                     if let newSampleBuffer {
                         self?.contentProduced?(newSampleBuffer)
-                        self?.renderingDelegate?.sampleBufferRendered(newSampleBuffer)
+                        // self?.renderingDelegate?.sampleBufferRendered(newSampleBuffer)
                     }
                     counter1 -= 1
                     //print(counter1)

@@ -62,9 +62,6 @@ struct CameraEngineBuilder {
             }
         }()
         
-        func build() {
-            
-        }
         
     }
 }
