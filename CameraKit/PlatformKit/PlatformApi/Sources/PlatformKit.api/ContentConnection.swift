@@ -15,25 +15,11 @@ public protocol ContentReciever<Content>: class {
     associatedtype Content
     func contentOutput(
         _ output: ContentReciever,
-        didOutput sampleBuffer: Content,
-        from connection: ContentConnection
-    )
+        didRecieved: Content)
 }
 
 public protocol ContentConnection: class {
     associatedtype ConnectionType
     func createConnection(producer: ContentProducer<ConnectionType>, reciever: ContentReciever<ConnectionType>?)
-}
-
-public protocol MetalDisplayContent {
-    
-}
-
-public protocol VideoRecordingContent {
-    
-}
-
-public protocol AudioRecordingContent{
-    
 }
 

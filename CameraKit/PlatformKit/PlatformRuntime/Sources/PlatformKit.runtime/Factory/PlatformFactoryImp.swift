@@ -11,6 +11,7 @@ import AVFoundation
 import PlatformApi
 import CoreKit
 import UIKit
+import CoreMedia
 
 
 final class PlatformFactoryImp: PlatformFactory {
@@ -30,10 +31,12 @@ final class PlatformFactoryImp: PlatformFactory {
         VideoRecordWorkerImp()
     }
     
-    
-    lazy var effectProcessor = EffectCameraProcessor()
-    func makeEffectProcessor() -> any CameraProccessor {
-        effectProcessor
+        
+    func makeEffectProcessor<ProcessorInput>() -> CameraProccessor<ProcessorInput> {
+        if ProcessorInput.self == CMSampleBuffer.self {
+            return EffectCameraProcessor() as! CameraProccessor<ProcessorInput>
+        }
+        fatalError("Unsupported ProcessorInput type")
     }
     
     func makeSessionService() -> any CameraSessionService {

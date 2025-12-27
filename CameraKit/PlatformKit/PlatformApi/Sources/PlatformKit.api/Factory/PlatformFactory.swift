@@ -25,7 +25,7 @@ public protocol PlatformFactory {
     
     func makeSessionService() -> CameraSessionService
     
-    func makeEffectProcessor() -> CameraProccessor
+    func makeEffectProcessor<ContentInput>() -> CameraProccessor<ContentInput>
     
     func makePreviewMetalTarget() -> PreviewMetalTarget
     

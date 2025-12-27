@@ -12,7 +12,7 @@ public extension ContentConnection  {
     func passThroughSetup(producer: ContentProducer<ConnectionType>, reciever: ContentReciever<ConnectionType>?) {
                 producer.contentProduced = { [weak self, weak reciever] buffer in
                     guard let self, let reciever else {return}
-                    reciever.contentOutput(reciever, didOutput: buffer, from: self)
+                    reciever.contentOutput(reciever, didRecieved: buffer)
                 }
     }
 }

@@ -12,7 +12,7 @@ import CoreMedia
 import PlatformApi
 
 class VideoRecorderImp: VideoRecorder {
-    func contentOutput(_ output: any ContentReciever, didOutput sampleBuffer: CMSampleBuffer, from connection: any ContentConnection) {
+    func contentOutput(_ output: any ContentReciever, didRecieved sampleBuffer: CMSampleBuffer) {
         appendSampleBuffer(sampleBuffer)
     }
     

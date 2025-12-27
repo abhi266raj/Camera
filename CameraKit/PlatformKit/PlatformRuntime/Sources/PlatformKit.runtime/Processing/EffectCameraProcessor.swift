@@ -10,28 +10,17 @@ import CoreKit
 import PlatformApi
 
 class EffectCameraProcessor: CameraProccessor{
-    // typealias Content = CMSampleBuffer
-    func createConnection(producer: any PlatformApi.ContentProducer<CMSampleBuffer>, reciever: (any PlatformApi.ContentReciever<CMSampleBuffer>)?) {
+     typealias ConnectionType = CMSampleBuffer
+    func createConnection(producer: any ContentProducer<CMSampleBuffer>, reciever: (any ContentReciever<CMSampleBuffer>)?) {
         producer.contentProduced = { [weak self] sampleBuffer in
             guard let self, let reciever = reciever else {return}
             let value = process(sampleBuffer: sampleBuffer)
-            reciever.contentOutput(reciever, didOutput: value, from: self)
+            reciever.contentOutput(reciever, didRecieved: value)
         }
         
     }
     
-    // typealias ConnectionType = CMSampleBuffer
-    
-    var contentProduced: ((CMSampleBuffer) -> Void)?
-    
-    func contentOutput(_ output: any ContentReciever, didOutput sampleBuffer: CMSampleBuffer, from connection: any ContentConnection) {
-        if let contentProduced {
-            let value = process(sampleBuffer: sampleBuffer)
-            contentProduced(sampleBuffer)
-        }
-    }
-    
-    
+
     var filterRender1: CIFilterRenderer = CIFilterRenderer()
     var filterRender2: MetalFilterRenderer = MetalFilterRenderer()
     
@@ -47,13 +36,13 @@ class EffectCameraProcessor: CameraProccessor{
 //        }
 //    }
     
-    public func setUpConnection<Producer: ContentProducer, Consumer:ContentReciever>(_ producer: Producer, reciever: Consumer?) where Producer.Content == CMSampleBuffer, Consumer.Content == CMSampleBuffer{
-        producer.contentProduced = { [weak self] sampleBuffer in
-            guard let self, let reciever = reciever else {return}
-            let value = process(sampleBuffer: sampleBuffer)
-            reciever.contentOutput(reciever, didOutput: value, from: self)
-        }
-    }
+//    public func setUpConnection<Producer: ContentProducer, Consumer:ContentReciever>(_ producer: Producer, reciever: Consumer?) where Producer.Content == CMSampleBuffer, Consumer.Content == CMSampleBuffer{
+//        producer.contentProduced = { [weak self] sampleBuffer in
+//            guard let self, let reciever = reciever else {return}
+//            let value = process(sampleBuffer: sampleBuffer)
+//            reciever.contentOutput(reciever, didRecieved: value)
+//        }
+//    }
     
     var selectedFilter: (any FilterModel)? {
         didSet {

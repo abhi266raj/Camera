@@ -21,7 +21,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     private let input: CameraInput
     let bufferOutput: AVCaptureVideoDataOutput = AVCaptureVideoDataOutput()
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
-    let processor: CameraProccessor
+    let processor: CameraProccessor<CMSampleBuffer>
     private  let displayCoordinator: any SampleBufferDisplayCoordinator
    // let multiContentInput: MultiContentInput
     let audioInput = MediaContentInput()
@@ -36,7 +36,7 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
         captureSession = session
       //  multiContentInput = MultiContentInput()
         sampleBufferOutputService = platformFactory.makeSampleBufferOutputService()
-        processor = platformFactory.makeEffectProcessor()
+        self.processor = platformFactory.makeEffectProcessor()
         sessionManager = platformFactory.makeSessionService()
         bufferCameraInput = MediaContentInput()
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator()
@@ -89,13 +89,9 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
             await try displayCoordinator.attach(target)
             if let videoInput = displayCoordinator.getBufferProvider() {
                 // Sample buffer will have its own reciver
-                let value: ContentReciever<CMSampleBuffer>? = nil
-                sampleBufferOutputService.createConnection(producer: videoInput, reciever: value)
-                sampleBufferOutputService.createConnection(producer: audioInput, reciever: value)
-                //sampleBufferOutputService.setUpConnection(videoInput, reciever: output)
-                //sampleBufferOutputService.setUpConnection(audioInput, reciever: output)
-                //multiContentInput.insert(videoInput)
-               // multiContentInput.insert(audioInput)
+                // let value: ContentReciever<CMSampleBuffer>? = nil
+                sampleBufferOutputService.createConnection(producer: videoInput, reciever: nil)
+                sampleBufferOutputService.createConnection(producer: audioInput, reciever: nil)
             }
             if let output = displayCoordinator.getBufferReciever() {
                 self.processor.createConnection(producer: bufferCameraInput, reciever: output)

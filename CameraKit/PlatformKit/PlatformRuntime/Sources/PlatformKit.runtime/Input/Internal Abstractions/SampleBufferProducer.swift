@@ -8,19 +8,19 @@
 import PlatformApi
 import CoreMedia
 
-protocol SampleBufferProducer: ContentProducer {
-    typealias Content = CMSampleBuffer
-}
-
-protocol SampleBufferReciever: ContentReciever {
-    typealias Content = CMSampleBuffer
-}
-
-protocol SampleBufferConnection: ContentConnection {
-    typealias Producer =  SampleBufferProducer
-    typealias Consumer =  SampleBufferReciever
-    func setUpConnection(producer: Producer, reciever: Consumer?)
-}
+//protocol SampleBufferProducer: ContentProducer {
+//    typealias Content = CMSampleBuffer
+//}
+//
+//protocol SampleBufferReciever: ContentReciever {
+//    typealias Content = CMSampleBuffer
+//}
+//
+//protocol SampleBufferConnection: ContentConnection {
+//    typealias Producer =  SampleBufferProducer
+//    typealias Consumer =  SampleBufferReciever
+//    func setUpConnection(producer: Producer, reciever: Consumer?)
+//}
 
 
 //public protocol ContentConnection: class {
