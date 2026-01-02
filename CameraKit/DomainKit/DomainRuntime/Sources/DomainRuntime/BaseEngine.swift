@@ -174,7 +174,7 @@ final class BaseEngine: Sendable {
     public let activeConfig: EngineOption.Config
     let subSystem: CameraSubSystem
         
-    init (profile: CameraProfile, platfomFactory: PlatformFactory<CMSampleBuffer>, selectionReciever: FilterModelSelectionReciever ) {
+    init (profile: CameraProfile, platfomFactory: PlatformFactory<CMSampleBuffer>, selectionReciever: FilterModelSelectionReciever, persistenceService: MediaPersistenceService ) {
         switch profile {
         case .simplephoto:
             let specification = EngineSpecsImp.photoEngineSpecs()
@@ -195,7 +195,7 @@ final class BaseEngine: Sendable {
             let specification = EngineSpecsImp.filterCamEngineSpecs()
             self.activeConfig = specification.allConfig[0]
             self.specs = specification
-            self.subSystem = BasicMetalPipeline(platformFactory: platfomFactory, stream: selectionReciever.selectionStream)
+            self.subSystem = BasicMetalPipeline(platformFactory: platfomFactory, persistenceService: persistenceService, stream: selectionReciever.selectionStream)
         }
     }
 }

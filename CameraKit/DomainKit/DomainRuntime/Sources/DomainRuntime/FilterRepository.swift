@@ -83,7 +83,6 @@ final class FilterRepositoryImpl: FilterRepository {
             result = filterMap[id]
         }
         return result
-        
     }
 }
 

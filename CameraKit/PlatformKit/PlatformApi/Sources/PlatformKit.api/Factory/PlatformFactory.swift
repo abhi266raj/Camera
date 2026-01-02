@@ -28,4 +28,6 @@ public protocol PlatformFactory<MetalContentInput> {
     func makePreviewMetalTarget() -> PreviewMetalTarget
     
     func makeFilterModelSelection() -> FilterModelSelectionStream
+    
+    func makeMediaPersistenceGateweay() -> MediaPersistenceGateway
 }

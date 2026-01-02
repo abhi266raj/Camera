@@ -13,15 +13,17 @@ import CoreMedia
 public final class CameraFactoryImp: CameraFactory {
     
     let platformFactory: PlatformFactory<CMSampleBuffer>
+    let persistanceService: MediaPersistenceService
     lazy var modelSelection = platformFactory.makeFilterModelSelection()
 
     public func makeCameraEngine(profile: CameraProfile) -> any CameraEngine {
-        return BaseEngine(profile: profile, platfomFactory:platformFactory, selectionReciever: modelSelection)
+        return BaseEngine(profile: profile, platfomFactory:platformFactory, selectionReciever: modelSelection, persistenceService: persistanceService )
     }
     
     
-    public init(platformFactory: @escaping (() -> PlatformFactory<CMSampleBuffer>)) {
+    public init(platformFactory: @escaping (() -> PlatformFactory<CMSampleBuffer>), persistanceService: MediaPersistenceService) {
         self.platformFactory = platformFactory()
+        self.persistanceService = persistanceService
     }
     
     private func makeFilterRepository() -> any FilterRepository {

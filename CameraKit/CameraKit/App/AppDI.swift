@@ -23,11 +23,13 @@ class PlatformOutput {
 class DomainOutput {
     private let domainModule: DomainRuntime.Module
     func cameraFactory() -> CameraFactory {
-        domainModule.makeCameraFactory()
+        domainModule.makeCameraFactory(persistanceService: mediaPersistenceService)
     }
     init(domainModule: DomainRuntime.Module) {
         self.domainModule = domainModule
     }
+    lazy var cameraFactory2: CameraFactory = domainModule.makeCameraFactory(persistanceService: mediaPersistenceService)
+    lazy var mediaPersistenceService: MediaPersistenceService = domainModule.storageServiceFactory(permissionService: permissionService, ).makeMediaPersistenceService()
     lazy var permissionService: PermissionService = domainModule.makeServiceFactory().makePermissionService()
 }
 
@@ -79,7 +81,7 @@ final class AppDependencies {
         let platformModule = PlatformRuntime.Module(dependency: platformDep)
         let platformdep = platformModule.makePlatformFactory()
         let platformDepImp = PlatformOutput(platformFactoy: platformdep)
-        let dep = DomainRuntime.Dependency(platformFactoryBuilder: {platformDepImp.platformFactoy})
+        let dep = DomainRuntime.Dependency(persistenceGateway: platformdep.makeMediaPersistenceGateweay(), platformFactory: platformdep)
         let module = DomainRuntime.Module(dependecy: dep)
         let domainDependency = DomainOutput(domainModule: module)
         self.domainOutput = domainDependency

@@ -27,23 +27,7 @@ class EffectCameraProcessor: CameraProccessor{
     public init() {
         
     }
-    
-//    public func setup(connection: ContentConnection) {
-//        connection.input.contentProduced = { [weak self] sampleBuffer in
-//            guard let self, let output = connection.output else {return}
-//            let value = process(sampleBuffer: sampleBuffer)
-//            output.contentOutput(output, didOutput: value, from: connection)
-//        }
-//    }
-    
-//    public func setUpConnection<Producer: ContentProducer, Consumer:ContentReciever>(_ producer: Producer, reciever: Consumer?) where Producer.Content == CMSampleBuffer, Consumer.Content == CMSampleBuffer{
-//        producer.contentProduced = { [weak self] sampleBuffer in
-//            guard let self, let reciever = reciever else {return}
-//            let value = process(sampleBuffer: sampleBuffer)
-//            reciever.contentOutput(reciever, didRecieved: value)
-//        }
-//    }
-    
+        
     var selectedFilter: (any FilterModel)? {
         didSet {
             guard let selectedFilter else {return}

@@ -17,4 +17,9 @@ public protocol CameraFactory {
 }
 
 
+public protocol StorageFactory {
+    func makeMediaPersistenceService() -> MediaPersistenceService
+}
+
+
 

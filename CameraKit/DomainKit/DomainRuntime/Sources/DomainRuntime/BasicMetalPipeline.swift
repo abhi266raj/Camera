@@ -23,24 +23,24 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
     let audioOutput: AVCaptureAudioDataOutput = AVCaptureAudioDataOutput()
     let processor: CameraProccessor<CMSampleBuffer>
     private  let displayCoordinator: any SampleBufferDisplayCoordinator<CMSampleBuffer>
-   // let multiContentInput: MultiContentInput
     let audioInput = MediaContentInput()
     let sessionState: SessionState = SessionState()
     let sessionConfig: SessionConfig = SessionConfig()
     let continuation: Mutex<AsyncStream<CameraMode>.Continuation?> = Mutex(nil)
     let bufferCameraInput: MediaContentInput
+    let persistenceService: MediaPersistenceService
 
     
-    public init(platformFactory: PlatformFactory<CMSampleBuffer>, stream: AsyncStream<FilterModel>) {
+    public init(platformFactory: PlatformFactory<CMSampleBuffer>, persistenceService:MediaPersistenceService,  stream: AsyncStream<FilterModel>) {
         let session = AVCaptureSession()
         captureSession = session
-      //  multiContentInput = MultiContentInput()
         sampleBufferOutputService = platformFactory.makeSampleBufferOutputService()
         self.processor = platformFactory.makeEffectProcessor()
         sessionManager = platformFactory.makeSessionService()
         bufferCameraInput = MediaContentInput()
         displayCoordinator = platformFactory.makeMetalDisplayCoordinator()
         input = platformFactory.makeCameraInput()
+        self.persistenceService = persistenceService
         super.init()
         commonInit()
         Task.immediate {
@@ -135,7 +135,10 @@ class BasicMetalPipeline: NSObject, CameraSubSystem, @unchecked Sendable {
             continuation.withLock { $0?.yield(.capture(.video))}
             Task.immediate {
                 for try await result in stream {
-                    try await sampleBufferOutputService.saveVideoToLibrary(result)
+                    
+                    let request = MediaPersistenceRequest.video(result)
+                    try await persistenceService.save(request)
+                   //  try await sampleBufferOutputService.saveVideoToLibrary(result)
                 }
             }
             return true

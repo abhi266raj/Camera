@@ -12,9 +12,13 @@ import PlatformApi
 import CoreKit
 import UIKit
 import CoreMedia
+internal import Photos
 
 
 final class PlatformFactoryImp: PlatformFactory {
+    
+    let photoLibrary: PHPhotoLibrary = PHPhotoLibrary.shared()
+    
     typealias MetalContentInput = CMSampleBuffer
     func makeSampleBufferOutputService() -> SampleBufferVideoRecordingWorker<MetalContentInput> {
         SampleBufferVideoRecordingWorkerImp() 
@@ -64,5 +68,9 @@ final class PlatformFactoryImp: PlatformFactory {
     
     func makeMetalDisplayCoordinator() -> SampleBufferDisplayCoordinator<MetalContentInput> {
             return CameraMetalDisplayCoordinatorImp()
+    }
+    
+    func makeMediaPersistenceGateweay() -> MediaPersistenceGateway {
+        return MediaPersistenceGatewayImp(photoLibrary: photoLibrary)
     }
 }
