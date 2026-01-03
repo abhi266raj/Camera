@@ -10,7 +10,7 @@ internal import Foundation
 import PlatformApi
 internal import Photos
 
-struct MediaPersistenceServiceImp: MediaPersistenceService{
+public struct MediaPersistenceServiceImp: MediaPersistenceService{
     
     enum Error: Swift.Error {
         case permissionDenied
@@ -19,7 +19,7 @@ struct MediaPersistenceServiceImp: MediaPersistenceService{
     let mediaStorageGateway: MediaPersistenceGateway
     let permissionService: PermissionService
     
-    init(mediaStorageGateway: MediaPersistenceGateway, permissionService: PermissionService) {
+    public init(mediaStorageGateway: MediaPersistenceGateway, permissionService: PermissionService) {
         self.mediaStorageGateway = mediaStorageGateway
         self.permissionService = permissionService
     }
@@ -36,7 +36,7 @@ struct MediaPersistenceServiceImp: MediaPersistenceService{
     }
 
     
-    func save(_ request: MediaPersistenceRequest) async throws {
+    public func save(_ request: MediaPersistenceRequest) async throws {
         try await ensurePhotoPermission()
         switch request {
         case .imageData(let data):

@@ -29,8 +29,14 @@ class DomainOutput {
         self.domainModule = domainModule
     }
     lazy var cameraFactory2: CameraFactory = domainModule.makeCameraFactory(persistanceService: mediaPersistenceService)
-    lazy var mediaPersistenceService: MediaPersistenceService = domainModule.storageServiceFactory(permissionService: permissionService, ).makeMediaPersistenceService()
-    lazy var permissionService: PermissionService = domainModule.makeServiceFactory().makePermissionService()
+    
+    lazy var mediaPersistenceService: MediaPersistenceService =  {
+        let mediaPersistenceGateway = domainModule.dependecy.persistenceGateway
+        let mediaPersistenceService = MediaPersistenceServiceImp(mediaStorageGateway: mediaPersistenceGateway, permissionService: permissionService)
+        return mediaPersistenceService
+    }()
+    
+    let permissionService: PermissionService = PermissionServiceImp()
 }
 
 class ViewModelOutput {

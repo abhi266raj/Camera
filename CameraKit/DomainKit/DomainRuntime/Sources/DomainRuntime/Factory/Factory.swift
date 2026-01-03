@@ -38,16 +38,6 @@ public final class CameraFactoryImp: CameraFactory {
 }
 
 
-
-
-public struct DomainFactory: ServiceFactory {
-    
-    public func makePermissionService() -> any DomainApi.PermissionService {
-        PermissionServiceImp()
-    }
-}
-
-
 struct CameraEngineBuilder {
     
     let cameraProfile: CameraProfile

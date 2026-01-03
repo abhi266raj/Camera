@@ -6,7 +6,7 @@ internal import AVFoundation
 internal import Photos
 import DomainApi
 
-struct PermissionServiceImp: PermissionService {
+public struct PermissionServiceImp: PermissionService {
     public init() {}
     
     public func requestCameraAndMicrophoneIfNeeded() async -> Bool {
