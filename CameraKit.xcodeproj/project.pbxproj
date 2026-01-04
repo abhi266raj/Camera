@@ -7,18 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6B167C172F0A5D7100104FDB /* UseCaseApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C162F0A5D7100104FDB /* UseCaseApi */; };
-		6B167C192F0A5D7500104FDB /* UseCaseRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C182F0A5D7500104FDB /* UseCaseRuntime */; };
+		6B167C422F0A66C100104FDB /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C412F0A66C100104FDB /* AppView */; };
+		6B167C442F0A66C100104FDB /* AppViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C432F0A66C100104FDB /* AppViewModel */; };
+		6B167C462F0A66C100104FDB /* CoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C452F0A66C100104FDB /* CoreKit */; };
+		6B167C482F0A66C100104FDB /* DomainApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C472F0A66C100104FDB /* DomainApi */; };
+		6B167C4A2F0A66C100104FDB /* DomainRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C492F0A66C100104FDB /* DomainRuntime */; };
+		6B167C4C2F0A66C100104FDB /* PlatformApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C4B2F0A66C100104FDB /* PlatformApi */; };
+		6B167C4E2F0A66C100104FDB /* PlatformRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C4D2F0A66C100104FDB /* PlatformRuntime */; };
+		6B167C502F0A66C100104FDB /* UseCaseApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C4F2F0A66C100104FDB /* UseCaseApi */; };
+		6B167C522F0A66C100104FDB /* UseCaseRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C512F0A66C100104FDB /* UseCaseRuntime */; };
 		6B6D7DEF2EE6D9FA00B59C01 /* AppDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DED2EE6D9FA00B59C01 /* AppDI.swift */; };
 		6B6D7DF02EE6D9FA00B59C01 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DEE2EE6D9FA00B59C01 /* Coordinator.swift */; };
 		6B706EDD2EF8028B009002EC /* TabViewAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B706EDC2EF8028A009002EC /* TabViewAppCoordinator.swift */; };
-		6B8FC5B32EF1BE71003AB437 /* AppView in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8FC5B22EF1BE71003AB437 /* AppView */; };
-		6B8FC5B52EF1BE71003AB437 /* AppViewModel in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8FC5B42EF1BE71003AB437 /* AppViewModel */; };
-		6B8FC5B72EF1BE71003AB437 /* CoreKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8FC5B62EF1BE71003AB437 /* CoreKit */; };
-		6B8FC5B92EF1BE71003AB437 /* DomainApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8FC5B82EF1BE71003AB437 /* DomainApi */; };
-		6B8FC5BB2EF1BE71003AB437 /* DomainRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8FC5BA2EF1BE71003AB437 /* DomainRuntime */; };
-		6B8FC5BD2EF1BE71003AB437 /* PlatformApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8FC5BC2EF1BE71003AB437 /* PlatformApi */; };
-		6B8FC5BF2EF1BE71003AB437 /* PlatformRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B8FC5BE2EF1BE71003AB437 /* PlatformRuntime */; };
 		6BE804DA2AB738E800DAF8B4 /* CameraKitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BE804D92AB738E800DAF8B4 /* CameraKitApp.swift */; };
 		6BE804DE2AB738EB00DAF8B4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BE804DD2AB738EB00DAF8B4 /* Assets.xcassets */; };
 		6BE804E12AB738EB00DAF8B4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6BE804E02AB738EB00DAF8B4 /* Preview Assets.xcassets */; };
@@ -78,15 +78,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B167C192F0A5D7500104FDB /* UseCaseRuntime in Frameworks */,
-				6B8FC5BB2EF1BE71003AB437 /* DomainRuntime in Frameworks */,
-				6B8FC5BF2EF1BE71003AB437 /* PlatformRuntime in Frameworks */,
-				6B8FC5B72EF1BE71003AB437 /* CoreKit in Frameworks */,
-				6B8FC5B32EF1BE71003AB437 /* AppView in Frameworks */,
-				6B8FC5B52EF1BE71003AB437 /* AppViewModel in Frameworks */,
-				6B167C172F0A5D7100104FDB /* UseCaseApi in Frameworks */,
-				6B8FC5BD2EF1BE71003AB437 /* PlatformApi in Frameworks */,
-				6B8FC5B92EF1BE71003AB437 /* DomainApi in Frameworks */,
+				6B167C522F0A66C100104FDB /* UseCaseRuntime in Frameworks */,
+				6B167C4A2F0A66C100104FDB /* DomainRuntime in Frameworks */,
+				6B167C4E2F0A66C100104FDB /* PlatformRuntime in Frameworks */,
+				6B167C462F0A66C100104FDB /* CoreKit in Frameworks */,
+				6B167C422F0A66C100104FDB /* AppView in Frameworks */,
+				6B167C442F0A66C100104FDB /* AppViewModel in Frameworks */,
+				6B167C502F0A66C100104FDB /* UseCaseApi in Frameworks */,
+				6B167C4C2F0A66C100104FDB /* PlatformApi in Frameworks */,
+				6B167C482F0A66C100104FDB /* DomainApi in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -281,7 +281,7 @@
 			);
 			mainGroup = 6BE804CD2AB738E800DAF8B4;
 			packageReferences = (
-				6B8FC5B12EF1BE71003AB437 /* XCLocalSwiftPackageReference "../../Camera" */,
+				6B167C402F0A66C100104FDB /* XCLocalSwiftPackageReference "../Camera" */,
 			);
 			productRefGroup = 6BE804D72AB738E800DAF8B4 /* Products */;
 			projectDirPath = "";
@@ -661,50 +661,48 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		6B8FC5B12EF1BE71003AB437 /* XCLocalSwiftPackageReference "../../Camera" */ = {
+		6B167C402F0A66C100104FDB /* XCLocalSwiftPackageReference "../Camera" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Camera;
+			relativePath = ../Camera;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		6B167C162F0A5D7100104FDB /* UseCaseApi */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6B8FC5B12EF1BE71003AB437 /* XCLocalSwiftPackageReference "../../Camera" */;
-			productName = UseCaseApi;
-		};
-		6B167C182F0A5D7500104FDB /* UseCaseRuntime */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6B8FC5B12EF1BE71003AB437 /* XCLocalSwiftPackageReference "../../Camera" */;
-			productName = UseCaseRuntime;
-		};
-		6B8FC5B22EF1BE71003AB437 /* AppView */ = {
+		6B167C412F0A66C100104FDB /* AppView */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppView;
 		};
-		6B8FC5B42EF1BE71003AB437 /* AppViewModel */ = {
+		6B167C432F0A66C100104FDB /* AppViewModel */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppViewModel;
 		};
-		6B8FC5B62EF1BE71003AB437 /* CoreKit */ = {
+		6B167C452F0A66C100104FDB /* CoreKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = CoreKit;
 		};
-		6B8FC5B82EF1BE71003AB437 /* DomainApi */ = {
+		6B167C472F0A66C100104FDB /* DomainApi */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DomainApi;
 		};
-		6B8FC5BA2EF1BE71003AB437 /* DomainRuntime */ = {
+		6B167C492F0A66C100104FDB /* DomainRuntime */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = DomainRuntime;
 		};
-		6B8FC5BC2EF1BE71003AB437 /* PlatformApi */ = {
+		6B167C4B2F0A66C100104FDB /* PlatformApi */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PlatformApi;
 		};
-		6B8FC5BE2EF1BE71003AB437 /* PlatformRuntime */ = {
+		6B167C4D2F0A66C100104FDB /* PlatformRuntime */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PlatformRuntime;
+		};
+		6B167C4F2F0A66C100104FDB /* UseCaseApi */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UseCaseApi;
+		};
+		6B167C512F0A66C100104FDB /* UseCaseRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = UseCaseRuntime;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
