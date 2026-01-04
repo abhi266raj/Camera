@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6B167C172F0A5D7100104FDB /* UseCaseApi in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C162F0A5D7100104FDB /* UseCaseApi */; };
+		6B167C192F0A5D7500104FDB /* UseCaseRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 6B167C182F0A5D7500104FDB /* UseCaseRuntime */; };
 		6B6D7DEF2EE6D9FA00B59C01 /* AppDI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DED2EE6D9FA00B59C01 /* AppDI.swift */; };
 		6B6D7DF02EE6D9FA00B59C01 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B6D7DEE2EE6D9FA00B59C01 /* Coordinator.swift */; };
 		6B706EDD2EF8028B009002EC /* TabViewAppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B706EDC2EF8028A009002EC /* TabViewAppCoordinator.swift */; };
@@ -76,11 +78,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B167C192F0A5D7500104FDB /* UseCaseRuntime in Frameworks */,
 				6B8FC5BB2EF1BE71003AB437 /* DomainRuntime in Frameworks */,
 				6B8FC5BF2EF1BE71003AB437 /* PlatformRuntime in Frameworks */,
 				6B8FC5B72EF1BE71003AB437 /* CoreKit in Frameworks */,
 				6B8FC5B32EF1BE71003AB437 /* AppView in Frameworks */,
 				6B8FC5B52EF1BE71003AB437 /* AppViewModel in Frameworks */,
+				6B167C172F0A5D7100104FDB /* UseCaseApi in Frameworks */,
 				6B8FC5BD2EF1BE71003AB437 /* PlatformApi in Frameworks */,
 				6B8FC5B92EF1BE71003AB437 /* DomainApi in Frameworks */,
 			);
@@ -664,6 +668,16 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6B167C162F0A5D7100104FDB /* UseCaseApi */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B8FC5B12EF1BE71003AB437 /* XCLocalSwiftPackageReference "../../Camera" */;
+			productName = UseCaseApi;
+		};
+		6B167C182F0A5D7500104FDB /* UseCaseRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6B8FC5B12EF1BE71003AB437 /* XCLocalSwiftPackageReference "../../Camera" */;
+			productName = UseCaseRuntime;
+		};
 		6B8FC5B22EF1BE71003AB437 /* AppView */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppView;
