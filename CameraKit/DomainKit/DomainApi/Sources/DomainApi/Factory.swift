@@ -7,14 +7,7 @@
 
 import CoreKit
 
-//public protocol ServiceFactory {
-//    func makePermissionService() -> PermissionService
-//}
-
 public protocol CameraFactory {
     func makeFilterCoordinator() -> any FilterCoordinator
     func makeCameraEngine(profile: CameraProfile) -> CameraEngine
 }
-
-
-

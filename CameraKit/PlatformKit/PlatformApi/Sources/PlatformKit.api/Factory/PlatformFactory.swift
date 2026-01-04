@@ -29,5 +29,5 @@ public protocol PlatformFactory<MetalContentInput> {
     
     func makeFilterModelSelection() -> FilterModelSelectionStream
     
-    func makeMediaPersistenceGateweay() -> MediaPersistenceGateway
+    // func makeMediaPersistenceGateweay() -> MediaPersistenceGateway
 }

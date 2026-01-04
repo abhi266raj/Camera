@@ -14,6 +14,7 @@ import CoreMedia
 // Should be more as project grows
 class PlatformOutput {
     var platformFactoy: any PlatformFactory<CMSampleBuffer>
+    var mediaPersistenceGateway: MediaPersistenceGateway = MediaPersistenceGatewayImp()
     
     init(platformFactoy: any PlatformFactory<CMSampleBuffer>) {
         self.platformFactoy = platformFactoy
@@ -28,7 +29,7 @@ class DomainOutput {
     init(domainModule: DomainRuntime.Module) {
         self.domainModule = domainModule
     }
-    lazy var cameraFactory2: CameraFactory = domainModule.makeCameraFactory(persistanceService: mediaPersistenceService)
+   // lazy var cameraFactory2: CameraFactory = domainModule.makeCameraFactory(persistanceService: mediaPersistenceService)
     
     lazy var mediaPersistenceService: MediaPersistenceService =  {
         let mediaPersistenceGateway = domainModule.dependecy.persistenceGateway
@@ -86,12 +87,12 @@ final class AppDependencies {
         let platformDep = PlatformRuntime.Dependency()
         let platformModule = PlatformRuntime.Module(dependency: platformDep)
         let platformdep = platformModule.makePlatformFactory()
-        let platformDepImp = PlatformOutput(platformFactoy: platformdep)
-        let dep = DomainRuntime.Dependency(persistenceGateway: platformdep.makeMediaPersistenceGateweay(), platformFactory: platformdep)
+        let platformOutput = PlatformOutput(platformFactoy: platformdep)
+        let dep = DomainRuntime.Dependency(persistenceGateway: platformOutput.mediaPersistenceGateway, platformFactory: platformdep)
         let module = DomainRuntime.Module(dependecy: dep)
         let domainDependency = DomainOutput(domainModule: module)
         self.domainOutput = domainDependency
-        self.platformDependency = platformDepImp
+        self.platformDependency = platformOutput
         self.viewModelOutput = ViewModelOutput(dep: domainOutput)
     }
 }

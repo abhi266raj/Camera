@@ -10,10 +10,15 @@ import PlatformApi
 internal import Photos
 import UIKit
 
-struct MediaPersistenceGatewayImp: MediaPersistenceGateway {
+public struct MediaPersistenceGatewayImp: MediaPersistenceGateway {
     
     let photoLibrary: PHPhotoLibrary
-    init(photoLibrary: PHPhotoLibrary = PHPhotoLibrary.shared()) {
+    
+    public init() {
+        self.init(photoLibrary: PHPhotoLibrary.shared())
+    }
+    
+    init(photoLibrary: PHPhotoLibrary) {
         self.photoLibrary = photoLibrary
     }
     
@@ -23,13 +28,13 @@ struct MediaPersistenceGatewayImp: MediaPersistenceGateway {
         }
     }
 
-    func saveVideoToPhotoLibrary(_ url: URL) async throws {
+    public func saveVideoToPhotoLibrary(_ url: URL) async throws {
         try await photoLibrary.performChanges {
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: url)
         }
     }
     
-    func saveImageToPhotoLibrary(_ data: Data) async throws {
+    public func saveImageToPhotoLibrary(_ data: Data) async throws {
         try await photoLibrary.performChanges {
             let creationRequest = PHAssetCreationRequest.forAsset()
             creationRequest.addResource(with: .photo, data: data, options: nil)
