@@ -14,16 +14,20 @@ let package = Package(
         .library(name: "PlatformRuntime", targets: ["PlatformRuntime"]),
         .library(name: "AppView", targets: ["AppView"]),
         .library(name: "AppViewModel", targets: ["AppViewModel"]),
+        .library(name: "UseCaseApi", targets: ["UseCaseApi"]),
+        .library(name: "UseCaseRuntime", targets: ["UseCaseRuntime"]),
         // Add any other targets as needed
     ],
     targets: [
-        .target(name: "CoreKit", path: "CameraKit/CoreKit/Sources"),
-        .target(name: "DomainApi", dependencies: ["CoreKit"], path: "CameraKit/DomainKit/DomainApi/Sources"),
-        .target(name: "DomainRuntime", dependencies: ["CoreKit", "DomainApi", "PlatformApi"], path: "CameraKit/DomainKit/DomainRuntime/Sources"),
-        .target(name: "PlatformApi", dependencies: ["CoreKit"], path: "CameraKit/PlatformKit/PlatformApi/Sources"),
-        .target(name: "PlatformRuntime", dependencies: ["CoreKit", "PlatformApi"], path: "CameraKit/PlatformKit/PlatformRuntime/Sources"),
-        .target(name: "AppViewModel", dependencies: ["DomainApi", "CoreKit"], path: "CameraKit/FeatureKit/Sources/AppComponents/AppViewModel"),
-        .target(name: "AppView", dependencies: ["CoreKit", "AppViewModel"], path: "CameraKit/FeatureKit/Sources/AppComponents/AppView"),
+        .target(name: "CoreKit", path: "CameraKit/Core/Sources"),
+        .target(name: "DomainApi", dependencies: ["CoreKit"], path: "CameraKit/Business/DomainApi/Sources"),
+        .target(name: "DomainRuntime", dependencies: ["CoreKit", "DomainApi", "PlatformApi"], path: "CameraKit/Business/DomainRuntime/Sources"),
+        .target(name: "PlatformApi", dependencies: ["CoreKit"], path: "CameraKit/Infra/PlatformApi/Sources"),
+        .target(name: "PlatformRuntime", dependencies: ["CoreKit", "PlatformApi"], path: "CameraKit/Infra/PlatformRuntime/Sources"),
+        .target(name: "AppViewModel", dependencies: ["DomainApi", "CoreKit"], path: "CameraKit/Presentation/Sources/AppComponents/AppViewModel"),
+        .target(name: "AppView", dependencies: ["CoreKit", "AppViewModel"], path: "CameraKit/Presentation/Sources/AppComponents/AppView"),
+        .target(name: "UseCaseApi", dependencies: ["CoreKit"], path: "CameraKit/Business/UseCaseApi/Sources"),
+        .target(name: "UseCaseRuntime", dependencies: ["CoreKit", "DomainApi", "PlatformApi"], path: "CameraKit/Business/UseCaseRuntime/Sources"),
         // Add test targets as needed
     ]
 )

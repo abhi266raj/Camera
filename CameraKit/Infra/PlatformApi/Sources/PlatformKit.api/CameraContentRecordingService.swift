@@ -24,7 +24,6 @@ public protocol SampleBufferVideoRecordingWorker<ConnectionType>: ContentConnect
     associatedtype ConnectionType
     func startRecording(url: URL?) async -> AsyncThrowingStream<URL, Error>
     func stopRecording() async  throws
-    // func saveVideoToLibrary(_ outputFileURL: URL) async throws
 }
 
 public protocol VideoRecorder: ContentReciever<CMSampleBuffer> {
