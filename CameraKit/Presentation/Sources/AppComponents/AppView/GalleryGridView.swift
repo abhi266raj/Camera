@@ -19,9 +19,11 @@ public struct GalleryGridView: View {
         NavigationStack {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach(viewModel.assets, id: \.localIdentifier) { asset in
-                        GalleryThumbnailView(asset: asset)
-                            .frame(width: 100, height: 100) 
+                    ForEach(viewModel.viewData, id: \.id) { data in
+                        GalleryItemView(data: data, loadAction: {
+                             await viewModel.loadThumbnail(id: data.id)
+                        })
+                            .frame(width: 100, height: 100)
                             .aspectRatio(1, contentMode: .fit)
                             .clipped()
                             
@@ -40,62 +42,55 @@ public struct GalleryGridView: View {
 // MARK: - ViewModel
 
 @Observable
-final class GalleryViewModel: @unchecked Sendable  {
-    var assets: [PHAsset] = []
+final class GalleryViewModel  {
+    var items: [PHAsset] = []
+    @MainActor var viewData: [GalleryItemViewData] = []
+    
+    init() {
+        
+    }
 
-    func load() async {
+    @MainActor func load() async {
         var status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         if status == .notDetermined {
             status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
         }
         if status == .authorized || status == .limited {
-            fetchAssets()
+            await fetchAssets()
         }
     }
 
-    private func fetchAssets() {
+    @MainActor
+    private func fetchAssets() async {
         let options = PHFetchOptions()
         options.sortDescriptors = [
             NSSortDescriptor(key: "creationDate", ascending: false)
         ]
 
         let result = PHAsset.fetchAssets(with: options)
-        assets = result.objects(at: IndexSet(integersIn: 0..<result.count))
-    }
-}
-
-// MARK: - Thumbnail View
-
-struct GalleryThumbnailView: View {
-    let asset: PHAsset
-    @State private var image: UIImage?
-    
-    var body: some View {
-        ZStack {
-            if let image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
-                    .clipped()
-            } else {
-                LoadingView()
-                Rectangle()
-                    .fill(.secondary.opacity(0.2))
-            }
-        }
-        .task(id: asset.localIdentifier, priority:.background) {
-            await loadThumbnail()
-        }
-        .clipped()
+        items = result.objects(at: IndexSet(integersIn: 0..<result.count))
+        updateViewData()
     }
     
-    private func loadThumbnail() async {
+    @MainActor
+    func updateViewData() {
+        viewData = items.map{GalleryItemViewData(id: $0.localIdentifier)}
+    }
+    
+    @MainActor
+    func loadThumbnail(id: String) async  {
+        guard let index =  viewData.firstIndex(where: { $0.id == id}) else {
+            return
+        }
+        if viewData[index].isLoading  {
+            return
+        }
+        await viewData[index] = .init(isLoading: true, id: id)
+        let asset = items[index]
         let manager = PHImageManager.default()
-        let size = CGSize(width: 900, height:900)
-        
+        let size = CGSize(width: 900, height: 900)
         var didResume = false
-        
-        image = await withCheckedContinuation { continuation in
+        let image = await withCheckedContinuation { continuation in
             manager.requestImage(
                 for: asset,
                 targetSize: size,
@@ -107,7 +102,51 @@ struct GalleryThumbnailView: View {
                 continuation.resume(returning: image)
             }
         }
+        await viewData[index] = .init(image: image, id: id)
     }
+}
+
+// MARK: - Thumbnail View
+
+struct GalleryItemViewData:Identifiable, Equatable {
+    let image: UIImage?
+    let isLoading: Bool
+    let id:String
+    
+    init(image: UIImage? = nil, isLoading: Bool = false, id:String) {
+        self.image = image
+        self.isLoading = false
+        self.id = id
+    }
+}
+
+struct GalleryItemView: View {
+    let data: GalleryItemViewData
+    let loadAction: (() async -> Void)?
+    var body: some View {
+        ZStack {
+            if let image = data.image {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .clipped()
+            } else if data.isLoading {
+                LoadingView()
+                Rectangle()
+                    .fill(.secondary.opacity(0.2))
+            } else {
+                Rectangle()
+                    .fill(.secondary.opacity(0.2))
+            }
+        }
+        .task(priority: .background) {
+            if data.image == nil {
+                await loadAction?()
+            }
+        }
+        .clipped()
+    }
+       
 }
 
 // MARK: - Preview

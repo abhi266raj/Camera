@@ -10,8 +10,6 @@ import PlatformRuntime
 import CoreMedia
 
 
-
-// Should be more as project grows
 class PlatformOutput {
     var platformFactoy: any PlatformFactory<CMSampleBuffer>
     var mediaPersistenceGateway: MediaPersistenceGateway = MediaPersistenceGatewayImp()
