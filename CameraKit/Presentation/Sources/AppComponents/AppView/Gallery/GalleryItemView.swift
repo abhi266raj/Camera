@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AppViewModel
 
 struct GalleryItemView: View {
     let data: GalleryItemViewData
@@ -36,29 +37,6 @@ struct GalleryItemView: View {
 }
 
 
-public struct GalleryItemViewData:Identifiable, Equatable, Sendable {
-    let image: Image?
-    let isLoading: Bool
-    public let id:String
-    
-    init(image: UIImage? = nil, isLoading: Bool = false, id:String) {
-        if let image {
-            self.image = Image(uiImage: image)
-        }else {
-            self.image = nil
-        }
-        self.isLoading = false
-        self.id = id
-    }
-    
-    init(imageName: String, isLoading: Bool = false, id:String) {
-        self.isLoading = false
-        self.id = id
-        self.image = Image(systemName: imageName)
-        
-    }
-    
-}
 
 // MARK: - Preview
 

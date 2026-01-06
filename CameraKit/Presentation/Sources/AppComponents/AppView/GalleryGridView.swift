@@ -1,6 +1,7 @@
 import SwiftUI
 import Photos
 import Observation
+import AppViewModel
 
 // MARK: - View
 
@@ -57,89 +58,6 @@ public struct GalleryViewConfig {
 }
 
 
-@Observable
-@MainActor
-public class GalleryListViewData: Sendable {
-    
-    var count: Int {
-        items.count
-    }
-    
-    var items: [GalleryItemViewData] = []
-    
-}
-
-// MARK: - ViewModel
-
-
-public final class GalleryViewModel: Sendable  {
-    @MainActor var  items: [PHAsset] = []
-    @MainActor public let viewData: GalleryListViewData = GalleryListViewData()
-    
-    @MainActor
-    public init() {
-        
-    }
-
-    public func load() async {
-        var status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-        if status == .notDetermined {
-            status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-        }
-        if status == .authorized || status == .limited {
-            await fetchAssets()
-        }
-    }
-
-    private func fetchAssets() async {
-        let options = PHFetchOptions()
-        options.sortDescriptors = [
-            NSSortDescriptor(key: "creationDate", ascending: false)
-        ]
-
-        let result = PHAsset.fetchAssets(with: options)
-        await updateViewData(result: result)
-    }
-    
-    @MainActor
-    func updateViewData(result: PHFetchResult<PHAsset>) {
-        items = result.objects(at: IndexSet(integersIn: 0..<result.count))
-        viewData.items = items.map{GalleryItemViewData(id: $0.localIdentifier)}
-    }
-    
-    @MainActor
-    public func loadThumbnail(id: String) async  {
-        guard let index =  viewData.items.firstIndex(where: { $0.id == id}) else {
-            return
-        }
-        if viewData.items[index].isLoading  {
-            return
-        }
-        await viewData.items[index] = .init(isLoading: true, id: id)
-        let asset = items[index]
-        let manager = PHImageManager.default()
-        let size = CGSize(width: 1500, height: 1500)
-        var didResume = false
-        let options = PHImageRequestOptions()
-        options.resizeMode = .exact
-        options.deliveryMode = .highQualityFormat
-        options.isSynchronous = false
-        
-        let image = await withCheckedContinuation { continuation in
-            manager.requestImage(
-                for: asset,
-                targetSize: size,
-                contentMode: .aspectFill,
-                options: options
-            ) { image, _ in
-                guard !didResume else { return }
-                didResume = true
-                continuation.resume(returning: image)
-            }
-        }
-        await viewData.items[index] = .init(image: image, id: id)
-    }
-}
 
 // MARK: - Thumbnail View
 
