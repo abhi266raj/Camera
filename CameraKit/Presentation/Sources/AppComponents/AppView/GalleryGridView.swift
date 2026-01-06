@@ -39,7 +39,7 @@ public struct GalleryGridView: ConfigurableView, ContentView {
             }
             .navigationTitle("Gallery")
         }
-        .task(priority:.utility) {
+        .task(priority:.high) {
              await config.onLoad()
         }
     }
@@ -59,7 +59,7 @@ public struct GalleryViewConfig {
 
 @Observable
 @MainActor
-public class GalleryListViewData {
+public class GalleryListViewData: Sendable {
     
     var count: Int {
         items.count
@@ -72,7 +72,7 @@ public class GalleryListViewData {
 // MARK: - ViewModel
 
 
-public final class GalleryViewModel  {
+public final class GalleryViewModel: Sendable  {
     @MainActor var  items: [PHAsset] = []
     @MainActor public let viewData: GalleryListViewData = GalleryListViewData()
     
@@ -81,7 +81,6 @@ public final class GalleryViewModel  {
         
     }
 
-    @MainActor
     public func load() async {
         var status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         if status == .notDetermined {
@@ -92,7 +91,6 @@ public final class GalleryViewModel  {
         }
     }
 
-    @MainActor
     private func fetchAssets() async {
         let options = PHFetchOptions()
         options.sortDescriptors = [
@@ -100,12 +98,12 @@ public final class GalleryViewModel  {
         ]
 
         let result = PHAsset.fetchAssets(with: options)
-        items = result.objects(at: IndexSet(integersIn: 0..<result.count))
-        await updateViewData()
+        await updateViewData(result: result)
     }
     
     @MainActor
-    func updateViewData() {
+    func updateViewData(result: PHFetchResult<PHAsset>) {
+        items = result.objects(at: IndexSet(integersIn: 0..<result.count))
         viewData.items = items.map{GalleryItemViewData(id: $0.localIdentifier)}
     }
     
