@@ -32,10 +32,6 @@ public struct GalleryGridView: ConfigurableView, ContentView {
                             })
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
-                           
-                            
-                            
-                            
                         }
                     }
                     Spacer(minLength: 30)
