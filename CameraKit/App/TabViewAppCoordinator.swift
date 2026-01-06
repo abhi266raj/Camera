@@ -91,7 +91,14 @@ final class TabViewAppCoordinator {
         case .settings:
             settingsTab()
         case .gallery:
-            GalleryGridView()
+            let viewModel = GalleryViewModel()
+            let config = GalleryViewConfig(onLoad: {
+                await viewModel.load()
+            },onItemLoad: { viewData in
+                 await viewModel.loadThumbnail(id: viewData.id)
+            })
+             let  viewData = viewModel.viewData
+             GalleryGridView(viewData: viewData, config: config)
         }
         
     }
