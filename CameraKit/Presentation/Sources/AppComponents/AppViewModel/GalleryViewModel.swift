@@ -12,15 +12,18 @@ internal import Photos
 internal import UIKit
 import SwiftUI
 import Observation
+import UseCaseApi
+import UseCaseRuntime
 
 
 public final class GalleryViewModel: Sendable  {
     @MainActor var  items: [PHAsset] = []
     @MainActor public let viewData: GalleryListViewData = GalleryListViewData()
+    private let galleryLoader:GalleryLoader
     
     @MainActor
-    public init() {
-        
+    public init(galleryLoader: GalleryLoader) {
+        self.galleryLoader = galleryLoader
     }
 
     public func load() async {
@@ -33,20 +36,9 @@ public final class GalleryViewModel: Sendable  {
         }
     }
 
-    private func fetchAssets() async {
-        let options = PHFetchOptions()
-        options.sortDescriptors = [
-            NSSortDescriptor(key: "creationDate", ascending: false)
-        ]
-
-        let result = PHAsset.fetchAssets(with: options)
-        await updateViewData(result: result)
-    }
-    
     @MainActor
-    func updateViewData(result: PHFetchResult<PHAsset>) {
-        items = result.objects(at: IndexSet(integersIn: 0..<result.count))
-        viewData.items = items.map{GalleryItemViewData(id: $0.localIdentifier)}
+    private func fetchAssets() async {
+        viewData.items = await galleryLoader.loadGallery().map{GalleryItemViewData(id: $0.id)}
     }
     
     @MainActor
@@ -58,27 +50,7 @@ public final class GalleryViewModel: Sendable  {
             return
         }
         await viewData.items[index] = .init(isLoading: true, id: id)
-        let asset = items[index]
-        let manager = PHImageManager.default()
-        let size = CGSize(width: 1500, height: 1500)
-        var didResume = false
-        let options = PHImageRequestOptions()
-        options.resizeMode = .exact
-        options.deliveryMode = .highQualityFormat
-        options.isSynchronous = false
-        
-        let image = await withCheckedContinuation { continuation in
-            manager.requestImage(
-                for: asset,
-                targetSize: size,
-                contentMode: .aspectFill,
-                options: options
-            ) { image, _ in
-                guard !didResume else { return }
-                didResume = true
-                continuation.resume(returning: image)
-            }
-        }
+        let image = try? await galleryLoader.loadContent(id: id).image
         await viewData.items[index] = .init(image: image, id: id)
     }
 }

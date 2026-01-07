@@ -11,6 +11,7 @@ import Observation
 import AppView
 import AppViewModel
 import CoreKit
+import UseCaseRuntime
 
 enum AppTab: Hashable, Identifiable {
     case camera(CameraType)
@@ -91,7 +92,7 @@ final class TabViewAppCoordinator {
         case .settings:
             settingsTab()
         case .gallery:
-            let viewModel = GalleryViewModel()
+            let viewModel = GalleryViewModel(galleryLoader: GalleryLoaderImp())
             let config = GalleryViewConfig(onLoad: {
                 await viewModel.load()
             },onItemLoad: { viewData in

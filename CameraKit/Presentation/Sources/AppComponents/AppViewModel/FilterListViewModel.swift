@@ -45,8 +45,7 @@ public protocol FilterListViewModel: ActionableViewModel {
 final public class FilterListViewModelImp: FilterListViewModel {
     
     private let coordinator: FilterCoordinator
-
-    public var viewData: FilterListViewData = FilterListViewData()
+    public let viewData: FilterListViewData = FilterListViewData()
     
     private let continuation: AsyncStream<FilterAction>.Continuation
     private let stream: AsyncStream<FilterAction>

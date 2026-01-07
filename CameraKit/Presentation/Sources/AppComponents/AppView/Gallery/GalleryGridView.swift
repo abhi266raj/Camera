@@ -1,6 +1,4 @@
 import SwiftUI
-import Photos
-import Observation
 import AppViewModel
 
 // MARK: - View

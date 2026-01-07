@@ -24,10 +24,10 @@ let package = Package(
         .target(name: "DomainRuntime", dependencies: ["CoreKit", "DomainApi", "PlatformApi"], path: "CameraKit/Business/DomainRuntime/Sources"),
         .target(name: "PlatformApi", dependencies: ["CoreKit"], path: "CameraKit/Infra/PlatformApi/Sources"),
         .target(name: "PlatformRuntime", dependencies: ["CoreKit", "PlatformApi"], path: "CameraKit/Infra/PlatformRuntime/Sources"),
-        .target(name: "AppViewModel", dependencies: ["DomainApi", "CoreKit"], path: "CameraKit/Presentation/Sources/AppComponents/AppViewModel"),
+        .target(name: "AppViewModel", dependencies: ["DomainApi", "CoreKit", "UseCaseApi"], path: "CameraKit/Presentation/Sources/AppComponents/AppViewModel"),
         .target(name: "AppView", dependencies: ["CoreKit", "AppViewModel"], path: "CameraKit/Presentation/Sources/AppComponents/AppView"),
         .target(name: "UseCaseApi", dependencies: ["CoreKit"], path: "CameraKit/Business/UseCaseApi/Sources"),
-        .target(name: "UseCaseRuntime", dependencies: ["CoreKit", "DomainApi", "PlatformApi"], path: "CameraKit/Business/UseCaseRuntime/Sources"),
+        .target(name: "UseCaseRuntime", dependencies: ["CoreKit", "DomainApi", "PlatformApi", "UseCaseApi"], path: "CameraKit/Business/UseCaseRuntime/Sources"),
         // Add test targets as needed
     ]
 )

@@ -28,4 +28,16 @@ public struct PermissionServiceImp: PermissionService {
             return false
         }
     }
+    
+    public func requestAddOnlyPhotoLibraryPermission() async -> Bool {
+        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        return status == .authorized
+    }
+    
+    
+    public func requestGalleryAccess() async -> Bool {
+        return false
+    }
+
+
 }
