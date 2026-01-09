@@ -40,7 +40,6 @@ public protocol CameraViewModel: ActionableViewModel {
     func trigger(_ action: CameraViewAction)
 }
 
-
 public final class CameraViewModelImp: CameraViewModel {
     
     @MainActor public var viewData: CameraViewData = CameraViewData()

@@ -15,10 +15,11 @@ public struct GalleryGridView: ConfigurableView, ContentView {
     let viewData: GalleryListViewData
     
     private let columns = [
-        GridItem(.fixed(300), spacing: 10),
-        GridItem(.fixed(300), spacing: 10),
-        GridItem(.fixed(300), spacing: 10),
-        GridItem(.fixed(300), spacing: 10),
+        GridItem(.adaptive(minimum: 150, maximum: 180), spacing: 10)
+//        GridItem(.fixed(300), spacing: 10),
+//        GridItem(.fixed(300), spacing: 10),
+//        GridItem(.fixed(300), spacing: 10),
+//        GridItem(.fixed(300), spacing: 10),
     ]
 
     public var body: some View {
@@ -47,7 +48,7 @@ public struct GalleryGridView: ConfigurableView, ContentView {
                                 
                             }
                             .background(.green)
-                            .frame(width: 300, height: 300)
+                            .frame(width: 150, height: 150)
                             .aspectRatio(1, contentMode: .fit)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                             .clipped()

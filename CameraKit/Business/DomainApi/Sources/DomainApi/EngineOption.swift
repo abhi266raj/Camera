@@ -39,8 +39,7 @@ public enum EngineOption: Sendable {
             return [.metalFilter, .ciFilter]
         }
     }
-    
-    
+
     public struct Config: Sendable, Equatable, Hashable {
         public let display: Display
         public let storage: Storage

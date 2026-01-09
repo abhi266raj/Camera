@@ -34,7 +34,6 @@ public struct PermissionServiceImp: PermissionService {
         return status == .authorized
     }
     
-    
     public func requestGalleryAccess() async -> Bool {
         var status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         if status == .notDetermined {
