@@ -19,8 +19,6 @@ public struct FilterViewData: TitledContent {
     }
 }
 
-
-
 @Observable final public class FilterListViewData:  Sendable {
     
     @MainActor

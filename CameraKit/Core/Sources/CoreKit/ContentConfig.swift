@@ -15,7 +15,6 @@ public struct ImageCaptureConfig: Sendable {
     
     public var resolution:PhotoResolution
     
-    
     public init(photoResolution:PhotoResolution = .hd720) {
         self.resolution = photoResolution
     }

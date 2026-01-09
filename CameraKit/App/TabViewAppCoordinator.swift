@@ -5,7 +5,6 @@
 //  Created by Abhiraj on 21/12/25.
 //
 
-
 import SwiftUI
 import Observation
 import AppView
@@ -45,9 +44,6 @@ final class TabViewAppCoordinator {
 
     var tabs: [AppTab]
     var selectedTab: AppTab
-
-    //@ObservationIgnored
-   // private let viewModelOutput: ViewModelOutput
     
     @ObservationIgnored private lazy  var viewModelOutput: ViewModelOutput = appDependencies.viewModelOutput
     private let rootDepedency = HomeViewModelDependency()
@@ -67,9 +63,13 @@ final class TabViewAppCoordinator {
         self.tabs = tabs
     }
 
+    var homeView: AnyView? = nil
     @MainActor
-    func start() -> some View {
-        TabView(selection: Binding(
+    func start() -> AnyView {
+        if let homeView {
+            return homeView
+        }
+        let tabView = TabView(selection: Binding(
             get: { self.selectedTab },
             set: { self.selectedTab = $0 })) {
             ForEach(tabs) { tab in
@@ -80,6 +80,8 @@ final class TabViewAppCoordinator {
                     .tag(tab)
             }
         }
+        homeView = AnyView(tabView)
+        return homeView!
     }
 
     @MainActor
@@ -98,7 +100,11 @@ final class TabViewAppCoordinator {
     }
     
     var path = NavigationPath()
-    @MainActor func galleryView() -> some View {
+    var gview: AnyView?
+    @MainActor func galleryView() -> AnyView {
+        if let gview {
+            return gview
+        }
         let viewModel = GalleryViewModel(galleryLoader: GalleryLoaderImp(), permissionService: appDependencies.domainOutput.permissionService)
         let config = GalleryViewConfig(onLoad: {
             await viewModel.load()
@@ -114,15 +120,23 @@ final class TabViewAppCoordinator {
         
          let  viewData = viewModel.listViewData
         let view = GalleryGridView(viewData: viewData, config: config)
-        return NavigationStack(path: Binding(
+        let anyview = AnyView(NavigationStack(path: Binding(
             get: { self.path },
             set: { self.path = $0 }
         )) {
-            view.navigationDestination(for: AnyData<GalleryItemViewData>.self) { data in
-                GalleryItemView(data:data.item){}
-                    .aspectRatio(contentMode: .fit)
-            }
+            view
+                .navigationDestination(for: AnyData<GalleryItemViewData>.self) { item in
+                    GalleryItemView(data:item.item){}
+                        .aspectRatio(contentMode: .fit)
+                }.navigationDestination(for: String.self) { data in
+                    let data = GalleryItemViewData(id: "data")
+                    GalleryItemView(data:data){}
+                        .aspectRatio(contentMode: .fit)
+                }
         }
+        )
+        self.gview = anyview
+        return anyview
 //        return NavigationStack {
 //            GalleryGridView(viewData: viewData, config: config)
 //        }.navigationDestination(for: GalleryItemViewData.self) { item in

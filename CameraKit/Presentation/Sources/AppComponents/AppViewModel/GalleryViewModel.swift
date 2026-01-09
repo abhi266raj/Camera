@@ -38,6 +38,7 @@ public final class GalleryViewModel: Sendable  {
         if !isPermitted {
             viewData.state = .denied
         } else {
+            listViewData.items = []
             viewData.state = .loading
             await fetchAssets()
             viewData.state = .permitted(listViewData)
