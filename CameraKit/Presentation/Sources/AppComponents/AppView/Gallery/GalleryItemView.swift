@@ -8,14 +8,23 @@
 import SwiftUI
 import AppViewModel
 
-struct GalleryItemView: View {
+public struct GalleryItemView: View {
     let data: GalleryItemViewData
     let loadAction: (() async -> Void)?
-    var body: some View {
+    
+    public init(data: GalleryItemViewData, loadAction: (() async -> Void)?) {
+        self.data = data
+        self.loadAction = loadAction
+    }
+    
+    public var body: some View {
         ZStack {
             if let image = data.image {
                     image
                     .resizable()
+                    .scaledToFit()
+                    // .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
                     // .aspectRatio(contentMode: .fit)
             } else if data.isLoading {
                 LoadingView()

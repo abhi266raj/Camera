@@ -13,46 +13,79 @@ internal import UIKit
 import SwiftUI
 import Observation
 import UseCaseApi
-import UseCaseRuntime
+import DomainApi
 
 
 public final class GalleryViewModel: Sendable  {
     @MainActor var  items: [PHAsset] = []
-    @MainActor public let viewData: GalleryListViewData = GalleryListViewData()
+    @MainActor public let viewData: GalleryViewData = GalleryViewData()
+    @MainActor public let listViewData: GalleryListViewData = GalleryListViewData()
     private let galleryLoader:GalleryLoader
+    private let permissionSerivce: PermissionService
     
     @MainActor
-    public init(galleryLoader: GalleryLoader) {
+    public var showDetail: ((GalleryItemViewData) -> Void)? = nil
+    
+    @MainActor
+    public init(galleryLoader: GalleryLoader, permissionService: PermissionService) {
         self.galleryLoader = galleryLoader
+        self.permissionSerivce = permissionService
     }
 
+    @MainActor
     public func load() async {
-        var status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-        if status == .notDetermined {
-            status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
-        }
-        if status == .authorized || status == .limited {
+        let isPermitted = await permissionSerivce.requestGalleryAccess()
+        if !isPermitted {
+            viewData.state = .denied
+        } else {
+            viewData.state = .loading
             await fetchAssets()
+            viewData.state = .permitted(listViewData)
         }
     }
 
     @MainActor
     private func fetchAssets() async {
-        viewData.items = await galleryLoader.loadGallery().map{GalleryItemViewData(id: $0.id)}
+        listViewData.items = await galleryLoader.loadGallery().map{GalleryItemViewData(id: $0.id)}
     }
     
     @MainActor
     public func loadThumbnail(id: String) async  {
-        guard let index =  viewData.items.firstIndex(where: { $0.id == id}) else {
+        guard let index =  listViewData.items.firstIndex(where: { $0.id == id}) else {
             return
         }
-        if viewData.items[index].isLoading  {
+        if listViewData.items[index].isLoading  {
             return
         }
-        await viewData.items[index] = .init(isLoading: true, id: id)
+        await listViewData.items[index] = .init(isLoading: true, id: id)
         let image = try? await galleryLoader.loadContent(id: id).image
-        await viewData.items[index] = .init(image: image, id: id)
+        await listViewData.items[index] = .init(image: image, id: id)
     }
+    
+    @MainActor
+    public func tappedOnItem(id: String) async {
+        guard let index =  listViewData.items.firstIndex(where: { $0.id == id}) else {
+            return
+        }
+        let data = listViewData.items[index]
+        showDetail?(data)
+        
+    }
+    
+    
+}
+
+@Observable
+@MainActor
+public class GalleryViewData: Sendable {
+    enum GalleryState {
+        case unknown
+        case denied
+        case loading
+        case permitted(GalleryListViewData)
+    }
+    
+    var state: GalleryState  = .unknown
 }
 
 @Observable
@@ -68,7 +101,7 @@ public class GalleryListViewData: Sendable {
 }
 
 
-public struct GalleryItemViewData:Identifiable, Equatable, Sendable {
+public struct GalleryItemViewData: Identifiable, Sendable {
     public let image: Image?
     public let isLoading: Bool
     public let id:String
@@ -87,7 +120,8 @@ public struct GalleryItemViewData:Identifiable, Equatable, Sendable {
         self.isLoading = false
         self.id = id
         self.image = Image(systemName: imageName)
-        
     }
     
 }
+
+

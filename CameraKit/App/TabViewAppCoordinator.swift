@@ -83,27 +83,54 @@ final class TabViewAppCoordinator {
     }
 
     @MainActor
-    @ViewBuilder
+   @ViewBuilder
     private func tabView(for tab: AppTab) -> some View {
         switch tab {
         case .camera(let type):
             cameraTab(cameraType: type)
 
         case .settings:
-            settingsTab()
+             settingsTab()
         case .gallery:
-            let viewModel = GalleryViewModel(galleryLoader: GalleryLoaderImp())
-            let config = GalleryViewConfig(onLoad: {
-                await viewModel.load()
-            },onItemLoad: { viewData in
-                 await viewModel.loadThumbnail(id: viewData.id)
-            })
-             let  viewData = viewModel.viewData
-             GalleryGridView(viewData: viewData, config: config)
+             galleryView()
         }
         
     }
-
+    
+    var path = NavigationPath()
+    @MainActor func galleryView() -> some View {
+        let viewModel = GalleryViewModel(galleryLoader: GalleryLoaderImp(), permissionService: appDependencies.domainOutput.permissionService)
+        let config = GalleryViewConfig(onLoad: {
+            await viewModel.load()
+        },onItemLoad: { viewData in
+             await viewModel.loadThumbnail(id: viewData.id)
+        }, onItemTap: { viewData in
+            await viewModel.tappedOnItem(id: viewData.id)
+       })
+        
+        viewModel.showDetail =  { item in
+            self.path.append(AnyData(item))
+        }
+        
+         let  viewData = viewModel.listViewData
+        let view = GalleryGridView(viewData: viewData, config: config)
+        return NavigationStack(path: Binding(
+            get: { self.path },
+            set: { self.path = $0 }
+        )) {
+            view.navigationDestination(for: AnyData<GalleryItemViewData>.self) { data in
+                GalleryItemView(data:data.item){}
+                    .aspectRatio(contentMode: .fit)
+            }
+        }
+//        return NavigationStack {
+//            GalleryGridView(viewData: viewData, config: config)
+//        }.navigationDestination(for: GalleryItemViewData.self) { item in
+//            GalleryItemView(data:item){}
+//        }
+        
+    }
+    
     @MainActor
     private func cameraTab(cameraType: CameraType) -> some View {
         let provider = viewModelOutput.createCameraViewProvider(for: cameraType)
@@ -119,5 +146,13 @@ final class TabViewAppCoordinator {
     private func settingsTab() -> some View {
         NavigationStack {
         }
+    }
+}
+
+class AnyData<T>: NSObject {
+    var item: T
+    
+    init(_ item: T) {
+        self.item = item
     }
 }

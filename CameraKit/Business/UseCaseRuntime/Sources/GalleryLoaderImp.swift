@@ -41,7 +41,7 @@ public struct GalleryLoaderImp: GalleryLoader {
             manager.requestImage(
                 for: asset,
                 targetSize: size,
-                contentMode: .aspectFill,
+                contentMode: .aspectFit,
                 options: options
             ) { image, _ in
                 guard !didResume else { return }

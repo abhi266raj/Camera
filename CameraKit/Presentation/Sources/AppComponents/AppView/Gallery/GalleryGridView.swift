@@ -15,25 +15,46 @@ public struct GalleryGridView: ConfigurableView, ContentView {
     let viewData: GalleryListViewData
     
     private let columns = [
-        GridItem(.adaptive(minimum: 200, maximum: 400), spacing: 30)
+        GridItem(.fixed(300), spacing: 10),
+        GridItem(.fixed(300), spacing: 10),
+        GridItem(.fixed(300), spacing: 10),
+        GridItem(.fixed(300), spacing: 10),
     ]
 
     public var body: some View {
         NavigationStack {
             ScrollView {
-                Spacer(minLength: 40)
+                Spacer(minLength: 10)
                 HStack {
                     Spacer(minLength: 30)
-                    LazyVGrid(columns: columns, spacing: 16) {
+                    LazyVGrid(columns: columns, alignment: .leading, spacing: 16) {
                         ForEach(viewData.items, id: \.id) { data in
-                            GalleryItemView(data: data, loadAction: {
-                                await config.onItemLoad(data)
-                            })
+                            VStack {
+                                HStack {
+                                    GalleryItemView(data: data, loadAction: {
+                                        await config.onItemLoad(data)
+                                    }).onTapGesture {
+                                        Task {
+                                            await config.onItemTap(data)
+                                        }
+                                    }
+                                    .background(.red)
+                                    .scaledToFill()
+                                    .clipped()
+                                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                }
+                                
+                                
+                            }
+                            .background(.green)
+                            .frame(width: 300, height: 300)
+                            .aspectRatio(1, contentMode: .fit)
                             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                            .aspectRatio(CGSize(width: 1, height: 1), contentMode: .fit)
+                            .clipped()
                         }
-                    }
-                    Spacer(minLength: 30)
+                        }
+                //    }
+                    
                 }
             }
             .navigationTitle("Gallery")
@@ -46,13 +67,15 @@ public struct GalleryGridView: ConfigurableView, ContentView {
 
 public struct GalleryViewConfig {
     
-    public init(onLoad: @escaping () async -> Void, onItemLoad: @escaping (GalleryItemViewData) async -> Void) {
+    public init(onLoad: @escaping () async -> Void, onItemLoad: @escaping (GalleryItemViewData) async -> Void, onItemTap: @escaping (GalleryItemViewData) async -> Void) {
         self.onLoad = onLoad
         self.onItemLoad = onItemLoad
+        self.onItemTap = onItemTap
     }
     
     var onLoad: () async -> Void
     var onItemLoad: (GalleryItemViewData) async-> Void
+    var onItemTap: (GalleryItemViewData) async-> Void
 }
 
 
