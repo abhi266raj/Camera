@@ -6,7 +6,7 @@ import AppViewModel
 public struct GalleryGridView: ConfigurableView, ContentView {
     
     let config: GalleryViewConfig
-        
+    
     public init(viewData: GalleryListViewData, config: GalleryViewConfig) {
         self.viewData = viewData
         self.config = config
@@ -14,54 +14,63 @@ public struct GalleryGridView: ConfigurableView, ContentView {
     
     let viewData: GalleryListViewData
     
-    private let columns = [
-        GridItem(.adaptive(minimum: 150, maximum: 180), spacing: 10)
-//        GridItem(.fixed(300), spacing: 10),
-//        GridItem(.fixed(300), spacing: 10),
-//        GridItem(.fixed(300), spacing: 10),
-//        GridItem(.fixed(300), spacing: 10),
-    ]
-
+    static let spacing: CGFloat = 10
+    
+    //    private let columns = [
+    //        GridItem(.adaptive(minimum: 150, maximum: 180), spacing: 10)
+    ////        GridItem(.fixed(300), spacing: 10),
+    ////        GridItem(.fixed(300), spacing: 10),
+    ////        GridItem(.fixed(300), spacing: 10),
+    ////        GridItem(.fixed(300), spacing: 10),
+    //    ]
+    
     public var body: some View {
         NavigationStack {
-            ScrollView {
-                Spacer(minLength: 10)
-                HStack {
-                    Spacer(minLength: 30)
-                    LazyVGrid(columns: columns, alignment: .leading, spacing: 16) {
-                        ForEach(viewData.items, id: \.id) { data in
-                            VStack {
-                                HStack {
-                                    GalleryItemView(data: data, loadAction: {
-                                        await config.onItemLoad(data)
-                                    }).onTapGesture {
-                                        Task {
-                                            await config.onItemTap(data)
+            GeometryReader {item in
+                let width = item.size.width/4 - 2*Self.spacing
+                let column = [GridItem(.adaptive(minimum: width, maximum: width * 2), spacing: Self.spacing)]
+                
+                ScrollView {
+                    Spacer(minLength: 10)
+                    HStack {
+                        Spacer(minLength: 30)
+                        
+                        
+                        LazyVGrid(columns: column, alignment: .leading, spacing: 16) {
+                            ForEach(viewData.items, id: \.id) { data in
+                                VStack {
+                                    HStack {
+                                        GalleryItemView(data: data, loadAction: {
+                                            await config.onItemLoad(data)
+                                        }).onTapGesture {
+                                            Task {
+                                                await config.onItemTap(data)
+                                            }
                                         }
+                                        .background(.red)
+                                        .scaledToFill()
+                                        .clipped()
+                                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                                     }
-                                    .background(.red)
-                                    .scaledToFill()
-                                    .clipped()
-                                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                    
+                                    
                                 }
-                                
-                                
+                                .background(.green)
+                                .frame(width: width, height: width)
+                                .aspectRatio(1, contentMode: .fit)
+                                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                                .clipped()
                             }
-                            .background(.green)
-                            .frame(width: 150, height: 150)
-                            .aspectRatio(1, contentMode: .fit)
-                            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                            .clipped()
                         }
-                        }
-                //    }
+                    }
+                    //    }
                     
                 }
             }
             .navigationTitle("Gallery")
         }
         .task(priority:.high) {
-             await config.onLoad()
+            await config.onLoad()
         }
     }
 }
