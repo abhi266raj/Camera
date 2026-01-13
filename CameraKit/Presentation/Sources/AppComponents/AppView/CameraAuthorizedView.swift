@@ -6,7 +6,6 @@ struct CameraAuthorizedView: ContentView {
     let viewData: CameraContentViewData
     let viewAction: CameraContentAction
 
-
     var body: some View {
         ZStack {
             

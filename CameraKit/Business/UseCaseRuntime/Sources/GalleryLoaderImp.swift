@@ -33,8 +33,9 @@ public struct GalleryLoaderImp: GalleryLoader {
         let size = CGSize(width: config.width, height: config.height)
         var didResume = false
         let options = PHImageRequestOptions()
-        options.resizeMode = .exact
+        options.resizeMode = .fast
         if config.requiresExactSize {
+            options.resizeMode = .exact
             options.deliveryMode = .highQualityFormat
         }
         else {

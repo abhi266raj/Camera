@@ -22,12 +22,17 @@ public struct LoadableView<Content:View, ViewData>: View {
     
     let config: LoadableConfig
     let viewData: Loadable<ViewData>
-    let content: (ViewData) -> Content
+    let content: Content!
     
-    public init(viewData: Loadable<ViewData>, config: LoadableConfig, @ViewBuilder content: @escaping (ViewData) -> Content) {
+    
+    public init(viewData: Loadable<ViewData>, config: LoadableConfig, @ViewBuilder content: (ViewData) -> Content) {
         self.viewData = viewData
         self.config = config
-        self.content = content
+        if case .loaded(let viewData) = viewData {
+            self.content =  content(viewData)
+        }else {
+            self.content = nil
+        }
     }
     
     @ViewBuilder
@@ -44,7 +49,7 @@ public struct LoadableView<Content:View, ViewData>: View {
         case .error(_):
             LoadingView()
         case .loaded(let viewData):
-            content(viewData)
+            content
         }
         
     }
@@ -53,4 +58,57 @@ public struct LoadableView<Content:View, ViewData>: View {
 extension LoadableView: ContentView, ConfigurableView {
     
 }
+
+public struct LoadableConfigNew<ViewData> {
+    public let loadViewData: () async throws -> ViewData
+    
+    public init(loadViewData: @escaping ()  async throws -> ViewData) {
+        self.loadViewData = loadViewData
+    }
+}
+
+
+public struct LoadableViewNew<Content:View, ViewData>: View {
+    
+    let config: LoadableConfigNew<ViewData>
+    @State var viewData: Loadable<ViewData>
+    let content: (ViewData) -> Content
+    
+    
+    public init(viewData: State<Loadable<ViewData>>, config: LoadableConfigNew<ViewData>, @ViewBuilder content: @escaping (ViewData) -> Content) {
+        self._viewData = viewData
+        self.config = config
+        self.content = content
+    }
+    
+    @ViewBuilder
+    public var body: some View {
+        switch viewData {
+        case .idle:
+            let loader =  config.loadViewData
+            LoadingView()
+                .task {
+                    if let content = try? await loader() {
+                        viewData = .loaded(content)
+                    }else {
+                        viewData = .error(.unknown)
+    
+                    }
+                }
+        case .loading:
+            LoadingView()
+        case .error(_):
+            LoadingView()
+        case .loaded(let viewData):
+            content(viewData)
+        }
+        
+    }
+}
+
+extension LoadableViewNew:  ConfigurableView {
+    
+}
+
+
 

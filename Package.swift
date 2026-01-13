@@ -16,6 +16,8 @@ let package = Package(
         .library(name: "AppViewModel", targets: ["AppViewModel"]),
         .library(name: "UseCaseApi", targets: ["UseCaseApi"]),
         .library(name: "UseCaseRuntime", targets: ["UseCaseRuntime"]),
+        .library(name: "WorkFlowApi", targets: ["UseCaseApi", "DomainApi" ]),
+        .library(name: "WorkFlowRuntime", targets: ["UseCaseRuntime", "DomainRuntime" ])
         // Add any other targets as needed
     ],
     targets: [

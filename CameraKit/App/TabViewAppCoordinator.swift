@@ -11,6 +11,7 @@ import AppView
 import AppViewModel
 import CoreKit
 import UseCaseRuntime
+import UseCaseApi
 
 enum AppTab: Hashable, Identifiable {
     case camera(CameraType)
@@ -90,7 +91,6 @@ final class TabViewAppCoordinator {
         switch tab {
         case .camera(let type):
             cameraTab(cameraType: type)
-
         case .settings:
              settingsTab()
         case .gallery:
@@ -101,6 +101,9 @@ final class TabViewAppCoordinator {
     
     var path = NavigationPath()
     var gview: AnyView?
+    
+
+    
     @MainActor func galleryView() -> AnyView {
         if let gview {
             return gview
@@ -110,34 +113,37 @@ final class TabViewAppCoordinator {
         let view =  TestView(viewModel: viewModel)
         
         viewModel.showDetail =  { item in
-            self.path.append(AnyData(item))
+            self.path.append(AnyData(item.id))
         }
         
-       //  let  viewData = viewModel.listViewData
-       // let view = GalleryGridView(viewData: viewData, config: config)
         let anyview = AnyView(NavigationStack(path: Binding(
             get: { self.path },
             set: { self.path = $0 }
         )) {
             view
-                .navigationDestination(for: AnyData<GalleryItemViewData>.self) { item in
-                    GalleryItemView(data:item.item){}
-                        .aspectRatio(contentMode: .fit)
-                }.navigationDestination(for: String.self) { data in
-                    let data = GalleryItemViewData(id: "data")
-                    GalleryItemView(data:data){}
-                        .aspectRatio(contentMode: .fit)
+                .navigationDestination(for: AnyData<String>.self) { content in
+                    let item = content.item
+                    let data = GalleryItemViewData(content: .idle, id: item)
+                    let bindable = State(initialValue: data.content)
+                    let galleryLoadConfig = ContentConfig(width: Int.max, height: Int.max, requiresExactSize: true)
+                    let config = LoadableConfigNew {
+                        if let data = try? await GalleryLoaderImp().loadContent(id: item, config: galleryLoadConfig) {
+                            return Image(uiImage: data.image)
+                        }
+                        throw NSError()
+                    }
+                
+                    LoadableViewNew(viewData:bindable, config: config) { data in
+                        let galleryData = GalleryItemViewData(content: .loaded(data), id: item)
+                        GalleryItemView(data:galleryData){}
+                            .aspectRatio(contentMode: .fit)
+                    }
+                    
                 }
         }
         )
         self.gview = anyview
         return anyview
-//        return NavigationStack {
-//            GalleryGridView(viewData: viewData, config: config)
-//        }.navigationDestination(for: GalleryItemViewData.self) { item in
-//            GalleryItemView(data:item){}
-//        }
-        
     }
     
     @MainActor
@@ -168,7 +174,7 @@ class AnyData<T>: NSObject {
 
 
 struct TestView: View {
-    @State var viewModel: GalleryViewModel
+    let viewModel: GalleryViewModel
    
     let config: LoadableConfig
     let galleryViewConfig: GalleryViewConfig

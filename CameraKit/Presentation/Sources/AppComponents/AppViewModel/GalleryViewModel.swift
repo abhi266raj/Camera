@@ -63,7 +63,7 @@ public final class GalleryViewModel: Sendable  {
             return
         }
         content.items[index] = item.setLoading()
-        let image = try? await galleryLoader.loadContent(id: id).image
+        let image = try? await galleryLoader.loadThumbContent(id: id).image
         guard let image else {
             content.items[index] = item.setError(.unknown)
             return
