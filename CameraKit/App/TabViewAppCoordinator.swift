@@ -106,20 +106,15 @@ final class TabViewAppCoordinator {
             return gview
         }
         let viewModel = GalleryViewModel(galleryLoader: GalleryLoaderImp(), permissionService: appDependencies.domainOutput.permissionService)
-        let config = GalleryViewConfig(onLoad: {
-            await viewModel.load()
-        },onItemLoad: { viewData in
-             await viewModel.loadThumbnail(id: viewData.id)
-        }, onItemTap: { viewData in
-            await viewModel.tappedOnItem(id: viewData.id)
-       })
+       
+        let view =  TestView(viewModel: viewModel)
         
         viewModel.showDetail =  { item in
             self.path.append(AnyData(item))
         }
         
-         let  viewData = viewModel.listViewData
-        let view = GalleryGridView(viewData: viewData, config: config)
+       //  let  viewData = viewModel.listViewData
+       // let view = GalleryGridView(viewData: viewData, config: config)
         let anyview = AnyView(NavigationStack(path: Binding(
             get: { self.path },
             set: { self.path = $0 }
@@ -168,5 +163,38 @@ class AnyData<T>: NSObject {
     
     init(_ item: T) {
         self.item = item
+    }
+}
+
+
+struct TestView: View {
+    @State var viewModel: GalleryViewModel
+   
+    let config: LoadableConfig
+    let galleryViewConfig: GalleryViewConfig
+    
+    init(viewModel: GalleryViewModel) {
+        let config = GalleryViewConfig(onLoad: {
+            await viewModel.load()
+        },onItemLoad: { viewData in
+             await viewModel.loadThumbnail(id: viewData.id)
+        }, onItemTap: { viewData in
+            await viewModel.tappedOnItem(id: viewData.id)
+       })
+        
+        let loadableConfig = LoadableConfig {
+            Task { @MainActor in
+                await viewModel.load()
+            }
+        }
+        self.viewModel = viewModel
+        self.config = loadableConfig
+        self.galleryViewConfig = config
+    }
+    
+    public var body: some View  {
+        LoadableView(viewData: viewModel.viewData.content, config: config) { viewData in
+             GalleryGridView(viewData: viewData, config: galleryViewConfig)
+        }
     }
 }

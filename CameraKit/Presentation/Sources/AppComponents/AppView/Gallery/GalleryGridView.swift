@@ -15,15 +15,7 @@ public struct GalleryGridView: ConfigurableView, ContentView {
     let viewData: GalleryListViewData
     
     static let spacing: CGFloat = 10
-    
-    //    private let columns = [
-    //        GridItem(.adaptive(minimum: 150, maximum: 180), spacing: 10)
-    ////        GridItem(.fixed(300), spacing: 10),
-    ////        GridItem(.fixed(300), spacing: 10),
-    ////        GridItem(.fixed(300), spacing: 10),
-    ////        GridItem(.fixed(300), spacing: 10),
-    //    ]
-    
+        
     public var body: some View {
         NavigationStack {
             GeometryReader {item in

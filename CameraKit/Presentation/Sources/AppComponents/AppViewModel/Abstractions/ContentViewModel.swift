@@ -18,3 +18,24 @@ public protocol ActionableViewModel: ContentViewModel {
     associatedtype ViewAction
     func trigger(_ action: ViewAction)
 }
+
+
+public enum LoadableError: Error {
+    case permissionDenied
+    case temporary
+    case permanent
+    case unknown
+}
+
+
+public enum Loadable<T>{
+    case idle
+    case loading
+    case error(LoadableError)
+    case loaded(T)
+}
+
+extension LoadableError: Sendable { }
+extension Loadable: Equatable where T: Equatable {}
+extension Loadable: Sendable where T: Sendable {}
+

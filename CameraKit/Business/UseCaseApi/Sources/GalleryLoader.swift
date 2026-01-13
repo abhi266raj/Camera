@@ -25,5 +25,24 @@ public struct GalleryContent: Sendable {
 
 public protocol GalleryLoader: Sendable {
     func loadGallery() async -> [GalleryItem]
-    func loadContent(id: String) async throws -> GalleryContent
+    func loadContent(id: String, config: ContentConfig) async throws -> GalleryContent
 }
+
+public extension  GalleryLoader {
+    func loadContent(id:String) async throws -> GalleryContent {
+        let config = ContentConfig(width: 1500, height: 1500, requiresExactSize: false)
+        return try await loadContent(id: id, config: config)
+    }
+}
+
+public struct ContentConfig {
+    public let width : Int
+    public let height : Int
+    public let requiresExactSize: Bool
+}
+
+public struct FetchConfig {
+    
+}
+
+

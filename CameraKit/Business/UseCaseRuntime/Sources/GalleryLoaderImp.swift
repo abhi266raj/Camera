@@ -25,16 +25,21 @@ public struct GalleryLoaderImp: GalleryLoader {
         return list.map{GalleryItem(id: $0.localIdentifier)}
     }
     
-    public func loadContent(id: String) async throws -> GalleryContent {
+    public func loadContent(id: String, config: ContentConfig) async throws -> GalleryContent {
         guard let asset = fetchAsset(by: id) else {
             throw RequestError.invalidInput
         }
         let manager = PHImageManager.default()
-        let size = CGSize(width: 1500, height: 1500)
+        let size = CGSize(width: config.width, height: config.height)
         var didResume = false
         let options = PHImageRequestOptions()
         options.resizeMode = .exact
-        options.deliveryMode = .highQualityFormat
+        if config.requiresExactSize {
+            options.deliveryMode = .highQualityFormat
+        }
+        else {
+            options.deliveryMode = .fastFormat
+        }
         options.isSynchronous = false
         
         let image = await withCheckedContinuation { continuation in

@@ -19,24 +19,28 @@ public struct GalleryItemView: View {
     
     public var body: some View {
         ZStack {
-            if let image = data.image {
-                    image
-                    .resizable()
-                    .scaledToFit()
-                    // .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .clipped()
-                    // .aspectRatio(contentMode: .fit)
-            } else if data.isLoading {
+            switch data.content {
+            case .idle:
                 LoadingView()
                 Rectangle()
                     .fill(.secondary.opacity(0.2))
-            } else {
+            case .loading:
+                LoadingView()
                 Rectangle()
                     .fill(.secondary.opacity(0.2))
+            case .loaded(let image):
+                image
+                .resizable()
+                .scaledToFit()
+                // .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .clipped()
+            case .error:
+                LoadingView()
             }
+            
         }
         .task(priority: .background) {
-            if data.image == nil {
+            if data.content == .idle {
                 await loadAction?()
             }
         }

@@ -15,14 +15,7 @@ import AppView
 class AppCoordinator {
     
     var path = NavigationPath()
-    
-//   lazy var bindingPath: Binding<NavigationPath> =  {
-//        return Binding(
-//            get: { self.path },
-//            set: { self.path = $0 }
-//        )
-//    }()
-    
+        
     @ObservationIgnored private lazy  var viewModelOutput: ViewModelOutput = appDependencies.viewModelOutput
     private let rootDepedency = HomeViewModelDependency()
     private let appDependencies: AppDependencies = AppDependencies()

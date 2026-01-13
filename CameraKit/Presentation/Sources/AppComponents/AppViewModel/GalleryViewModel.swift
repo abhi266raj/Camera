@@ -8,7 +8,6 @@
 
 // MARK: - ViewModel
 
-internal import Photos
 internal import UIKit
 import SwiftUI
 import Observation
@@ -17,7 +16,6 @@ import DomainApi
 
 
 public final class GalleryViewModel: Sendable  {
-    @MainActor var  items: [PHAsset] = []
     @MainActor public let viewData: GalleryViewData = GalleryViewData()
     @MainActor public let listViewData: GalleryListViewData = GalleryListViewData()
     private let galleryLoader:GalleryLoader
@@ -34,33 +32,43 @@ public final class GalleryViewModel: Sendable  {
 
     @MainActor
     public func load() async {
-        let isPermitted = await permissionSerivce.requestGalleryAccess()
-        if !isPermitted {
-            viewData.state = .denied
-        } else {
-            listViewData.items = []
-            viewData.state = .loading
-            await fetchAssets()
-            viewData.state = .permitted(listViewData)
+        if case .idle = viewData.content {
+            let isPermitted = await permissionSerivce.requestGalleryAccess()
+            if !isPermitted {
+                viewData.content = .error(.permissionDenied)
+            } else {
+                viewData.content = .loading
+                await fetchAssets()
+                viewData.content = .loaded(listViewData)
+            }
         }
     }
 
     @MainActor
     private func fetchAssets() async {
+        listViewData.items = []
         listViewData.items = await galleryLoader.loadGallery().map{GalleryItemViewData(id: $0.id)}
     }
     
     @MainActor
     public func loadThumbnail(id: String) async  {
-        guard let index =  listViewData.items.firstIndex(where: { $0.id == id}) else {
+        guard case .loaded(let content) = viewData.content else {
             return
         }
-        if listViewData.items[index].isLoading  {
+        guard let index =  content.items.firstIndex(where: { $0.id == id}) else {
             return
         }
-        await listViewData.items[index] = .init(isLoading: true, id: id)
+        let item = content.items[index]
+        if item.content == .loading  {
+            return
+        }
+        content.items[index] = item.setLoading()
         let image = try? await galleryLoader.loadContent(id: id).image
-        await listViewData.items[index] = .init(image: image, id: id)
+        guard let image else {
+            content.items[index] = item.setError(.unknown)
+            return
+        }
+        content.items[index] = item.set(image)
     }
     
     @MainActor
@@ -70,7 +78,6 @@ public final class GalleryViewModel: Sendable  {
         }
         let data = listViewData.items[index]
         showDetail?(data)
-        
     }
     
     
@@ -79,14 +86,7 @@ public final class GalleryViewModel: Sendable  {
 @Observable
 @MainActor
 public class GalleryViewData: Sendable {
-    enum GalleryState {
-        case unknown
-        case denied
-        case loading
-        case permitted(GalleryListViewData)
-    }
-    
-    var state: GalleryState  = .unknown
+    public var content: Loadable<GalleryListViewData> = .idle
 }
 
 @Observable
@@ -103,25 +103,48 @@ public class GalleryListViewData: Sendable {
 
 
 public struct GalleryItemViewData: Identifiable, Sendable {
-    public let image: Image?
-    public let isLoading: Bool
     public let id:String
+    public let content: Loadable<Image>
     
     public init(image: UIImage? = nil, isLoading: Bool = false, id:String) {
         if let image {
-            self.image = Image(uiImage: image)
+            let image = Image(uiImage: image)
+            content = .loaded(image)
         }else {
-            self.image = nil
+            if isLoading {
+                content = .loading
+            }else {
+                content = .idle
+            }
         }
-        self.isLoading = false
+        
         self.id = id
     }
     
     public init(imageName: String, isLoading: Bool = false, id:String) {
-        self.isLoading = false
         self.id = id
-        self.image = Image(systemName: imageName)
+        let image = Image(systemName: imageName)
+        content = .loaded(image)
     }
+    
+    public init(content: Loadable<Image>, id:String) {
+        self.content = content
+        self.id = id
+    }
+    
+    public func setLoading() -> Self {
+        GalleryItemViewData(content: .loading, id: id)
+    }
+    
+    public func set(_ image: UIImage) -> Self {
+        let image = Image(uiImage: image)
+        return GalleryItemViewData(content: .loaded(image), id: id)
+    }
+    
+    public func setError(_ error: LoadableError) -> Self {
+        GalleryItemViewData(content: .error(error), id: id)
+    }
+    
     
 }
 
