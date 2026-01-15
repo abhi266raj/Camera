@@ -20,14 +20,17 @@ public final class GalleryViewModel: Sendable  {
     @MainActor public let listViewData: GalleryListViewData = GalleryListViewData()
     private let galleryLoader:GalleryLoader
     private let permissionSerivce: PermissionService
+    private let feedLoader: FeedLoader<GalleryItem>
+    
     
     @MainActor
     public var showDetail: ((GalleryItemViewData) -> Void)? = nil
     
     @MainActor
-    public init(galleryLoader: GalleryLoader, permissionService: PermissionService) {
+    public init(galleryLoader: GalleryLoader, feedLoader: FeedLoader<GalleryItem>, permissionService: PermissionService) {
         self.galleryLoader = galleryLoader
         self.permissionSerivce = permissionService
+        self.feedLoader = feedLoader
     }
 
     @MainActor
@@ -38,9 +41,43 @@ public final class GalleryViewModel: Sendable  {
                 viewData.content = .error(.permissionDenied)
             } else {
                 viewData.content = .loading
-                await fetchAssets()
-                viewData.content = .loaded(listViewData)
+                listViewData.hasMore = true
+                Task.immediate{
+                    await observeFeed()
+                }
+                await feedLoader.loadInitial()
+               // viewData.content = .loaded(listViewData)
             }
+        }
+    }
+    
+    @MainActor public func loadMore() async {
+        await feedLoader.loadMore()
+    }
+    
+    private func observeFeed() async  {
+            let stream = feedLoader.observeStream()
+            do {
+                for try await content in stream {
+                    let viewData = content.map{GalleryItemViewData(id: $0.id)}
+                    await updateData(viewData)
+                }
+            }catch {
+                await MainActor.run {
+                    if case .loading = viewData.content {
+                        viewData.content = .error(.unknown)
+                    }
+                }
+            }
+        await MainActor.run(body: {
+            listViewData.hasMore = false
+        })
+    }
+    
+    @MainActor func updateData(_ data: [GalleryItemViewData]) {
+        self.listViewData.items += data
+        if case .loading = viewData.content {
+            viewData.content = .loaded(listViewData)
         }
     }
 
@@ -98,6 +135,7 @@ public class GalleryListViewData: Sendable {
     }
     
     public var items: [GalleryItemViewData] = []
+    public var hasMore: Bool = true
     
 }
 

@@ -104,8 +104,10 @@ final class TabViewAppCoordinator {
 
     
     @MainActor func galleryView() -> some View {
-        let galleryLoader: GalleryLoader = PexelGalleryLoader()
-        let viewModel = GalleryViewModel(galleryLoader: galleryLoader, permissionService: appDependencies.domainOutput.permissionService)
+        let pexelGalleryLoader = PexelGalleryLoader()
+        let galleryLoader: GalleryLoader = pexelGalleryLoader
+        let feedLoader = pexelGalleryLoader
+        let viewModel = GalleryViewModel(galleryLoader: galleryLoader, feedLoader: feedLoader, permissionService: appDependencies.domainOutput.permissionService)
        
         let view =  TestView(viewModel: viewModel)
         
@@ -211,7 +213,9 @@ struct TestView: View {
              await viewModel.loadThumbnail(id: viewData.id)
         }, onItemTap: { viewData in
             await viewModel.tappedOnItem(id: viewData.id)
-       })
+        }, onLoadMore: {
+            await viewModel.loadMore()
+        })
         
         let loadableConfig = LoadableConfig {
             Task { @MainActor in

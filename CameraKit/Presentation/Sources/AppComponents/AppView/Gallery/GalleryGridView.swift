@@ -53,10 +53,32 @@ public struct GalleryGridView: ConfigurableView, ContentView {
                                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                                 .clipped()
                             }
+                            
+                            if viewData.hasMore {
+                                LoadingView().id(viewData.count).onAppear() {
+                                    Task {
+                                        await config.onLoadMore()
+                                    }
+                                }.frame(height: width).frame(width:item.size.width)
+                            }
+                            
                         }
+                        
+                        
+                        
                     }
-                    //    }
-                    
+//                    if viewData.hasMore && viewData.count > 0 {
+//                        LoadingView().onAppear() {
+//                            Task {
+//                                await config.onLoadMore()
+//                            }
+//                        }.onTapGesture {
+//                            Task {
+//                                await config.onLoadMore()
+//                            }
+//                            
+//                        }.frame(height: 50)
+//                    }
                 }
             }
             .navigationTitle("Gallery")
@@ -69,15 +91,17 @@ public struct GalleryGridView: ConfigurableView, ContentView {
 
 public struct GalleryViewConfig {
     
-    public init(onLoad: @escaping () async -> Void, onItemLoad: @escaping (GalleryItemViewData) async -> Void, onItemTap: @escaping (GalleryItemViewData) async -> Void) {
+    public init(onLoad: @escaping () async -> Void, onItemLoad: @escaping (GalleryItemViewData) async -> Void, onItemTap: @escaping (GalleryItemViewData) async -> Void, onLoadMore: @escaping () async -> Void) {
         self.onLoad = onLoad
         self.onItemLoad = onItemLoad
         self.onItemTap = onItemTap
+        self.onLoadMore = onLoadMore
     }
     
     var onLoad: () async -> Void
     var onItemLoad: (GalleryItemViewData) async-> Void
     var onItemTap: (GalleryItemViewData) async-> Void
+    var onLoadMore: () async -> Void
 }
 
 

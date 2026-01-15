@@ -5,7 +5,6 @@
 //  Created by Abhiraj on 15/01/26.
 //
 
-
 //
 //  PexelGalleryLoader.swift
 //  CameraKit
@@ -18,17 +17,132 @@ import UIKit.UIImage
 import UseCaseApi
 import CoreKit
 
-public struct PexelGalleryLoader: GalleryLoader {
-    public init() {}
+public actor PexelGalleryLoader: GalleryLoader {
+    public typealias Item = GalleryItem
+
+    private struct Config {
+        public let apiKey: String
+        public let perPage: Int
+        public let baseURL: String
+        
+        public init(apiKey: String = "2PMbPBg8WVNIAYWg3xNaVvXCZ8MYWksG240ITFczEEwQKXQaUJB6ekeT",
+                    perPage: Int = 8,
+                    baseURL: String = "https://api.pexels.com/v1/curated?page=1&per_page=8") {
+            self.apiKey = apiKey
+            self.perPage = perPage
+            self.baseURL = baseURL
+        }
+    }
     
-    // Replace with your actual Pexels API key
-    private let apiKey = "2PMbPBg8WVNIAYWg3xNaVvXCZ8MYWksG240ITFczEEwQKXQaUJB6ekeT"
-    private let baseURL = "https://api.pexels.com/v1/curated?page=1&per_page=8"
+    private let config: Config
+
+
+    public init () {
+        self.config = Config()
+    }
+    
+    private struct State {
+        var currentPage: Int = 0
+        var isComplete: Bool = false
+        var isLoading: Bool = false
+        var continuation: AsyncThrowingStream<[GalleryItem], Error>.Continuation?
+    }
+    
+    private var state = State()
+    
+    public var canLoad: Bool {
+        !state.isLoading && !state.isComplete
+    }
+    
+    // MARK: - ContentLoader
+    
+    nonisolated public func observeStream() -> AsyncThrowingStream<[GalleryItem], Error> {
+        return AsyncThrowingStream<[GalleryItem], Error> { continuation in
+            Task {
+               await setUp(with: continuation)
+            }
+        }
+    }
+    
+    func setUp(with continuation: AsyncThrowingStream<[GalleryItem], Error>.Continuation) {
+        if let current = self.state.continuation {
+            current.finish()
+        }
+        
+        if state.isComplete {
+            continuation.finish()
+            return
+        }
+        state.continuation = continuation
+    }
+    
+    public func loadInitial() async  {
+        await reset()
+        state.isLoading = true
+        try? await loadPage(page: 1)
+        state.isLoading = false
+        state.currentPage += 1
+    }
+    
+    public func loadMore() async  {
+        guard canLoad else { return }
+        state.isLoading = true
+        try? await loadPage(page: state.currentPage + 1)
+        state.isLoading = false
+        state.currentPage += 1
+    }
+    
+    public func reset() async {
+        state.continuation?.finish()
+        state = State()
+    }
+    
+    // MARK: - Private Helpers
+    
+    private func urlForPage(_ page: Int) -> URL? {
+        URL(string: "https://api.pexels.com/v1/curated?page=\(page)&per_page=\(config.perPage)")
+    }
+    
+    private func loadPage(page: Int) async throws {
+        guard let url = urlForPage(page) else { return }
+        var request = URLRequest(url: url)
+        request.setValue(config.apiKey, forHTTPHeaderField: "Authorization")
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            guard let items = parseGalleryItems(from: data) else {
+                state.isComplete = true
+                state.continuation?.finish()
+                return
+            }
+            
+            if items.isEmpty {
+                state.isComplete = true
+                state.continuation?.finish()
+                return
+            }
+            
+            state.currentPage = page
+            state.continuation?.yield(items)
+            
+            if items.count < config.perPage {
+                state.isComplete = true
+                state.continuation?.finish()
+            }
+        } catch {
+            // On error, just finish stream and mark complete
+            state.isComplete = true
+            state.continuation?.finish()
+            throw error
+        }
+    }
+    
+    // MARK: - GalleryLoader backward compatibility
     
     public func loadGallery() async -> [GalleryItem] {
-        guard let url = URL(string: baseURL) else { return [] }
+        guard let url = URL(string: config.baseURL) else { return [] }
         var request = URLRequest(url: url)
-        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
+        request.setValue(config.apiKey, forHTTPHeaderField: "Authorization")
 
         do {
             let (data, _) = try await URLSession.shared.data(for: request)
@@ -90,3 +204,7 @@ public struct PexelGalleryLoader: GalleryLoader {
         }
     }
 }
+
+
+ extension PexelGalleryLoader : FeedLoader {}
+

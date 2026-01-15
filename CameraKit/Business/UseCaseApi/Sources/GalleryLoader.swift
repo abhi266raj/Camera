@@ -40,7 +40,7 @@ public extension  GalleryLoader {
     }
 }
 
-public struct ContentConfig {
+public struct ContentConfig: Sendable {
     public let width : Int
     public let height : Int
     public let requiresExactSize: Bool
@@ -54,6 +54,14 @@ public struct ContentConfig {
 
 public struct FetchConfig {
     
+}
+
+public protocol FeedLoader<Item>: Sendable {
+    associatedtype Item
+    func observeStream() -> AsyncThrowingStream<[Item],Error>
+    func loadInitial() async
+    func loadMore() async
+    func reset() async
 }
 
 
