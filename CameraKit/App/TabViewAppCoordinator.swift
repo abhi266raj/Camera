@@ -98,17 +98,14 @@ final class TabViewAppCoordinator {
         }
         
     }
-    
-    var path = NavigationPath()
-    var gview: AnyView?
-    
+   
+    @ObservationIgnored
+    @AnyData var path: NavigationPath = NavigationPath()
 
     
-    @MainActor func galleryView() -> AnyView {
-        if let gview {
-            return gview
-        }
-        let viewModel = GalleryViewModel(galleryLoader: GalleryLoaderImp(), permissionService: appDependencies.domainOutput.permissionService)
+    @MainActor func galleryView() -> some View {
+        let galleryLoader: PhotoGalleryLoader = PhotoGalleryLoader()
+        let viewModel = GalleryViewModel(galleryLoader: galleryLoader, permissionService: appDependencies.domainOutput.permissionService)
        
         let view =  TestView(viewModel: viewModel)
         
@@ -116,34 +113,30 @@ final class TabViewAppCoordinator {
             self.path.append(AnyData(item.id))
         }
         
-        let anyview = AnyView(NavigationStack(path: Binding(
-            get: { self.path },
-            set: { self.path = $0 }
-        )) {
+        let anyview = AnyView(
             view
-                .navigationDestination(for: AnyData<String>.self) { content in
-                    let item = content.item
-                    let data = GalleryItemViewData(content: .idle, id: item)
-                    let bindable = State(initialValue: data.content)
-                    let galleryLoadConfig = ContentConfig(width: Int.max, height: Int.max, requiresExactSize: true)
-                    let config = LoadableConfigNew {
-                        if let data = try? await GalleryLoaderImp().loadContent(id: item, config: galleryLoadConfig) {
-                            return Image(uiImage: data.image)
-                        }
-                        throw NSError()
+            .navigationDestination(for: AnyData<String>.self) { content in
+                let item = content.wrappedValue
+                let data = GalleryItemViewData(content: .idle, id: item)
+                let bindable = State(initialValue: data.content)
+                let galleryLoadConfig = ContentConfig(width: Int.max, height: Int.max, requiresExactSize: true)
+                let config = LoadableConfigNew {
+                    if let data = try? await galleryLoader.loadContent(id: item, config: galleryLoadConfig) {
+                        return Image(uiImage: data.image)
                     }
-                
-                    LoadableViewNew(viewData:bindable, config: config) { data in
-                        let galleryData = GalleryItemViewData(content: .loaded(data), id: item)
-                        GalleryItemView(data:galleryData){}
-                            .aspectRatio(contentMode: .fit)
-                    }
-                    
+                    throw NSError()
                 }
-        }
-        )
-        self.gview = anyview
-        return anyview
+                
+                LoadableViewNew(viewData:bindable, config: config) { data in
+                    let galleryData = GalleryItemViewData(content: .loaded(data), id: item)
+                    GalleryItemView(data:galleryData){}
+                        .aspectRatio(contentMode: .fit)
+                }
+                
+            }
+            )
+        
+        return NavView(view: anyview, path: _path)
     }
     
     @MainActor
@@ -164,14 +157,46 @@ final class TabViewAppCoordinator {
     }
 }
 
+@Observable
+@propertyWrapper
 class AnyData<T>: NSObject {
-    var item: T
+    var wrappedValue: T
     
-    init(_ item: T) {
-        self.item = item
+    init(wrappedValue: T) {
+        self.wrappedValue = wrappedValue
     }
+    
+    init(_ wrappedValue: T) {
+        self.wrappedValue = wrappedValue
+    }
+    
+    var projectedValue: Binding<T> {
+        return .init(
+            get: { self.wrappedValue },
+            set: { self.wrappedValue = $0 }
+        )
+    }
+    
 }
 
+
+struct NavView: View {
+    
+    @AnyData var path: NavigationPath
+    var content: AnyView
+    
+    init(view: AnyView, path: AnyData<NavigationPath>) {
+        content = view
+        self._path = path
+        
+    }
+    
+    var body: some View {
+        NavigationStack(path: $path) {
+            content
+        }
+    }
+}
 
 struct TestView: View {
     let viewModel: GalleryViewModel

@@ -57,6 +57,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6B6476312F16C307009574E7 /* GalleryCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryCoordinator.swift; sourceTree = "<group>"; };
 		6B6D7DED2EE6D9FA00B59C01 /* AppDI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDI.swift; sourceTree = "<group>"; };
 		6B6D7DEE2EE6D9FA00B59C01 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
 		6B706EDC2EF8028A009002EC /* TabViewAppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewAppCoordinator.swift; sourceTree = "<group>"; };
@@ -140,6 +141,7 @@
 				6BE804F32AB738EB00DAF8B4 /* CameraKitUITests */,
 				6B4B14922EF138F90038405E /* Frameworks */,
 				6BE804D72AB738E800DAF8B4 /* Products */,
+				6B6476312F16C307009574E7 /* GalleryCoordinator.swift */,
 			);
 			sourceTree = "<group>";
 		};

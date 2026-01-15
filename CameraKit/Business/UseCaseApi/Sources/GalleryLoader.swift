@@ -35,7 +35,7 @@ public extension  GalleryLoader {
     }
     
     func loadThumbContent(id:String) async throws -> GalleryContent {
-        let config = ContentConfig(width: 500, height: 500, requiresExactSize: true)
+        let config = ContentConfig(width: 200, height: 200, requiresExactSize: true)
         return try await loadContent(id: id, config: config)
     }
 }

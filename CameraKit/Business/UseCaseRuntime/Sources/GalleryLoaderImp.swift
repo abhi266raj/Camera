@@ -10,7 +10,7 @@ import UseCaseApi
 import Photos
 import CoreKit
 
-public struct GalleryLoaderImp: GalleryLoader {
+public struct PhotoGalleryLoader: GalleryLoader {
     public init() {
         
     }
