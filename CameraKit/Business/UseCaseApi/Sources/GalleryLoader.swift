@@ -56,12 +56,18 @@ public struct FetchConfig {
     
 }
 
-public protocol FeedLoader<Item>: Sendable {
-    associatedtype Item
-    func observeStream() -> AsyncThrowingStream<[Item],Error>
-    func loadInitial() async
-    func loadMore() async
-    func reset() async
+
+public enum LoaderError: Error, Sendable {
+    case retryable(code: Int)
+    case nonRetryable(code: Int)
+    case inputError(code: Int)
 }
 
+public protocol FeedLoader<Item>: Sendable {
+    associatedtype Item
+    func observeStream() -> AsyncThrowingStream<[Item], Error>
+    func loadInitial() async throws
+    func loadMore() async throws
+    func reset() async throws
+}
 

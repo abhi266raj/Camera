@@ -57,11 +57,13 @@ public actor PexelGalleryLoader: GalleryLoader {
     // MARK: - ContentLoader
     
     nonisolated public func observeStream() -> AsyncThrowingStream<[GalleryItem], Error> {
-        return AsyncThrowingStream<[GalleryItem], Error> { continuation in
+        let stream = AsyncThrowingStream.makeStream(of: [GalleryItem].self)
+        defer {
             Task {
-               await setUp(with: continuation)
+                await setUp(with: stream.continuation)
             }
         }
+        return stream.stream
     }
     
     func setUp(with continuation: AsyncThrowingStream<[GalleryItem], Error>.Continuation) {
@@ -103,7 +105,7 @@ public actor PexelGalleryLoader: GalleryLoader {
         URL(string: "https://api.pexels.com/v1/curated?page=\(page)&per_page=\(config.perPage)")
     }
     
-    private func loadPage(page: Int) async throws {
+    private func loadPage(page: Int) async  {
         guard let url = urlForPage(page) else { return }
         var request = URLRequest(url: url)
         request.setValue(config.apiKey, forHTTPHeaderField: "Authorization")
@@ -129,11 +131,9 @@ public actor PexelGalleryLoader: GalleryLoader {
                 state.isComplete = true
                 state.continuation?.finish()
             }
-        } catch {
-            // On error, just finish stream and mark complete
+        } catch (let error as Error) {
             state.isComplete = true
-            state.continuation?.finish()
-            throw error
+            state.continuation?.finish(throwing: error)
         }
     }
     
@@ -207,4 +207,9 @@ public actor PexelGalleryLoader: GalleryLoader {
 
 
  extension PexelGalleryLoader : FeedLoader {}
+
+
+protocol FeedLoaderError: Error {
+    
+}
 
