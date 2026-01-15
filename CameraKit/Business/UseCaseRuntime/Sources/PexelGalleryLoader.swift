@@ -68,7 +68,7 @@ public actor PexelGalleryLoader: GalleryLoader {
     
     func setUp(with continuation: AsyncThrowingStream<[GalleryItem], Error>.Continuation) {
         if let current = self.state.continuation {
-            current.finish()
+            current.finish(throwing: LoaderError.cancelled)
         }
         
         if state.isComplete {

@@ -61,6 +61,7 @@ public enum LoaderError: Error, Sendable {
     case retryable(code: Int)
     case nonRetryable(code: Int)
     case inputError(code: Int)
+    case cancelled
 }
 
 public protocol FeedLoader<Item>: Sendable {
