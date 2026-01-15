@@ -104,7 +104,7 @@ final class TabViewAppCoordinator {
 
     
     @MainActor func galleryView() -> some View {
-        let galleryLoader: PhotoGalleryLoader = PhotoGalleryLoader()
+        let galleryLoader: GalleryLoader = PexelGalleryLoader()
         let viewModel = GalleryViewModel(galleryLoader: galleryLoader, permissionService: appDependencies.domainOutput.permissionService)
        
         let view =  TestView(viewModel: viewModel)
