@@ -18,7 +18,7 @@ import UseCaseApi
 import CoreKit
 internal import OSLog
 
-private enum Endpoint: Equatable, CustomStringConvertible {
+private enum PexelEndPoint: Equatable, CustomStringConvertible {
     var description: String {
         switch self {
         case .curated:
@@ -30,6 +30,108 @@ private enum Endpoint: Equatable, CustomStringConvertible {
     
     case curated
     case search(String)
+}
+
+protocol RequestBuilder {
+    func build() -> URLRequest?
+}
+
+protocol ResponseBuilder<Response> {
+    associatedtype Response
+    func createResponseFrom(data: Data) throws -> Response
+}
+
+protocol NetworkService: Sendable {
+    
+    func execute<Response>(requestBuilder: RequestBuilder, responseBuilder: ResponseBuilder<Response>) async throws -> Response
+}
+
+struct URLSessionNetworkService: NetworkService {
+    
+    let session: URLSession
+    public init (session:URLSession = URLSession.shared) {
+        self.session = session
+    }
+    
+    func execute<Response>(requestBuilder: RequestBuilder, responseBuilder: ResponseBuilder<Response>) async throws -> Response {
+        guard let request = requestBuilder.build() else {
+            throw URLError(.badURL)
+        }
+        let (data, _) = try await URLSession.shared.data(for: request)
+        let response = try responseBuilder.createResponseFrom(data: data)
+        return response
+    }
+    
+}
+
+struct PexelsImageResponse: Decodable {
+    struct Photo: Decodable {
+        let id: Int
+        let src: Src
+        struct Src: Decodable {
+            let original: String
+            let large2x: String
+        }
+    }
+    let photos: [Photo]
+}
+
+extension PexelsImageResponse {
+    func asGalleryItem() -> [GalleryItem] {
+        photos.map { GalleryItem(id: $0.src.large2x) }
+    }
+}
+
+private struct DecodableResponseBuilder<DecodableResponse: Decodable>: ResponseBuilder {
+    func createResponseFrom(data: Data) throws -> DecodableResponse {
+        let response = try JSONDecoder().decode(DecodableResponse.self, from: data)
+        return response
+    }
+}
+
+
+private struct PexelRequestBuilder: RequestBuilder {
+    
+    private let apiKey: String = "2PMbPBg8WVNIAYWg3xNaVvXCZ8MYWksG240ITFczEEwQKXQaUJB6ekeT"
+    private let scheme: String = "https"
+    private let host: String = "api.pexels.com"
+    
+    private let page: Int
+    private let endPoint: PexelEndPoint
+    private let perPage: Int
+    
+    init(page: Int, endPoint: PexelEndPoint, perPage: Int) {
+        self.page = page
+        self.endPoint = endPoint
+        self.perPage = perPage
+    }
+    
+    func build() -> URLRequest? {
+        var components = URLComponents()
+        components.scheme = scheme
+        components.host = host
+        components.path = endPoint.path
+        var items = [
+            URLQueryItem(name: PexelQueryKey.page, value: "\(page)"),
+            URLQueryItem(name: PexelQueryKey.perPage, value: "\(perPage)")
+        ]
+        if let list = endPoint.queryItems {
+            items.append(contentsOf: list)
+        }
+        components.queryItems = items
+        if let url = components.url  {
+            var request = URLRequest(url:url)
+            request.setValue(apiKey, forHTTPHeaderField: "Authorization")
+            return request
+        }
+        
+        return nil
+        
+    }
+    
+}
+
+extension PexelEndPoint {
 
     var path: String {
         switch self {
@@ -50,7 +152,7 @@ private enum Endpoint: Equatable, CustomStringConvertible {
     }
 }
 
-private enum QueryKey {
+private enum PexelQueryKey {
     static let page = "page"
     static let perPage = "per_page"
 }
@@ -58,19 +160,21 @@ private enum QueryKey {
 public actor PexelGalleryLoader: SearchAbleFeedLoader {
     // public typealias Item = GalleryItem
     let logger = Logger(subsystem: "Gallery", category: "Loader")
+    
+    private let networkService: NetworkService = URLSessionNetworkService()
     private struct Config {
         public let apiKey: String
         public let perPage: Int
         public let scheme: String
         public let host: String
-        public let endPoint: Endpoint
+        public let endPoint: PexelEndPoint
         
         public init(
             apiKey: String = "2PMbPBg8WVNIAYWg3xNaVvXCZ8MYWksG240ITFczEEwQKXQaUJB6ekeT",
             perPage: Int = 8,
             scheme: String = "https",
             host: String = "api.pexels.com",
-            endPoint: Endpoint = .search("apple")
+            endPoint: PexelEndPoint = .search("apple")
         ) {
             self.apiKey = apiKey
             self.perPage = perPage
@@ -93,7 +197,7 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
         }
         
   
-        let endpoint = Endpoint.search(key)
+        let endpoint = PexelEndPoint.search(key)
         config = Config(endPoint: endpoint)
         await reset()
         return true
@@ -161,38 +265,14 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
         state = State()
     }
     
-    /**
-     Constructs a URL for a given endpoint and page, using endpoint's path and extra query parameters.
-     */
-    private func urlForPage(_ page: Int) -> URL? {
-        var components = URLComponents()
-        components.scheme = config.scheme
-        components.host = config.host
-        components.path = config.endPoint.path
-        var items = [
-            URLQueryItem(name: QueryKey.page, value: "\(page)"),
-            URLQueryItem(name: QueryKey.perPage, value: "\(config.perPage)")
-        ]
-        if let list = config.endPoint.queryItems {
-            items.append(contentsOf: list)
-        }
-        components.queryItems = items
-        return components.url
-    }
+    
     
     private func loadPage(page: Int) async  {
-        guard let url = urlForPage(page) else { return }
-        var request = URLRequest(url: url)
-        request.setValue(config.apiKey, forHTTPHeaderField: "Authorization")
-        
+        let requestBuilder = PexelRequestBuilder(page: page, endPoint: config.endPoint, perPage: config.perPage)
+        let responseBuilder = DecodableResponseBuilder<PexelsImageResponse>()
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            guard let items = parseGalleryItems(from: data) else {
-                state.isComplete = true
-                state.continuation?.finish()
-                return
-            }
-            
+            let list = try await networkService.execute(requestBuilder: requestBuilder, responseBuilder: responseBuilder)
+            let items = list.asGalleryItem()
             if items.isEmpty {
                 state.isComplete = true
                 state.continuation?.finish()
@@ -215,19 +295,9 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     // MARK: - Helpers
 
     private func parseGalleryItems(from data: Data) -> [GalleryItem]? {
-        struct PexelsResponse: Decodable {
-            struct Photo: Decodable {
-                let id: Int
-                let src: Src
-                struct Src: Decodable {
-                    let original: String
-                    let large2x: String
-                }
-            }
-            let photos: [Photo]
-        }
+       
         do {
-            let response = try JSONDecoder().decode(PexelsResponse.self, from: data)
+            let response = try JSONDecoder().decode(PexelsImageResponse.self, from: data)
             // Use 'large2x' which is typically less than or equal to 1000x1000 px, fallback to 'original'
             return response.photos.map { GalleryItem(id: $0.src.large2x) }
         } catch {
