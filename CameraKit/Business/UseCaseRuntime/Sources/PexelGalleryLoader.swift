@@ -87,9 +87,11 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     }
     
     public func updateSearchConfiguration(_ key: String) async  -> Bool {
+        
         if case .search(let string)  = config.endPoint {
             if string == key {return false}
         }
+        
   
         let endpoint = Endpoint.search(key)
         config = Config(endPoint: endpoint)
@@ -132,7 +134,6 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     }
     
     public func loadInitial() async  {
-        logger.log("Inital load Started \(self.config.endPoint) \(self.state.currentPage)")
         state.isLoading = true
         try? await loadPage(page: 1)
         state.isLoading = false
@@ -142,7 +143,6 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     
     public func loadMore() async  {
         guard canLoad else {
-            
             return
         }
         state.isLoading = true

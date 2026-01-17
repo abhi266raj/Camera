@@ -72,26 +72,11 @@ public final class GalleryViewModel: Sendable  {
         if await session.updateSearch(key) {
             logger.log("updated key: \(key)")
             self.viewData.id = key
-           
-            needRestart = true
-            await restartFeedIfNeeded()
-           // viewData.content = .idle
+            listViewData = GalleryListViewData()
+            viewData.content = .idle
         }
     }
     
-    @MainActor
-    func restartFeedIfNeeded() async {
-        guard needRestart else {
-            return
-        }
-        
-        if isObserving == true  {
-            return
-        }
-        needRestart = false
-        self.listViewData = GalleryListViewData()
-        await initialLoad()
-    }
     
     private func observeFeed(stream: AsyncThrowingStream<[GalleryItem], Error>?) async  {
         logger.log("Started Observed feed")
@@ -114,8 +99,9 @@ public final class GalleryViewModel: Sendable  {
         await MainActor.run(body: {
             logger.log("Stopped Observed feed: \(self.viewData.id) overall \(self.listViewData.items.count)")
             isObserving = false
+            listViewData.hasMore = false
         })
-        await restartFeedIfNeeded()
+       
     }
     
     @MainActor func updateData(_ data: [GalleryItemViewData]) {
@@ -137,9 +123,7 @@ public final class GalleryViewModel: Sendable  {
         guard let index =  content.items.firstIndex(where: { $0.id == id}) else {
             return
         }
-        if index > 2 {
-            return
-        }
+        
         let item = content.items[index]
         if item.content == .loading  {
             return
