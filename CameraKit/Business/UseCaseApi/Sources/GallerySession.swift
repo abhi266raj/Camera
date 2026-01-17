@@ -13,6 +13,7 @@ public protocol GallerySession<Item>: Sendable {
     func loadInitial() async
     func loadMore() async
     func reset() async
+    func updateSearch(_ key: String) async -> Bool
 }
 
 public extension  GallerySession {

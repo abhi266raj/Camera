@@ -11,6 +11,7 @@ import Photos
 import CoreKit
 
 public struct PhotoGalleryLoader: GalleryLoader {
+    
     public init() {
         
     }

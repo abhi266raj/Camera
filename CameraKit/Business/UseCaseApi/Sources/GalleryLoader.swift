@@ -62,3 +62,8 @@ public protocol FeedLoader<Item>: Sendable {
     func reset() async 
 }
 
+
+public protocol SearchAbleFeedLoader: FeedLoader {
+    func updateSearchConfiguration(_ key: String) async  -> Bool
+}
+

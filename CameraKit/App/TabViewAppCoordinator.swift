@@ -201,12 +201,15 @@ struct NavView: View {
 }
 
 struct TestView: View {
-    let viewModel: GalleryViewModel
+    @State var viewModel: GalleryViewModel
    
     let config: LoadableConfig
     let galleryViewConfig: GalleryViewConfig
     
     init(viewModel: GalleryViewModel) {
+        let searchAction = ViewAction<String>{ key  in
+           await  viewModel.search(key)
+        }
         let config = GalleryViewConfig(onLoad: {
             await viewModel.load()
         },onItemLoad: { viewData in
@@ -215,7 +218,8 @@ struct TestView: View {
             await viewModel.tappedOnItem(id: viewData.id)
         }, onLoadMore: {
             await viewModel.loadMore()
-        })
+        }, searchAction: searchAction
+        )
         
         let loadableConfig = LoadableConfig {
             Task { @MainActor in
@@ -228,8 +232,9 @@ struct TestView: View {
     }
     
     public var body: some View  {
+        SearchView(action: galleryViewConfig.searchAction)
         LoadableView(viewData: viewModel.viewData.content, config: config) { viewData in
              GalleryGridView(viewData: viewData, config: galleryViewConfig)
-        }
+        }.id(viewModel.viewData.id)
     }
 }

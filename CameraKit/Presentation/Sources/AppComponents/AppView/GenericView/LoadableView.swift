@@ -40,14 +40,18 @@ public struct LoadableView<Content:View, ViewData>: View {
         switch viewData {
         case .idle:
             let loader =  config.loadContent
+            Text("Idle State")
             LoadingView()
                 .task {
                     loader()
                 }
         case .loading:
+            Text("Loading State")
             LoadingView()
         case .error(_):
             LoadingView()
+            Text("Error")
+            
         case .loaded(let viewData):
             content
         }

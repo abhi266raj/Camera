@@ -13,17 +13,21 @@ import SwiftUI
 import Observation
 import UseCaseApi
 import DomainApi
+internal import OSLog
 
 
 public final class GalleryViewModel: Sendable  {
     @MainActor public let viewData: GalleryViewData = GalleryViewData()
-    @MainActor public let listViewData: GalleryListViewData = GalleryListViewData()
+    @MainActor private var listViewData: GalleryListViewData = GalleryListViewData()
     private let permissionSerivce: PermissionService
     private let session: GallerySession<GalleryItem>
-    
+    private let logger = Logger(subsystem: "Gallery", category: "ViewModel")
     
     @MainActor
     public var showDetail: ((GalleryItemViewData) -> Void)? = nil
+    
+    @MainActor
+    private var isObserving: Bool = false
     
     @MainActor
     public init(session: GallerySession<GalleryItem>, permissionService: PermissionService) {
@@ -33,19 +37,21 @@ public final class GalleryViewModel: Sendable  {
 
     @MainActor
     public func load() async {
+        logger.log("Can Started load feed \(self.viewData.id)")
         if case .idle = viewData.content {
-            let isPermitted = await permissionSerivce.requestGalleryAccess()
-            if !isPermitted {
-                viewData.content = .error(.permissionDenied)
-            } else {
+            self.isObserving = true
+            logger.log("Started load feed")
                 viewData.content = .loading
                 listViewData.hasMore = true
                 Task.immediate{
                     await observeFeed()
                 }
                 await session.loadInitial()
-               // viewData.content = .loaded(listViewData)
-            }
+        }else {
+            logger.log("Not started load \(self.viewData.id)")
+        }
+        if isObserving == false {
+            viewData.content = .idle
         }
     }
     
@@ -53,7 +59,18 @@ public final class GalleryViewModel: Sendable  {
         await session.loadMore()
     }
     
+    @MainActor
+    public func search(_ key:String) async {
+        if await session.updateSearch(key) {
+            logger.log("updated key: \(key)")
+            self.viewData.id = key
+            self.listViewData = GalleryListViewData()
+            viewData.content = .idle
+        }
+    }
+    
     private func observeFeed() async  {
+        logger.log("Started Observed feed")
             let stream = session.observeFeedStream()
             do {
                 for try await content in stream {
@@ -67,23 +84,24 @@ public final class GalleryViewModel: Sendable  {
                     }
                 }
             }
+        
         await MainActor.run(body: {
-            listViewData.hasMore = false
+            isObserving = false
+            logger.log("Stopped Observed feed: \(self.viewData.id) overall \(self.listViewData.items.count)")
+            // listViewData.hasMore = false
         })
     }
     
     @MainActor func updateData(_ data: [GalleryItemViewData]) {
+        
         self.listViewData.items += data
+        logger.log("Fetched key: \(self.viewData.id) \(data.count) overall \(self.listViewData.items.count)")
         if case .loading = viewData.content {
+            logger.log("Updating to loading: \(self.viewData.id) \(data.count)")
             viewData.content = .loaded(listViewData)
         }
     }
 
-    @MainActor
-    private func fetchAssets() async {
-        listViewData.items = []
-       // listViewData.items = await galleryLoader.loadGallery().map{GalleryItemViewData(id: $0.id)}
-    }
     
     @MainActor
     public func loadThumbnail(id: String) async  {
@@ -93,6 +111,9 @@ public final class GalleryViewModel: Sendable  {
         guard let index =  content.items.firstIndex(where: { $0.id == id}) else {
             return
         }
+        if index > 2 {
+            return
+        }
         let item = content.items[index]
         if item.content == .loading  {
             return
@@ -100,6 +121,9 @@ public final class GalleryViewModel: Sendable  {
         content.items[index] = item.setLoading()
         let image = try? await session.loadContent(id: id).image
         guard let image else {
+            guard index < content.count else {
+                return
+            }
             content.items[index] = item.setError(.unknown)
             return
         }
@@ -122,6 +146,7 @@ public final class GalleryViewModel: Sendable  {
 @MainActor
 public class GalleryViewData: Sendable {
     public var content: Loadable<GalleryListViewData> = .idle
+    public var id: String = ""
 }
 
 @Observable

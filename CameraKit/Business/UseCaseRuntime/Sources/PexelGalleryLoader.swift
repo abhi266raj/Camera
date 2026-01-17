@@ -16,29 +16,86 @@ import Foundation
 import UIKit.UIImage
 import UseCaseApi
 import CoreKit
+internal import OSLog
 
-public actor PexelGalleryLoader: FeedLoader {
-    public typealias Item = GalleryItem
-
-    private struct Config {
-        public let apiKey: String
-        public let perPage: Int
-        public let baseURL: String
-        
-        public init(apiKey: String = "2PMbPBg8WVNIAYWg3xNaVvXCZ8MYWksG240ITFczEEwQKXQaUJB6ekeT",
-                    perPage: Int = 8,
-                    baseURL: String = "https://api.pexels.com/v1/curated?page=1&per_page=8") {
-            self.apiKey = apiKey
-            self.perPage = perPage
-            self.baseURL = baseURL
+private enum Endpoint: Equatable, CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .curated:
+            return "curated"
+        case .search(let item):
+            return "search:\(item)"
         }
     }
     
-    private let config: Config
+    case curated
+    case search(String)
 
+    var path: String {
+        switch self {
+        case .curated:
+            return "/v1/curated"
+        case .search(_):
+            return "/v1/search"
+        }
+    }
+
+    var queryItems: [URLQueryItem]? {
+        switch self {
+        case .curated:
+            return nil
+        case .search(let keyword):
+            return [URLQueryItem(name: "query", value: keyword)]
+        }
+    }
+}
+
+private enum QueryKey {
+    static let page = "page"
+    static let perPage = "per_page"
+}
+
+public actor PexelGalleryLoader: SearchAbleFeedLoader {
+    // public typealias Item = GalleryItem
+    let logger = Logger(subsystem: "Gallery", category: "Loader")
+    private struct Config {
+        public let apiKey: String
+        public let perPage: Int
+        public let scheme: String
+        public let host: String
+        public let endPoint: Endpoint
+        
+        public init(
+            apiKey: String = "2PMbPBg8WVNIAYWg3xNaVvXCZ8MYWksG240ITFczEEwQKXQaUJB6ekeT",
+            perPage: Int = 8,
+            scheme: String = "https",
+            host: String = "api.pexels.com",
+            endPoint: Endpoint = .search("apple")
+        ) {
+            self.apiKey = apiKey
+            self.perPage = perPage
+            self.scheme = scheme
+            self.host = host
+            self.endPoint = endPoint
+        }
+    }
+    
+    private var config: Config
 
     public init () {
         self.config = Config()
+    }
+    
+    public func updateSearchConfiguration(_ key: String) async  -> Bool {
+        if case .search(let string)  = config.endPoint {
+            if string == key {return false}
+        }
+  
+        let endpoint = Endpoint.search(key)
+        config = Config(endPoint: endpoint)
+        await reset()
+        return true
+        
     }
     
     private struct State {
@@ -59,7 +116,7 @@ public actor PexelGalleryLoader: FeedLoader {
     nonisolated public func observeStream() -> AsyncThrowingStream<[GalleryItem], Error> {
         let stream = AsyncThrowingStream.makeStream(of: [GalleryItem].self)
         defer {
-            Task {
+            Task.immediate {
                 await setUp(with: stream.continuation)
             }
         }
@@ -79,15 +136,20 @@ public actor PexelGalleryLoader: FeedLoader {
     }
     
     public func loadInitial() async  {
+        logger.log("Inital load Started \(self.config.endPoint) \(self.state.currentPage)")
         await reset()
         state.isLoading = true
         try? await loadPage(page: 1)
         state.isLoading = false
         state.currentPage += 1
+        logger.log("Inital load End \(self.config.endPoint) \(self.state.currentPage)")
     }
     
     public func loadMore() async  {
-        guard canLoad else { return }
+        guard canLoad else {
+            
+            return
+        }
         state.isLoading = true
         try? await loadPage(page: state.currentPage + 1)
         state.isLoading = false
@@ -95,14 +157,31 @@ public actor PexelGalleryLoader: FeedLoader {
     }
     
     public func reset() async {
+        while state.isLoading {
+            logger.log("infinte waiting")
+            await Task.yield()
+        }
         state.continuation?.finish()
         state = State()
     }
     
-    // MARK: - Private Helpers
-    
+    /**
+     Constructs a URL for a given endpoint and page, using endpoint's path and extra query parameters.
+     */
     private func urlForPage(_ page: Int) -> URL? {
-        URL(string: "https://api.pexels.com/v1/curated?page=\(page)&per_page=\(config.perPage)")
+        var components = URLComponents()
+        components.scheme = config.scheme
+        components.host = config.host
+        components.path = config.endPoint.path
+        var items = [
+            URLQueryItem(name: QueryKey.page, value: "\(page)"),
+            URLQueryItem(name: QueryKey.perPage, value: "\(config.perPage)")
+        ]
+        if let list = config.endPoint.queryItems {
+            items.append(contentsOf: list)
+        }
+        components.queryItems = items
+        return components.url
     }
     
     private func loadPage(page: Int) async  {
@@ -180,3 +259,4 @@ public struct PexelFeedContentLoader: GalleryContentLoader {
         }
     }
 }
+

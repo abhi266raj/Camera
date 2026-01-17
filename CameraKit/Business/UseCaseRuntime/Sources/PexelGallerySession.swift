@@ -21,6 +21,10 @@ public struct PexelGallerySession: GallerySession {
         return try await contentLoader.loadContent(id: id, config: config)
     }
     
+    public func updateSearch(_ key: String) async -> Bool {
+        return await feedLoader.updateSearchConfiguration(key)
+    }
+    
     public func observeFeedStream() -> AsyncThrowingStream<[GalleryItem], Error> {
         return feedLoader.observeStream()
     }

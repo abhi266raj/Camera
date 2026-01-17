@@ -91,17 +91,26 @@ public struct GalleryGridView: ConfigurableView, ContentView {
 
 public struct GalleryViewConfig {
     
-    public init(onLoad: @escaping () async -> Void, onItemLoad: @escaping (GalleryItemViewData) async -> Void, onItemTap: @escaping (GalleryItemViewData) async -> Void, onLoadMore: @escaping () async -> Void) {
+    public init(onLoad: @escaping () async -> Void, onItemLoad: @escaping (GalleryItemViewData) async -> Void, onItemTap: @escaping (GalleryItemViewData) async -> Void, onLoadMore: @escaping () async -> Void, searchAction: ViewAction<String>) {
         self.onLoad = onLoad
         self.onItemLoad = onItemLoad
         self.onItemTap = onItemTap
         self.onLoadMore = onLoadMore
+        self.searchAction = searchAction
     }
     
-    var onLoad: () async -> Void
-    var onItemLoad: (GalleryItemViewData) async-> Void
-    var onItemTap: (GalleryItemViewData) async-> Void
-    var onLoadMore: () async -> Void
+    let onLoad: () async -> Void
+    let onItemLoad: (GalleryItemViewData) async-> Void
+    let onItemTap: (GalleryItemViewData) async-> Void
+    let onLoadMore: () async -> Void
+    public let searchAction: ViewAction<String>
+}
+
+public struct ViewAction<T> {
+    public init(action: @escaping ((T) async -> Void)) {
+        self.execute = action
+    }
+    var execute: ((T) async -> Void)
 }
 
 
