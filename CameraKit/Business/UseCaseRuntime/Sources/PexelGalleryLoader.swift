@@ -113,13 +113,9 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     
     // MARK: - ContentLoader
     
-    nonisolated public func observeStream() -> AsyncThrowingStream<[GalleryItem], Error> {
+    nonisolated public func observeStream() async -> AsyncThrowingStream<[GalleryItem], Error> {
         let stream = AsyncThrowingStream.makeStream(of: [GalleryItem].self)
-        defer {
-            Task.immediate {
-                await setUp(with: stream.continuation)
-            }
-        }
+        await setUp(with: stream.continuation)
         return stream.stream
     }
     
@@ -137,7 +133,6 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     
     public func loadInitial() async  {
         logger.log("Inital load Started \(self.config.endPoint) \(self.state.currentPage)")
-        await reset()
         state.isLoading = true
         try? await loadPage(page: 1)
         state.isLoading = false
@@ -162,6 +157,7 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
             await Task.yield()
         }
         state.continuation?.finish()
+        logger.log("finshed contination")
         state = State()
     }
     

@@ -25,8 +25,8 @@ public struct PexelGallerySession: GallerySession {
         return await feedLoader.updateSearchConfiguration(key)
     }
     
-    public func observeFeedStream() -> AsyncThrowingStream<[GalleryItem], Error> {
-        return feedLoader.observeStream()
+    public func observeFeedStream() async -> AsyncThrowingStream<[GalleryItem], Error> {
+        return await feedLoader.observeStream()
     }
     public func loadInitial() async { await feedLoader.loadInitial() }
     public func loadMore() async { await feedLoader.loadMore() }

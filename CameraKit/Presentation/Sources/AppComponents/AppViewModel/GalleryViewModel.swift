@@ -19,6 +19,9 @@ internal import OSLog
 public final class GalleryViewModel: Sendable  {
     @MainActor public let viewData: GalleryViewData = GalleryViewData()
     @MainActor private var listViewData: GalleryListViewData = GalleryListViewData()
+    
+    @MainActor var needRestart: Bool = false
+    @MainActor var isObserving: Bool = false
     private let permissionSerivce: PermissionService
     private let session: GallerySession<GalleryItem>
     private let logger = Logger(subsystem: "Gallery", category: "ViewModel")
@@ -27,7 +30,7 @@ public final class GalleryViewModel: Sendable  {
     public var showDetail: ((GalleryItemViewData) -> Void)? = nil
     
     @MainActor
-    private var isObserving: Bool = false
+    private var shouldRestart: Bool = false
     
     @MainActor
     public init(session: GallerySession<GalleryItem>, permissionService: PermissionService) {
@@ -39,20 +42,25 @@ public final class GalleryViewModel: Sendable  {
     public func load() async {
         logger.log("Can Started load feed \(self.viewData.id)")
         if case .idle = viewData.content {
-            self.isObserving = true
             logger.log("Started load feed")
-                viewData.content = .loading
-                listViewData.hasMore = true
-                Task.immediate{
-                    await observeFeed()
-                }
-                await session.loadInitial()
+            await initialLoad()
         }else {
             logger.log("Not started load \(self.viewData.id)")
         }
-        if isObserving == false {
-            viewData.content = .idle
+    }
+    
+    @MainActor
+    private func initialLoad() async {
+        await session.reset()
+        viewData.content = .loading
+        listViewData.hasMore = true
+        isObserving = true
+        Task.immediate{
+            await observeFeed(stream: nil)
         }
+        await Task.yield()
+        await session.loadInitial()
+        
     }
     
     @MainActor public func loadMore() async {
@@ -64,21 +72,39 @@ public final class GalleryViewModel: Sendable  {
         if await session.updateSearch(key) {
             logger.log("updated key: \(key)")
             self.viewData.id = key
-            self.listViewData = GalleryListViewData()
-            viewData.content = .idle
+           
+            needRestart = true
+            await restartFeedIfNeeded()
+           // viewData.content = .idle
         }
     }
     
-    private func observeFeed() async  {
+    @MainActor
+    func restartFeedIfNeeded() async {
+        guard needRestart else {
+            return
+        }
+        
+        if isObserving == true  {
+            return
+        }
+        needRestart = false
+        self.listViewData = GalleryListViewData()
+        await initialLoad()
+    }
+    
+    private func observeFeed(stream: AsyncThrowingStream<[GalleryItem], Error>?) async  {
         logger.log("Started Observed feed")
-            let stream = session.observeFeedStream()
+        let stream =  await session.observeFeedStream()
             do {
                 for try await content in stream {
                     let viewData = content.map{GalleryItemViewData(id: $0.id)}
                     await updateData(viewData)
                 }
             }catch {
+                
                 await MainActor.run {
+                    logger.log("Stopped Observed feed via throw:\(error) \(self.viewData.id) overall \(self.listViewData.items.count)")
                     if case .loading = viewData.content {
                         viewData.content = .error(.unknown)
                     }
@@ -86,10 +112,10 @@ public final class GalleryViewModel: Sendable  {
             }
         
         await MainActor.run(body: {
-            isObserving = false
             logger.log("Stopped Observed feed: \(self.viewData.id) overall \(self.listViewData.items.count)")
-            // listViewData.hasMore = false
+            isObserving = false
         })
+        await restartFeedIfNeeded()
     }
     
     @MainActor func updateData(_ data: [GalleryItemViewData]) {

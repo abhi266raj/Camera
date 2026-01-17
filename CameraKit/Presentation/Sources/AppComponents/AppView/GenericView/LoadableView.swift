@@ -49,8 +49,8 @@ public struct LoadableView<Content:View, ViewData>: View {
             Text("Loading State")
             LoadingView()
         case .error(_):
-            LoadingView()
             Text("Error")
+            LoadingView()
             
         case .loaded(let viewData):
             content

@@ -56,7 +56,7 @@ public enum LoaderError: Error, Sendable {
 
 public protocol FeedLoader<Item>: Sendable {
     associatedtype Item
-    func observeStream() -> AsyncThrowingStream<[Item], Error>
+    func observeStream() async -> AsyncThrowingStream<[Item], Error>
     func loadInitial() async
     func loadMore() async
     func reset() async 

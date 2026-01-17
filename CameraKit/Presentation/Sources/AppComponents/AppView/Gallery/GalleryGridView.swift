@@ -84,7 +84,7 @@ public struct GalleryGridView: ConfigurableView, ContentView {
             .navigationTitle("Gallery")
         }
         .task(priority:.high) {
-            await config.onLoad()
+           //  await config.onLoad()
         }
     }
 }
