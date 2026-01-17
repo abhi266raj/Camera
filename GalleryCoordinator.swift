@@ -16,7 +16,6 @@ import UseCaseApi
 
 struct GalleryCoordinator: View {
     
-    
     let viewModel = GalleryViewModel(galleryLoader: GalleryLoaderImp(), permissionService: appDependencies.domainOutput.permissionService)
     
     let view =  TestView(viewModel: viewModel)

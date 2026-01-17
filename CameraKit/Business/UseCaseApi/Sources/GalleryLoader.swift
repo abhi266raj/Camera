@@ -23,12 +23,15 @@ public struct GalleryContent: Sendable {
     }
 }
 
-public protocol GalleryLoader: Sendable {
+public protocol GalleryLoader: Sendable, GalleryContentLoader {
     func loadGallery() async -> [GalleryItem]
+}
+
+public protocol GalleryContentLoader: Sendable {
     func loadContent(id: String, config: ContentConfig) async throws -> GalleryContent
 }
 
-public extension  GalleryLoader {
+public extension  GalleryContentLoader {
     func loadContent(id:String) async throws -> GalleryContent {
         let config = ContentConfig(width: 1500, height: 1500, requiresExactSize: false)
         return try await loadContent(id: id, config: config)
@@ -56,7 +59,6 @@ public struct FetchConfig {
     
 }
 
-
 public enum LoaderError: Error, Sendable {
     case retryable(code: Int)
     case nonRetryable(code: Int)
@@ -67,8 +69,8 @@ public enum LoaderError: Error, Sendable {
 public protocol FeedLoader<Item>: Sendable {
     associatedtype Item
     func observeStream() -> AsyncThrowingStream<[Item], Error>
-    func loadInitial() async throws
-    func loadMore() async throws
-    func reset() async throws
+    func loadInitial() async
+    func loadMore() async
+    func reset() async 
 }
 

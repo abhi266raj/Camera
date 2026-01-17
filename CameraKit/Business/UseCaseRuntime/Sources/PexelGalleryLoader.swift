@@ -17,7 +17,7 @@ import UIKit.UIImage
 import UseCaseApi
 import CoreKit
 
-public actor PexelGalleryLoader: GalleryLoader {
+public actor PexelGalleryLoader: FeedLoader {
     public typealias Item = GalleryItem
 
     private struct Config {
@@ -137,41 +137,6 @@ public actor PexelGalleryLoader: GalleryLoader {
         }
     }
     
-    // MARK: - GalleryLoader backward compatibility
-    
-    public func loadGallery() async -> [GalleryItem] {
-        guard let url = URL(string: config.baseURL) else { return [] }
-        var request = URLRequest(url: url)
-        request.setValue(config.apiKey, forHTTPHeaderField: "Authorization")
-
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            if let items = parseGalleryItems(from: data) {
-                return items
-            }
-        } catch {
-            return []
-        }
-        return []
-    }
-
-    public func loadContent(id: String, config: ContentConfig) async throws -> GalleryContent {
-        guard let url = URL(string: id) else { throw RequestError.invalidInput }
-        let maxDimension = min(config.width, config.height, 1000)
-        let size = CGSize(width: maxDimension, height: maxDimension)
-        let request = URLRequest(url: url)
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            guard var image = UIImage(data: data) else { throw RequestError.invalidInput }
-            if Int(image.size.width) > maxDimension || Int(image.size.height) > maxDimension {
-                image = resize(image: image, targetSize: size) ?? image
-            }
-            return GalleryContent(image: image)
-        } catch {
-            throw RequestError.invalidInput
-        }
-    }
-
     // MARK: - Helpers
 
     private func parseGalleryItems(from data: Data) -> [GalleryItem]? {
@@ -194,22 +159,24 @@ public actor PexelGalleryLoader: GalleryLoader {
             return nil
         }
     }
+}
 
-    private func resize(image: UIImage, targetSize: CGSize) -> UIImage? {
-        let format = UIGraphicsImageRendererFormat.default()
-        format.scale = 1.0
-        let renderer = UIGraphicsImageRenderer(size: targetSize, format: format)
-        return renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: targetSize))
+
+public struct PexelFeedContentLoader: GalleryContentLoader {
+    
+    public init () {
+        
+    }
+    
+    public func loadContent(id: String, config: ContentConfig) async throws -> GalleryContent {
+        guard let url = URL(string: id) else { throw RequestError.invalidInput }
+        let request = URLRequest(url: url)
+        do {
+            let (data, _) = try await URLSession.shared.data(for: request)
+            guard var image = UIImage(data: data) else { throw RequestError.invalidInput }
+            return GalleryContent(image: image)
+        } catch {
+            throw RequestError.invalidInput
         }
     }
 }
-
-
- extension PexelGalleryLoader : FeedLoader {}
-
-
-protocol FeedLoaderError: Error {
-    
-}
-

@@ -18,7 +18,7 @@ import DomainApi
 public final class GalleryViewModel: Sendable  {
     @MainActor public let viewData: GalleryViewData = GalleryViewData()
     @MainActor public let listViewData: GalleryListViewData = GalleryListViewData()
-    private let galleryLoader:GalleryLoader
+    private let contentLoader:GalleryContentLoader
     private let permissionSerivce: PermissionService
     private let feedLoader: FeedLoader<GalleryItem>
     
@@ -27,8 +27,8 @@ public final class GalleryViewModel: Sendable  {
     public var showDetail: ((GalleryItemViewData) -> Void)? = nil
     
     @MainActor
-    public init(galleryLoader: GalleryLoader, feedLoader: FeedLoader<GalleryItem>, permissionService: PermissionService) {
-        self.galleryLoader = galleryLoader
+    public init(contentLoader: GalleryContentLoader, feedLoader: FeedLoader<GalleryItem>, permissionService: PermissionService) {
+        self.contentLoader = contentLoader
         self.permissionSerivce = permissionService
         self.feedLoader = feedLoader
     }
@@ -84,7 +84,7 @@ public final class GalleryViewModel: Sendable  {
     @MainActor
     private func fetchAssets() async {
         listViewData.items = []
-        listViewData.items = await galleryLoader.loadGallery().map{GalleryItemViewData(id: $0.id)}
+       // listViewData.items = await galleryLoader.loadGallery().map{GalleryItemViewData(id: $0.id)}
     }
     
     @MainActor
@@ -100,7 +100,7 @@ public final class GalleryViewModel: Sendable  {
             return
         }
         content.items[index] = item.setLoading()
-        let image = try? await galleryLoader.loadThumbContent(id: id).image
+        let image = try? await contentLoader.loadThumbContent(id: id).image
         guard let image else {
             content.items[index] = item.setError(.unknown)
             return
