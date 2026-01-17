@@ -106,8 +106,8 @@ final class TabViewAppCoordinator {
     @MainActor func galleryView() -> some View {
         let pexelGalleryLoader = PexelGalleryLoader()
         let contentLoader: GalleryContentLoader = PexelFeedContentLoader()
-        let feedLoader = pexelGalleryLoader
-        let viewModel = GalleryViewModel(contentLoader: contentLoader, feedLoader: feedLoader, permissionService: appDependencies.domainOutput.permissionService)
+        let session = PexelGallerySession(feedLoader: pexelGalleryLoader, contentLoader: contentLoader)
+        let viewModel = GalleryViewModel(session: session, permissionService: appDependencies.domainOutput.permissionService)
        
         let view =  TestView(viewModel: viewModel)
         
@@ -123,7 +123,7 @@ final class TabViewAppCoordinator {
                 let bindable = State(initialValue: data.content)
                 let galleryLoadConfig = ContentConfig(width: Int.max, height: Int.max, requiresExactSize: true)
                 let config = LoadableConfigNew {
-                    if let data = try? await contentLoader.loadContent(id: item, config: galleryLoadConfig) {
+                    if let data = try? await session.loadContent(id: item, config: galleryLoadConfig) {
                         return Image(uiImage: data.image)
                     }
                     throw NSError()

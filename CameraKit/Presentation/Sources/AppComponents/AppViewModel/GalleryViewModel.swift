@@ -18,19 +18,17 @@ import DomainApi
 public final class GalleryViewModel: Sendable  {
     @MainActor public let viewData: GalleryViewData = GalleryViewData()
     @MainActor public let listViewData: GalleryListViewData = GalleryListViewData()
-    private let contentLoader:GalleryContentLoader
     private let permissionSerivce: PermissionService
-    private let feedLoader: FeedLoader<GalleryItem>
+    private let session: GallerySession<GalleryItem>
     
     
     @MainActor
     public var showDetail: ((GalleryItemViewData) -> Void)? = nil
     
     @MainActor
-    public init(contentLoader: GalleryContentLoader, feedLoader: FeedLoader<GalleryItem>, permissionService: PermissionService) {
-        self.contentLoader = contentLoader
+    public init(session: GallerySession<GalleryItem>, permissionService: PermissionService) {
+        self.session = session
         self.permissionSerivce = permissionService
-        self.feedLoader = feedLoader
     }
 
     @MainActor
@@ -45,18 +43,18 @@ public final class GalleryViewModel: Sendable  {
                 Task.immediate{
                     await observeFeed()
                 }
-                await feedLoader.loadInitial()
+                await session.loadInitial()
                // viewData.content = .loaded(listViewData)
             }
         }
     }
     
     @MainActor public func loadMore() async {
-        await feedLoader.loadMore()
+        await session.loadMore()
     }
     
     private func observeFeed() async  {
-            let stream = feedLoader.observeStream()
+            let stream = session.observeFeedStream()
             do {
                 for try await content in stream {
                     let viewData = content.map{GalleryItemViewData(id: $0.id)}
@@ -100,7 +98,7 @@ public final class GalleryViewModel: Sendable  {
             return
         }
         content.items[index] = item.setLoading()
-        let image = try? await contentLoader.loadThumbContent(id: id).image
+        let image = try? await session.loadContent(id: id).image
         guard let image else {
             content.items[index] = item.setError(.unknown)
             return
