@@ -49,8 +49,27 @@ public struct LoadableView<Content:View, ViewData>: View {
             Text("Loading State")
             LoadingView()
         case .error(_):
-            Text("Error")
-            LoadingView()
+            VStack(spacing: 12) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.system(size: 36, weight: .semibold))
+                    .foregroundStyle(.red)
+
+                Text("Something went wrong")
+                    .font(.headline)
+
+                Text("Please try again later.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(24)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color.red.opacity(0.1))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(Color.red.opacity(0.3), lineWidth: 1)
+            )
             
         case .loaded(let viewData):
             content

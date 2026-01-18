@@ -25,6 +25,7 @@ public final class GalleryViewModel: Sendable  {
     private let permissionSerivce: PermissionService
     private let session: GallerySession<GalleryItem>
     private let logger = Logger(subsystem: "Gallery", category: "ViewModel")
+    @MainActor private var observation: Task<Void,Error>?
     
     @MainActor
     public var showDetail: ((GalleryItemViewData) -> Void)? = nil
@@ -52,10 +53,14 @@ public final class GalleryViewModel: Sendable  {
     @MainActor
     private func initialLoad() async {
         await session.reset()
+        listViewData.items.removeAll()
         viewData.content = .loading
         listViewData.hasMore = true
+        if isObserving == true {
+            logger.log("observation should not be ongoing")
+        }
         isObserving = true
-        Task.immediate{
+        observation = Task.immediate{
             await observeFeed(stream: nil)
         }
         await Task.yield()
@@ -72,7 +77,8 @@ public final class GalleryViewModel: Sendable  {
         if await session.updateSearch(key) {
             logger.log("updated key: \(key)")
             self.viewData.id = key
-            listViewData = GalleryListViewData()
+            observation?.cancel()
+            let value = await try? observation?.value
             viewData.content = .idle
         }
     }
@@ -87,16 +93,19 @@ public final class GalleryViewModel: Sendable  {
                     await updateData(viewData)
                 }
             }catch {
-                
+//                guard !(error is CancellationError) else {
+//                       return
+//                   }
                 await MainActor.run {
                     logger.log("Stopped Observed feed via throw:\(error) \(self.viewData.id) overall \(self.listViewData.items.count)")
                     if case .loading = viewData.content {
-                        viewData.content = .error(.unknown)
+                         viewData.content = .error(.unknown)
                     }
                 }
             }
         
         await MainActor.run(body: {
+           
             logger.log("Stopped Observed feed: \(self.viewData.id) overall \(self.listViewData.items.count)")
             isObserving = false
             listViewData.hasMore = false
@@ -130,10 +139,10 @@ public final class GalleryViewModel: Sendable  {
         }
         content.items[index] = item.setLoading()
         let image = try? await session.loadContent(id: id).image
+        guard index < content.count else {
+            return
+        }
         guard let image else {
-            guard index < content.count else {
-                return
-            }
             content.items[index] = item.setError(.unknown)
             return
         }

@@ -277,6 +277,7 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
         var isComplete: Bool = false
         var isLoading: Bool = false
         var continuation: AsyncThrowingStream<[Item], Error>.Continuation?
+        
     }
     
     private var state = State()
