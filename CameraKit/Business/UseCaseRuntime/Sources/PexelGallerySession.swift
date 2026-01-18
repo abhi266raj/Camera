@@ -57,6 +57,17 @@ public struct PexelGallerySession: GallerySession {
         return try await contentLoader.loadContent(id: item, config: config)
     }
     
+    public func videoUrl(id:String) async throws -> URL {
+        let item = await cache.videoUrl(id)
+        guard let item else {
+            throw URLError(.unknown)
+        }
+        guard let url =  URL(string: item) else {
+            throw URLError(.unknown)
+        }
+        return url
+    }
+    
     public func updateSearch(_ key: String) async -> Bool {
         return await feedLoader.updateSearchConfiguration(key, isVideo: true)
     }

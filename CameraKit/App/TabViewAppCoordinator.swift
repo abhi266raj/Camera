@@ -12,6 +12,7 @@ import AppViewModel
 import CoreKit
 import UseCaseRuntime
 import UseCaseApi
+import AVKit
 
 enum AppTab: Hashable, Identifiable {
     case camera(CameraType)
@@ -112,7 +113,19 @@ final class TabViewAppCoordinator {
         let view =  TestView(viewModel: viewModel)
         
         viewModel.showDetail =  { item in
-            self.path.append(AnyData((item.id, item.isVideo)))
+            if item.isVideo == false {
+                self.path.append(AnyData((item.id, item.isVideo)))
+            }else {
+                Task {
+                    do {
+                        let url = try await session.videoUrl(id: item.id)
+                        self.path.append(url)
+                    }catch {
+                        self.path.append(AnyData((item.id, item.isVideo)))
+                    }
+                    
+                }
+            }
         }
         
         let anyview = AnyView(
@@ -135,6 +148,9 @@ final class TabViewAppCoordinator {
                         .aspectRatio(contentMode: .fit)
                 }
                 
+            }.navigationDestination(for: URL.self) { url in
+                let player = AVPlayer(url: url)
+                VideoPlayer(player: player)
             }
             )
         
