@@ -83,7 +83,7 @@ public final class GalleryViewModel: Sendable  {
         let stream =  await session.observeFeedStream()
             do {
                 for try await content in stream {
-                    let viewData = content.map{GalleryItemViewData(id: $0.id, isVideo: $0.type == .video)}
+                    let viewData = content.map{GalleryItemViewData(id: $0.id, isVideo: !($0.type == .image))}
                     await updateData(viewData)
                 }
             }catch {

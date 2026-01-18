@@ -23,7 +23,7 @@ public struct PhotoGalleryLoader: GalleryLoader {
 
         let result = PHAsset.fetchAssets(with: options)
         let list = result.objects(at: IndexSet(integersIn: 0..<result.count))
-        return list.map{GalleryItem(id: $0.localIdentifier)}
+        return list.map{GalleryItem(id: $0.localIdentifier, thumbUrl: $0.localIdentifier)}
     }
     
     public func loadContent(id: String, config: ContentConfig) async throws -> GalleryContent {

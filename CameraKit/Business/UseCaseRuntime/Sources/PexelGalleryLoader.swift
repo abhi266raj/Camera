@@ -98,7 +98,7 @@ struct PexelsImageResponse: Decodable {
 
 extension PexelsImageResponse: GalleryResponse {
     func asGalleryItem() -> [GalleryItem] {
-        photos.map { GalleryItem(id: $0.src.large2x) }
+        photos.map { GalleryItem(id: String($0.id), thumbUrl: $0.src.large2x) }
     }
 }
 
@@ -135,7 +135,13 @@ struct PexelsVideoResponse: Decodable {
 extension PexelsVideoResponse: GalleryResponse {
     func asGalleryItem() -> [GalleryItem] {
         videos.compactMap { video in
-            GalleryItem(id: video.image, type: .video)
+            let url = {
+                if video.videoFiles.isEmpty {
+                    return  ""
+                }
+                return video.videoFiles[0].link
+            }()
+            return GalleryItem(id: String(video.id), thumbUrl: video.image, type: .video(url))
         }
     }
 }
@@ -220,7 +226,7 @@ private enum PexelQueryKey {
 }
 
 public actor PexelGalleryLoader: SearchAbleFeedLoader {
-    // public typealias Item = GalleryItem
+    public typealias Item = GalleryItem
     let logger = Logger(subsystem: "Gallery", category: "Loader")
     
     private let networkService: NetworkService = URLSessionNetworkService()
@@ -270,7 +276,7 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
         var currentPage: Int = 0
         var isComplete: Bool = false
         var isLoading: Bool = false
-        var continuation: AsyncThrowingStream<[GalleryItem], Error>.Continuation?
+        var continuation: AsyncThrowingStream<[Item], Error>.Continuation?
     }
     
     private var state = State()
@@ -281,13 +287,13 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     
     // MARK: - ContentLoader
     
-    nonisolated public func observeStream() async -> AsyncThrowingStream<[GalleryItem], Error> {
-        let stream = AsyncThrowingStream.makeStream(of: [GalleryItem].self)
+    nonisolated public func observeStream() async -> AsyncThrowingStream<[Item], Error> {
+        let stream = AsyncThrowingStream.makeStream(of: [Item].self)
         await setUp(with: stream.continuation)
         return stream.stream
     }
     
-    func setUp(with continuation: AsyncThrowingStream<[GalleryItem], Error>.Continuation) {
+    func setUp(with continuation: AsyncThrowingStream<[Item], Error>.Continuation) {
         if let current = self.state.continuation {
             current.finish(throwing: LoaderError.cancelled)
         }

@@ -7,18 +7,20 @@
 
 import UIKit.UIImage
 
-public enum MediaType: Sendable {
+public enum MediaType: Sendable, Equatable {
     case image
-    case video
+    case video(String)
 }
 
 public struct GalleryItem: Sendable, Identifiable{
     public let id: String
     public let type: MediaType
+    public let thumbUrl: String
     
-    public init(id: String, type: MediaType = .image) {
+    public init(id: String, thumbUrl:String, type: MediaType = .image) {
         self.id = id
         self.type = type
+        self.thumbUrl = thumbUrl
     }
 }
 

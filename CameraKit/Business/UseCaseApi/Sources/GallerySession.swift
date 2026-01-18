@@ -9,7 +9,7 @@
 public protocol GallerySession<Item>: Sendable {
     associatedtype Item
     func loadContent(id: String, config: ContentConfig) async throws -> GalleryContent
-    func observeFeedStream() async ->  AsyncThrowingStream<[Item], Error>
+    func observeFeedStream() async ->  AsyncSequence<[Item], Error>
     func loadInitial() async
     func loadMore() async
     func reset() async
