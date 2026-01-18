@@ -112,25 +112,25 @@ final class TabViewAppCoordinator {
         let view =  TestView(viewModel: viewModel)
         
         viewModel.showDetail =  { item in
-            self.path.append(AnyData(item.id))
+            self.path.append(AnyData((item.id, item.isVideo)))
         }
         
         let anyview = AnyView(
             view
-            .navigationDestination(for: AnyData<String>.self) { content in
+            .navigationDestination(for: AnyData<(String, Bool)>.self) { content in
                 let item = content.wrappedValue
-                let data = GalleryItemViewData(content: .idle, id: item)
+                let data = GalleryItemViewData(content: .idle, id: item.0, isVideo: item.1)
                 let bindable = State(initialValue: data.content)
                 let galleryLoadConfig = ContentConfig(width: Int.max, height: Int.max, requiresExactSize: true)
                 let config = LoadableConfigNew {
-                    if let data = try? await session.loadContent(id: item, config: galleryLoadConfig) {
+                    if let data = try? await session.loadContent(id: item.0, config: galleryLoadConfig) {
                         return Image(uiImage: data.image)
                     }
                     throw NSError()
                 }
                 
                 LoadableViewNew(viewData:bindable, config: config) { data in
-                    let galleryData = GalleryItemViewData(content: .loaded(data), id: item)
+                    let galleryData = GalleryItemViewData(content: .loaded(data), id: item.0, isVideo: item.1)
                     GalleryItemView(data:galleryData){}
                         .aspectRatio(contentMode: .fit)
                 }

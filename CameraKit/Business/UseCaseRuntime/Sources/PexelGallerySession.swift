@@ -22,7 +22,7 @@ public struct PexelGallerySession: GallerySession {
     }
     
     public func updateSearch(_ key: String) async -> Bool {
-        return await feedLoader.updateSearchConfiguration(key)
+        return await feedLoader.updateSearchConfiguration(key, isVideo: true)
     }
     
     public func observeFeedStream() async -> AsyncThrowingStream<[GalleryItem], Error> {

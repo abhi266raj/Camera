@@ -83,7 +83,7 @@ public final class GalleryViewModel: Sendable  {
         let stream =  await session.observeFeedStream()
             do {
                 for try await content in stream {
-                    let viewData = content.map{GalleryItemViewData(id: $0.id)}
+                    let viewData = content.map{GalleryItemViewData(id: $0.id, isVideo: $0.type == .video)}
                     await updateData(viewData)
                 }
             }catch {
@@ -176,8 +176,9 @@ public class GalleryListViewData: Sendable {
 public struct GalleryItemViewData: Identifiable, Sendable {
     public let id:String
     public let content: Loadable<Image>
+    public let isVideo: Bool
     
-    public init(image: UIImage? = nil, isLoading: Bool = false, id:String) {
+    public init(image: UIImage? = nil, isLoading: Bool = false, id:String, isVideo: Bool) {
         if let image {
             let image = Image(uiImage: image)
             content = .loaded(image)
@@ -188,32 +189,34 @@ public struct GalleryItemViewData: Identifiable, Sendable {
                 content = .idle
             }
         }
-        
+        self.isVideo = isVideo
         self.id = id
     }
     
-    public init(imageName: String, isLoading: Bool = false, id:String) {
+    public init(imageName: String, isLoading: Bool = false, id:String, isVideo: Bool) {
         self.id = id
+        self.isVideo = isVideo
         let image = Image(systemName: imageName)
         content = .loaded(image)
     }
     
-    public init(content: Loadable<Image>, id:String) {
+    public init(content: Loadable<Image>, id:String, isVideo: Bool) {
         self.content = content
         self.id = id
+        self.isVideo = isVideo
     }
     
     public func setLoading() -> Self {
-        GalleryItemViewData(content: .loading, id: id)
+        GalleryItemViewData(content: .loading, id: id, isVideo: isVideo)
     }
     
     public func set(_ image: UIImage) -> Self {
         let image = Image(uiImage: image)
-        return GalleryItemViewData(content: .loaded(image), id: id)
+        return GalleryItemViewData(content: .loaded(image), id: id, isVideo: isVideo)
     }
     
     public func setError(_ error: LoadableError) -> Self {
-        GalleryItemViewData(content: .error(error), id: id)
+        GalleryItemViewData(content: .error(error), id: id, isVideo: isVideo)
     }
     
     

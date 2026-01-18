@@ -29,11 +29,22 @@ public struct GalleryItemView: View {
                 Rectangle()
                     .fill(.secondary.opacity(0.2))
             case .loaded(let image):
-                image
-                .resizable()
-                .scaledToFit()
-                // .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipped()
+                ZStack {
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .clipped()
+
+                    if data.isVideo {
+                        Image(systemName: "play.circle.fill")
+                            .resizable()
+                            .frame(width: 48, height: 48)
+                            .foregroundStyle(.white)
+                            .opacity(0.85)
+                            .shadow(radius: 6)
+                    }
+                }
+                
             case .error:
                 LoadingView()
             }
@@ -55,7 +66,7 @@ public struct GalleryItemView: View {
 
 #Preview {
     let image =   "arrow.triangle.2.circlepath.camera"
-    let viewData = GalleryItemViewData(imageName:image, id: "1")
+    let viewData = GalleryItemViewData(imageName:image, id: "1", isVideo: false)
     GalleryItemView(data: viewData) {
         
     }.frame(width: 200, height: 200).scaledToFit().border(.secondary,width: 1)

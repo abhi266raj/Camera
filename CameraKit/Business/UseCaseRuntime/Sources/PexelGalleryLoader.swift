@@ -25,11 +25,14 @@ private enum PexelEndPoint: Equatable, CustomStringConvertible {
             return "curated"
         case .search(let item):
             return "search:\(item)"
+        case .searchVideo(let item):
+            return "searchVideo:\(item)"
         }
     }
     
     case curated
     case search(String)
+    case searchVideo(String)
 }
 
 public protocol RequestBuilder {
@@ -77,6 +80,10 @@ struct URLSessionNetworkService: NetworkService {
     
 }
 
+protocol GalleryResponse: Sendable {
+    func asGalleryItem() -> [GalleryItem]
+}
+
 struct PexelsImageResponse: Decodable {
     struct Photo: Decodable {
         let id: Int
@@ -89,9 +96,47 @@ struct PexelsImageResponse: Decodable {
     let photos: [Photo]
 }
 
-extension PexelsImageResponse {
+extension PexelsImageResponse: GalleryResponse {
     func asGalleryItem() -> [GalleryItem] {
         photos.map { GalleryItem(id: $0.src.large2x) }
+    }
+}
+
+struct PexelsVideoResponse: Decodable {
+    struct Video: Decodable {
+        let id: Int
+        let image: String
+        let videoFiles: [VideoFile]
+
+        struct VideoFile: Decodable {
+            let id: Int
+           // let quality: String
+            let fileType: String
+            let link: String
+
+            enum CodingKeys: String, CodingKey {
+                case id
+              //  case quality
+                case fileType = "file_type"
+                case link
+            }
+        }
+
+        enum CodingKeys: String, CodingKey {
+            case id
+            case image
+            case videoFiles = "video_files"
+        }
+    }
+
+    let videos: [Video]
+}
+
+extension PexelsVideoResponse: GalleryResponse {
+    func asGalleryItem() -> [GalleryItem] {
+        videos.compactMap { video in
+            GalleryItem(id: video.image, type: .video)
+        }
     }
 }
 
@@ -152,6 +197,8 @@ extension PexelEndPoint {
             return "/v1/curated"
         case .search(_):
             return "/v1/search"
+        case .searchVideo(_):
+            return "/videos/search"
         }
     }
 
@@ -160,6 +207,8 @@ extension PexelEndPoint {
         case .curated:
             return nil
         case .search(let keyword):
+            return [URLQueryItem(name: "query", value: keyword)]
+        case .searchVideo(let keyword):
             return [URLQueryItem(name: "query", value: keyword)]
         }
     }
@@ -176,23 +225,14 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     
     private let networkService: NetworkService = URLSessionNetworkService()
     private struct Config {
-       // public let apiKey: String
         public let perPage: Int
-       // public let scheme: String
-      //  public let host: String
         public let endPoint: PexelEndPoint
         
         public init(
-           // apiKey: String = "2PMbPBg8WVNIAYWg3xNaVvXCZ8MYWksG240ITFczEEwQKXQaUJB6ekeT",
             perPage: Int = 8,
-          //  scheme: String = "https",
-          //  host: String = "api.pexels.com",
-            endPoint: PexelEndPoint = .search("apple")
+            endPoint: PexelEndPoint = .curated
         ) {
-      //      self.apiKey = apiKey
             self.perPage = perPage
-       //     self.scheme = scheme
-       //     self.host = host
             self.endPoint = endPoint
         }
     }
@@ -203,15 +243,24 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
         self.config = Config()
     }
     
-    public func updateSearchConfiguration(_ key: String) async  -> Bool {
+    public func updateSearchConfiguration(_ key: String, isVideo: Bool) async  -> Bool {
+        let endPoint: PexelEndPoint = {
+            if key == "" {
+                return .curated
+            }
+            
+            if isVideo {
+                return .searchVideo(key)
+            }
+            return .search(key)
+        }()
         
-        if case .search(let string)  = config.endPoint {
-            if string == key {return false}
+        
+         if endPoint == config.endPoint {
+            return false
         }
         
-  
-        let endpoint = PexelEndPoint.search(key)
-        config = Config(endPoint: endpoint)
+        config = Config(endPoint: endPoint)
         await reset()
         return true
         
@@ -281,11 +330,8 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     
     
     private func loadPage(page: Int) async  {
-        let requestBuilder = PexelRequestBuilder(page: page, endPoint: config.endPoint, perPage: config.perPage)
-        let operation = NetworkOperation(responseType: PexelsImageResponse.self, requestBuilder: requestBuilder)
         do {
-            let list = try await networkService.execute(operation)
-            let items = list.asGalleryItem()
+            let items = try await buildApiResponse(page: page)
             if items.isEmpty {
                 state.isComplete = true
                 state.continuation?.finish()
@@ -300,23 +346,24 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
                 state.continuation?.finish()
             }
         } catch (let error as Error) {
+            logger.log("Network Error\(error.localizedDescription)")
             state.isComplete = true
             state.continuation?.finish(throwing: error)
         }
     }
     
-    // MARK: - Helpers
-
-//    private func parseGalleryItems(from data: Data) -> [GalleryItem]? {
-//       
-//        do {
-//            let response = try JSONDecoder().decode(PexelsImageResponse.self, from: data)
-//            // Use 'large2x' which is typically less than or equal to 1000x1000 px, fallback to 'original'
-//            return response.photos.map { GalleryItem(id: $0.src.large2x) }
-//        } catch {
-//            return nil
-//        }
-//    }
+    private func buildApiResponse(page: Int) async throws -> [GalleryItem] {
+        let requestBuilder = PexelRequestBuilder(page: page, endPoint: config.endPoint, perPage: config.perPage)
+        if case .searchVideo(_) = config.endPoint {
+            let operation = NetworkOperation(responseType: PexelsVideoResponse.self, requestBuilder: requestBuilder)
+            let result = try await networkService.execute(operation)
+            return result.asGalleryItem()
+        } else {
+            let operation = NetworkOperation(responseType: PexelsImageResponse.self, requestBuilder: requestBuilder)
+            let result = try await networkService.execute(operation)
+            return result.asGalleryItem()
+        }
+    }
 }
 
 

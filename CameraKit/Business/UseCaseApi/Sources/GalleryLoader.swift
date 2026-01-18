@@ -7,11 +7,18 @@
 
 import UIKit.UIImage
 
+public enum MediaType: Sendable {
+    case image
+    case video
+}
+
 public struct GalleryItem: Sendable, Identifiable{
     public let id: String
+    public let type: MediaType
     
-    public init(id: String) {
+    public init(id: String, type: MediaType = .image) {
         self.id = id
+        self.type = type
     }
 }
 
@@ -64,6 +71,6 @@ public protocol FeedLoader<Item>: Sendable {
 
 
 public protocol SearchAbleFeedLoader: FeedLoader {
-    func updateSearchConfiguration(_ key: String) async  -> Bool
+    func updateSearchConfiguration(_ key: String, isVideo: Bool) async  -> Bool
 }
 
