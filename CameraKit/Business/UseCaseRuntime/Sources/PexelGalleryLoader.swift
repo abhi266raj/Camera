@@ -12,13 +12,14 @@
 //  Created by Assistant on 15/01/26.
 //
 
+import DomainApi
 import Foundation
 import UIKit.UIImage
 import UseCaseApi
 import CoreKit
 internal import OSLog
 
-private enum PexelEndPoint: Equatable, CustomStringConvertible {
+internal enum PexelEndPoint: Equatable, CustomStringConvertible {
     var description: String {
         switch self {
         case .curated:
@@ -33,51 +34,6 @@ private enum PexelEndPoint: Equatable, CustomStringConvertible {
     case curated
     case search(String)
     case searchVideo(String)
-}
-
-public protocol RequestBuilder {
-    func build() -> URLRequest?
-}
-
-public protocol ResponseBuilder<Response> {
-    associatedtype Response
-    func createResponseFrom(data: Data) throws -> Response
-}
-
-public struct NetworkOperation<Response> {
-    let requestBuilder: RequestBuilder
-    let responseBuilder: ResponseBuilder<Response>
-    
-    public init(responseType: Response.Type, requestBuilder: RequestBuilder) where Response: Decodable {
-        self.requestBuilder = requestBuilder
-        self.responseBuilder = DecodableResponseBuilder<Response>()
-    }
-}
-
-protocol NetworkService: Sendable {
-    func execute<Response>(_ operation: NetworkOperation<Response>) async throws -> Response
-}
-
-struct URLSessionNetworkService: NetworkService {
-    
-    let session: URLSession
-    public init (session:URLSession = URLSession.shared) {
-        self.session = session
-    }
-    
-    func execute<Response>(_ operation: NetworkOperation<Response>) async throws -> Response {
-        try await execute(requestBuilder: operation.requestBuilder, responseBuilder: operation.responseBuilder)
-    }
-    
-    private func execute<Response>(requestBuilder: RequestBuilder, responseBuilder: ResponseBuilder<Response>) async throws -> Response {
-        guard let request = requestBuilder.build() else {
-            throw URLError(.badURL)
-        }
-        let (data, _) = try await URLSession.shared.data(for: request)
-        let response = try responseBuilder.createResponseFrom(data: data)
-        return response
-    }
-    
 }
 
 protocol GalleryResponse: Sendable {
@@ -146,12 +102,6 @@ extension PexelsVideoResponse: GalleryResponse {
     }
 }
 
-private struct DecodableResponseBuilder<DecodableResponse: Decodable>: ResponseBuilder {
-    func createResponseFrom(data: Data) throws -> DecodableResponse {
-        let response = try JSONDecoder().decode(DecodableResponse.self, from: data)
-        return response
-    }
-}
 
 
 private struct PexelRequestBuilder: RequestBuilder {
@@ -229,7 +179,7 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     public typealias Item = GalleryItem
     let logger = Logger(subsystem: "Gallery", category: "Loader")
     
-    private let networkService: NetworkService = URLSessionNetworkService()
+    private let networkService: NetworkService
     private struct Config {
         public let perPage: Int
         public let endPoint: PexelEndPoint
@@ -245,8 +195,9 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     
     private var config: Config
 
-    public init () {
+    public init (networkService: NetworkService) {
         self.config = Config()
+        self.networkService = networkService
     }
     
     public func updateSearchConfiguration(_ key: String, isVideo: Bool) async  -> Bool {

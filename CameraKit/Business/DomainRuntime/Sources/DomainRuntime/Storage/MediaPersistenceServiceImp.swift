@@ -6,7 +6,7 @@
 //
 
 import DomainApi
-internal import Foundation
+import Foundation
 import PlatformApi
 internal import Photos
 
