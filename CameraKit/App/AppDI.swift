@@ -35,7 +35,7 @@ class DomainOutput {
         return mediaPersistenceService
     }()
     
-    let networkService: NetworkService = URLSessionNetworkService()
+    let networkService: HTTPClient = URLSessionNetworkClient()
     let permissionService: PermissionService = PermissionServiceImp()
 }
 

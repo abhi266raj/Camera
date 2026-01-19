@@ -12,6 +12,7 @@
 //  Created by Assistant on 15/01/26.
 //
 
+import PlatformApi
 import DomainApi
 import Foundation
 import UIKit.UIImage
@@ -104,7 +105,7 @@ extension PexelsVideoResponse: GalleryResponse {
 
 
 
-private struct PexelRequestBuilder: RequestBuilder {
+private struct PexelRequestBuilder: HTTPRequestBuilder {
     
     private let apiKey: String = "2PMbPBg8WVNIAYWg3xNaVvXCZ8MYWksG240ITFczEEwQKXQaUJB6ekeT"
     private let scheme: String = "https"
@@ -179,7 +180,7 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     public typealias Item = GalleryItem
     let logger = Logger(subsystem: "Gallery", category: "Loader")
     
-    private let networkService: NetworkService
+    private let networkService: HTTPClient
     private struct Config {
         public let perPage: Int
         public let endPoint: PexelEndPoint
@@ -195,7 +196,7 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     
     private var config: Config
 
-    public init (networkService: NetworkService) {
+    public init (networkService: HTTPClient) {
         self.config = Config()
         self.networkService = networkService
     }
@@ -313,11 +314,11 @@ public actor PexelGalleryLoader: SearchAbleFeedLoader {
     private func buildApiResponse(page: Int) async throws -> [GalleryItem] {
         let requestBuilder = PexelRequestBuilder(page: page, endPoint: config.endPoint, perPage: config.perPage)
         if case .searchVideo(_) = config.endPoint {
-            let operation = NetworkOperation(responseType: PexelsVideoResponse.self, requestBuilder: requestBuilder)
+            let operation = HTTPNetworkOperation(responseType: PexelsVideoResponse.self, requestBuilder: requestBuilder)
             let result = try await networkService.execute(operation)
             return result.asGalleryItem()
         } else {
-            let operation = NetworkOperation(responseType: PexelsImageResponse.self, requestBuilder: requestBuilder)
+            let operation = HTTPNetworkOperation(responseType: PexelsImageResponse.self, requestBuilder: requestBuilder)
             let result = try await networkService.execute(operation)
             return result.asGalleryItem()
         }
