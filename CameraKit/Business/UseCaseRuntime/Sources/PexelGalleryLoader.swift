@@ -5,12 +5,6 @@
 //  Created by Abhiraj on 15/01/26.
 //
 
-//
-//  PexelGalleryLoader.swift
-//  CameraKit
-//
-//  Created by Assistant on 15/01/26.
-//
 
 import PlatformApi
 import DomainApi
