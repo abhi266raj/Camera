@@ -13,6 +13,7 @@ import CoreKit
 import UseCaseRuntime
 import UseCaseApi
 import AVKit
+import DomainRuntime
 
 enum AppTab: Hashable, Identifiable {
     case camera(CameraType)
@@ -105,8 +106,9 @@ final class TabViewAppCoordinator {
 
     
     @MainActor func galleryView() -> some View {
-        let neworkService = appDependencies.domainOutput.networkService
-        let pexelGalleryLoader = PexelGalleryLoader(networkService: neworkService)
+        let networkService = appDependencies.domainOutput.networkService
+        let pexelWebClient = PexelWebClient(networkService:networkService)
+        let pexelGalleryLoader = PexelGalleryLoader(webClinet:pexelWebClient)
         let contentLoader: GalleryContentLoader = PexelFeedContentLoader()
         let session = PexelGallerySession(feedLoader: pexelGalleryLoader, contentLoader: contentLoader)
         let viewModel = GalleryViewModel(session: session, permissionService: appDependencies.domainOutput.permissionService)
