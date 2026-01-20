@@ -109,7 +109,8 @@ final class TabViewAppCoordinator {
         let networkService = appDependencies.domainOutput.networkService
         let pexelWebClient = PexelWebClient(networkService:networkService)
         let pexelGalleryLoader = PexelGalleryLoader(webClinet:pexelWebClient)
-        let contentLoader: GalleryContentLoader = PexelFeedContentLoader()
+        let imageRepo = ImageRepoImp(networkClient: networkService)
+        let contentLoader: GalleryContentLoader = PexelFeedContentLoader(imageRepo: imageRepo)
         let session = PexelGallerySession(feedLoader: pexelGalleryLoader, contentLoader: contentLoader)
         let viewModel = GalleryViewModel(session: session, permissionService: appDependencies.domainOutput.permissionService)
        

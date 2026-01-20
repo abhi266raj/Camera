@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit.UIImage
 
 public protocol HTTPClient: Sendable {
     func execute<Response>(_ operation: HTTPNetworkOperation<Response>) async throws -> Response
@@ -15,9 +16,35 @@ public protocol HTTPRequestBuilder {
     func build() -> URLRequest?
 }
 
+extension String: HTTPRequestBuilder {
+    public func build() -> URLRequest? {
+        let url = URL(string: self)
+        guard let url else {
+            return nil
+        }
+        return URLRequest(url: url)
+    }
+}
+
 public protocol HTTPResponseBuilder<Response> {
     associatedtype Response
     func createResponseFrom(data: Data) throws -> Response
+}
+
+fileprivate struct DataResponseBuilder: HTTPResponseBuilder {
+    func createResponseFrom(data: Data) throws -> Data {
+        return data
+    }
+}
+
+fileprivate struct ImageResponseBuilder: HTTPResponseBuilder {
+    func createResponseFrom(data: Data) throws -> UIImage {
+        let image = UIImage(data: data)
+        guard let image else {
+            throw URLError(.badServerResponse)
+        }
+        return image
+    }
 }
 
 
@@ -40,6 +67,11 @@ public struct HTTPNetworkOperation<Response> {
     public init(requestBuilder: HTTPRequestBuilder, responseBuilder: HTTPResponseBuilder<Response>) {
         self.requestBuilder = requestBuilder
         self.responseBuilder = responseBuilder
+    }
+    
+    public init(imageUrl: String) where Response == UIImage {
+        self.requestBuilder = imageUrl
+        self.responseBuilder = ImageResponseBuilder()
     }
 }
 
